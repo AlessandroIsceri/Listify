@@ -13,11 +13,11 @@ public class ToDoList {
 		this.toDoList = new ArrayList<Activity>();
 	}
 
-	private boolean addItem(Activity item) {
+	public boolean addItem(Activity item) {
 		return toDoList.add(item);
 	}
 	
-	private boolean removeItem(Activity item) {
+	public boolean removeItem(Activity item) {
 		for(int i = 0; i < toDoList.size(); i++){
 			if(toDoList.get(i).equals(item)) {
 				toDoList.remove(i);

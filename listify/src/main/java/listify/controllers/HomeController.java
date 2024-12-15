@@ -1,27 +1,25 @@
 package listify.controllers;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import listify.domain.ToDoList;
 import listify.domain.User;
+import listify.services.UserService;
 
 @Controller
 public class HomeController {
-	
-	User aless;
+	private UserService userService;
 	
 	public HomeController() {
+		userService = new UserService();
         System.out.println("HomeController is loaded!");
-        aless = new User("aless@gmail.com", "pw", "aless"); //create user to test the application without DB connection
-        //create 2 to-to lists to display
-        ToDoList list1 = new ToDoList("lista_progetto"); 
-        ToDoList list2 = new ToDoList("lista_spesa"); 
-        aless.addToDoList(list1);
-        aless.addToDoList(list2);
 	}
 	
 	@GetMapping("/login")
@@ -32,24 +30,36 @@ public class HomeController {
 	}
 	
 	@PostMapping("/login")
-	public ModelAndView getPage(@RequestParam("email") String email,@RequestParam("password") String password){
+	public ModelAndView getPage(@RequestParam("email") String email,
+								@RequestParam("password") String password){
 		ModelAndView m = new ModelAndView();
-		if(email.equals(aless.getEmail()) && password.equals(aless.getPassword())){
-			return new ModelAndView("redirect:/home");
+		String username = userService.login(email, password);
+		if(username != null) {
+			return new ModelAndView("redirect:/home/"+username);
 		}
-		else {
-			m.setViewName("failedLogin");
-		}
+		m.setViewName("failedLogin");
 		return m;
 	}
 	
-	@GetMapping("/home")
-	public ModelAndView getHomePage(){
+	@GetMapping("/home/{username}")
+	public ModelAndView getHomePage(@PathVariable(value="username") String username){
 		ModelAndView m = new ModelAndView();
-		System.out.println(aless.getUsername());
-		m.addObject("username", aless.getUsername());
-		m.addObject("toDoLists", aless.getToDoLists());
+		User user = userService.getUser(username);
+		m.addObject("username", user.getUsername());
+		m.addObject("toDoLists", user.getToDoLists());
 		m.setViewName("home");	
 		return m;
 	}
+	
+	@GetMapping("/home/{username}/{listName}")
+	public ModelAndView getListPage(@PathVariable(value="username") String username, 
+									@PathVariable(value="listName") String listName){
+		ModelAndView m = new ModelAndView();
+		m.setViewName("toDoList");
+		m.addObject("username", username);
+		ToDoList list = userService.getToDoList(username, listName);
+		m.addObject("list", list);
+		return m;
+	}
+	
 }
