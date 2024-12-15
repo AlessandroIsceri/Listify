@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ToDoList {
+	private String name;
 	private List<Activity> toDoList;
 	
-	public ToDoList() {
+	public ToDoList(String name) {
 		super();
+		this.name = name;
 		this.toDoList = new ArrayList<Activity>();
 	}
 
@@ -23,6 +25,14 @@ public class ToDoList {
 			}
 		}
 		return false;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public List<Activity> getToDoList() {
+		return toDoList;
 	}
 	
 }
