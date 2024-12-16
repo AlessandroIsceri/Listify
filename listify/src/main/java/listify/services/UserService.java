@@ -16,8 +16,9 @@ public class UserService {
 		User aless = new User("aless@gmail.com", "pw", "aless"); //create user to test the application without DB connection
         //create 2 to-to lists to display
         ToDoList list1 = new ToDoList("lista_progetto");
-        list1.addItem(new Activity("impostare gitlab", 10));
-        list1.addItem(new Activity("scrivere codice", 3));
+        list1.addItem(new Activity("impostare gitlab", 10, "In Progress"));
+        list1.addItem(new Activity("scrivere codice", 3, "To Do"));
+        list1.addItem(new Activity("scrivere test", 5, "Completed"));
         ToDoList list2 = new ToDoList("lista_spesa"); 
         aless.addToDoList(list1);
         aless.addToDoList(list2);

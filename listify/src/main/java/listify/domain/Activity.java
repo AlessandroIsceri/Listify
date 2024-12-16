@@ -6,6 +6,7 @@ public class Activity {
 	private String name;
 	private int priority = -1; //-1 = no priority
 	private Date expirationDate = null;
+	private String category = "To Do";
 	
 	
 	public Activity(String name) {
@@ -17,6 +18,13 @@ public class Activity {
 		super();
 		this.name = name;
 		this.priority = priority;
+	}
+
+	public Activity(String name, int priority, String category) {
+		super();
+		this.name = name;
+		this.priority = priority;
+		this.category = category;
 	}
 
 	public Activity(String name, Date expirationDate) {
@@ -32,6 +40,14 @@ public class Activity {
 		this.expirationDate = expirationDate;
 	}
 	
+	public Activity(String name, int priority, Date expirationDate, String category) {
+		super();
+		this.name = name;
+		this.priority = priority;
+		this.expirationDate = expirationDate;
+		this.category = category;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -54,6 +70,14 @@ public class Activity {
 	
 	public void setExpirationDate(Date expirationDate) {
 		this.expirationDate = expirationDate;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	
 }
