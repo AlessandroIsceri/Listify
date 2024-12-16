@@ -1,6 +1,8 @@
 package listify.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import listify.domain.Activity;
@@ -16,8 +18,8 @@ public class UserService {
 		User aless = new User("aless@gmail.com", "pw", "aless"); //create user to test the application without DB connection
         //create 2 to-to lists to display
         ToDoList list1 = new ToDoList("lista_progetto");
-        list1.addItem(new Activity("impostare gitlab", 10, "In Progress"));
-        list1.addItem(new Activity("scrivere codice", 3, "To Do"));
+        list1.addItem(new Activity("impostare gitlab", 10, LocalDate.of(2025, 1, 20), "In Progress"));
+        list1.addItem(new Activity("scrivere codice", 3, LocalDate.of(2025, 4, 12), "To Do"));
         list1.addItem(new Activity("scrivere test", 5, "Completed"));
         ToDoList list2 = new ToDoList("lista_spesa"); 
         aless.addToDoList(list1);

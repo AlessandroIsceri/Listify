@@ -1,11 +1,11 @@
 package listify.domain;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Activity {
 	private String name;
 	private int priority = -1; //-1 = no priority
-	private Date expirationDate = null;
+	private LocalDate expirationDate = null;
 	private String category = "To Do";
 	
 	
@@ -27,20 +27,20 @@ public class Activity {
 		this.category = category;
 	}
 
-	public Activity(String name, Date expirationDate) {
+	public Activity(String name, LocalDate expirationDate) {
 		super();
 		this.name = name;
 		this.expirationDate = expirationDate;
 	}
 
-	public Activity(String name, int priority, Date expirationDate) {
+	public Activity(String name, int priority, LocalDate expirationDate) {
 		super();
 		this.name = name;
 		this.priority = priority;
 		this.expirationDate = expirationDate;
 	}
 	
-	public Activity(String name, int priority, Date expirationDate, String category) {
+	public Activity(String name, int priority, LocalDate expirationDate, String category) {
 		super();
 		this.name = name;
 		this.priority = priority;
@@ -64,11 +64,11 @@ public class Activity {
 		this.priority = priority;
 	}
 	
-	public Date getExpirationDate() {
+	public LocalDate getExpirationDate() {
 		return expirationDate;
 	}
 	
-	public void setExpirationDate(Date expirationDate) {
+	public void setExpirationDate(LocalDate expirationDate) {
 		this.expirationDate = expirationDate;
 	}
 
