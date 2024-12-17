@@ -1,4 +1,12 @@
+const URL_PREFIX = window.location.origin;
 draggedElement = null
+
+//function that retrieves new id for the activity from the server
+async function getNewId(){
+    let response = await fetch(URL_PREFIX + "/listify/API/getNewId/");
+    return response.json();
+}
+
 function init(){
 	document.getElementById("modalActivityExpDate").valueAsDate = new Date();
 }
@@ -30,6 +38,16 @@ function drop(ev) {
 	if(target == null || parent == null){
 		//empty target list
 		ul.appendChild(document.getElementById(draggedElementId))
+		ulId = ul.id
+		li = document.getElementById(draggedElementId)
+		hiddenInputs = li.querySelectorAll('input[type="hidden"]');
+		if(ulId == "to-do-activities-ul"){
+			hiddenInputs[3].value = "to-do"
+		}else if(ulId == "in-progress-activities-ul"){
+			hiddenInputs[3].value = "in-progress"
+		}else{
+			hiddenInputs[3].value = "completed"
+		}
 		return
 	}
 	
@@ -47,47 +65,63 @@ function drop(ev) {
             ul.replaceChild(draggedElement, temp);
         }
     }else{ //different categories
-		document.getElementById(targetCategory).appendChild(document.getElementById(draggedElementId))
-        if(target != undefined){ //if there is at least one element in target list
-            insertAfter(draggedElement, target)
-        }
+		ul = document.getElementById(targetCategory)
+		ulId = ul.id
+		ul.appendChild(document.getElementById(draggedElementId))
+        //if(target != undefined){ //if there is at least one element in target list
+        insertAfter(draggedElement, target)
+		
+		li = document.getElementById(draggedElementId)
+		hiddenInputs = li.querySelectorAll('input[type="hidden"]');
+		if(ulId == "to-do-activities-ul"){
+			hiddenInputs[3].value = "to-do"
+		}else if(ulId == "in-progress-activities-ul"){
+			hiddenInputs[3].value = "in-progress"
+		}else{
+			hiddenInputs[3].value = "completed"
+		}
+        //}
     }
 }
 
-function addActivity(){
+async function addActivity(){
 	//add the activity to HTML page
 	ulId = document.getElementById("modalActivityCategory").value
     ul = document.getElementById(ulId)
 	
-	//<li data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
-
     li = document.createElement("li")
     li.classList.add("list-group-item")
     li.draggable = "true"
     li.ondrag = drag
     activityName = document.getElementById("modalActivityName").value
-    li.id = activityName
+    
+	//request new id from application and set it
+	newId = await getNewId()
+	li.id = newId
+	
 	li.setAttribute('data-bs-toggle', 'modal');
 	li.setAttribute('data-bs-target', '#modifyActivityModal');
 	li.addEventListener('click', function() {
 	    fillForm(this); // Passa il riferimento all'elemento cliccato
 	});
 	
-	
 	h5 = document.createElement("h5")
 	h5.innerHTML = activityName
 	p = document.createElement("p")
+	
+	date = document.getElementById("modalActivityExpDate").value
 	clockIcon = document.createElement("i")
 	clockIcon.classList.add("fa-regular")
 	clockIcon.classList.add("fa-clock")
 	clockSpan = document.createElement("span")
-	clockSpan.innerHTML = " " + document.getElementById("modalActivityExpDate").value
+	clockSpan.innerHTML = " " + date
 	
+	priority = document.getElementById("modalActivityPriority").value
 	priorityIcon = document.createElement("i")
 	priorityIcon.classList.add("fa-solid")
 	priorityIcon.classList.add("fa-exclamation")
 	prioritySpan = document.createElement("span")
-	prioritySpan.innerHTML = " Priority: " + document.getElementById("modalActivityPriority").value
+	prioritySpan.innerHTML = " Priority: " + priority
 	
 	p.appendChild(clockIcon)
 	p.appendChild(clockSpan)
@@ -95,6 +129,34 @@ function addActivity(){
 	p.appendChild(priorityIcon)
 	p.appendChild(prioritySpan)
 	
+	
+	//add 3 input fields hidden <input type="hidden" value="${activity.name}">
+	inputName = document.createElement("input")
+	inputName.type = "hidden"
+	inputName.value = activityName
+	
+	inputDate = document.createElement("input")
+	inputDate.type = "hidden"
+	inputDate.value = date
+	
+	inputPriority = document.createElement("input")
+	inputPriority.type = "hidden"
+	inputPriority.value = priority
+	
+	inputCategory = document.createElement("input")
+	inputCategory.type = "hidden"
+	if(ulId == "to-do-activities-ul"){
+		inputCategory.value = "to-do"
+	}else if(ulId == "in-progress-activities-ul"){
+		inputCategory.value = "in-progress"
+	}else{
+		inputCategory.value = "completed"
+	}
+	
+	li.appendChild(inputName)
+	li.appendChild(inputDate)
+	li.appendChild(inputPriority)
+	li.appendChild(inputCategory)
 	li.appendChild(h5)
 	li.appendChild(p)
 	ul.appendChild(li)
@@ -109,11 +171,52 @@ function addActivity(){
 
 function fillForm(li){
 	//autofill form when updating an activity
-	document.getElementById("modifyModalActivityName").value = li.children[0].innerHTML;
-	document.getElementById("modifyModalActivityPriority").value = li.children[1].children[4].innerHTML.substring(11)
-	document.getElementById("modifyModalActivityExpDate").value = li.children[1].children[1].innerHTML.trim();
+	hiddenInputs = li.querySelectorAll('input[type="hidden"]');
+	document.getElementById("modifyModalActivityName").value = hiddenInputs[0].value
+	document.getElementById("modifyModalActivityExpDate").value = hiddenInputs[1].value
+	document.getElementById("modifyModalActivityPriority").value = hiddenInputs[2].value
+	document.getElementById("modifyModalActivityId").value = li.id
 }
 
 function updateActivity(){
-	
+	name = document.getElementById("modifyModalActivityName").value
+	priority = document.getElementById("modifyModalActivityPriority").value
+	expDate = document.getElementById("modifyModalActivityExpDate").value
+	id = document.getElementById("modifyModalActivityId").value
+	li = document.getElementById(id)
+	li.children[4].innerHTML = name;
+	li.children[5].children[4].innerHTML = " Priority: " + priority
+	li.children[5].children[1].innerHTML = " " + expDate
+	hiddenInputs = li.querySelectorAll('input[type="hidden"]');
+	hiddenInputs[0].value = name
+	hiddenInputs[1].value = expDate
+	hiddenInputs[2].value = priority
+}
+
+function sendUpdateRequest(){
+	//create a JSON array containing all the activities with realtive informations
+	/*
+		[{
+			"id" : activityId
+			"name" : name,
+			"priority" : priority,
+			"expDate" : expDate,
+			"category" : category
+		}, 
+		] 
+	*/
+	JSON_array = []
+	lis = document.querySelectorAll('li');
+	for(i = 0; i < lis.length; i++){
+		curLi = lis[i]
+		hiddenInputs = curLi.querySelectorAll('input[type="hidden"]');
+		JSON_array.push({
+			"id" : curLi.id,
+			"name" : hiddenInputs[0].value,
+			"expDate" : hiddenInputs[1].value,
+			"priority" : hiddenInputs[2].value,
+			"category" : hiddenInputs[3].value
+		})	
+	}
+	console.log(JSON_array)
 }

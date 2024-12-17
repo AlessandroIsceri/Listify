@@ -79,6 +79,7 @@
                 </select>
                 <label for="modifyModalActivityExpDate">Expiration date:</label>
                 <input id="modifyModalActivityExpDate" class="form-control" type="date">
+                <input type="hidden" id="modifyModalActivityId">
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-primary" id="modifyActivityButton" data-bs-dismiss="modal" onclick="updateActivity()">Update</button>
@@ -98,7 +99,11 @@
                 <ul class="list-group" id="to-do-activities-ul">
                     <c:forEach items="${list.toDoList}" var="activity">
                     	<c:if test="${activity.category == 'To Do'}">
-				    		<li class="list-group-item" draggable="true" ondrag="drag(event)" id="${activity.name}" data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
+				    		<li class="list-group-item" draggable="true" ondrag="drag(event)" id="${activity.id}" data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
+								<input type="hidden" value="${activity.name}">
+								<input type="hidden" value="${activity.expirationDate}">
+								<input type="hidden" value="${activity.priority}">
+								<input type="hidden" value="to-do">
 								<h5>${activity.name}</h5>
 					  			<p><i class="fa-regular fa-clock"></i><span> ${activity.expirationDate}</span><br>
 								<i class="fa-solid fa-exclamation"></i><span> Priority: ${activity.priority}</span></p>
@@ -112,7 +117,11 @@
                 <ul class="list-group" id="in-progress-activities-ul"> 
                 	<c:forEach items="${list.toDoList}" var="activity">
                     	<c:if test="${activity.category == 'In Progress'}">
-				    		<li class="list-group-item" draggable="true" ondrag="drag(event)" id="${activity.name}" data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
+				    		<li class="list-group-item" draggable="true" ondrag="drag(event)" id="${activity.id}" data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
+								<input type="hidden" value="${activity.name}">
+								<input type="hidden" value="${activity.expirationDate}">
+								<input type="hidden" value="${activity.priority}">
+								<input type="hidden" value="in-progress">
 								<h5>${activity.name}</h5>
 					  			<p><i class="fa-regular fa-clock"></i><span> ${activity.expirationDate}</span><br>
 								<i class="fa-solid fa-exclamation"></i><span> Priority: ${activity.priority}</span></p>
@@ -126,7 +135,11 @@
                 <ul class="list-group"  id="completed-activities-ul">
                 	<c:forEach items="${list.toDoList}" var="activity">
                     	<c:if test="${activity.category == 'Completed'}">
-				    		<li class="list-group-item" draggable="true" ondrag="drag(event)" id="${activity.name}" data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
+				    		<li class="list-group-item" draggable="true" ondrag="drag(event)" id="${activity.id}" data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
+								<input type="hidden" value="${activity.name}">
+								<input type="hidden" value="${activity.expirationDate}">
+								<input type="hidden" value="${activity.priority}">
+								<input type="hidden" value="completed">
 								<h5>${activity.name}</h5>
 					  			<p><i class="fa-regular fa-clock"></i><span> ${activity.expirationDate}</span><br>
 								<i class="fa-solid fa-exclamation"></i><span> Priority: ${activity.priority}</span></p>
@@ -136,7 +149,7 @@
                 </ul>
             </div>
         </div>
-        <a href="${list.name}/updateList" class="btn btn-success w-100" id="saveChanges">Save Changes</a>
+        <button type="button" class="btn btn-success w-100" id="saveChanges" onclick="sendUpdateRequest()">Save Changes</button>
     </div>
 
 </body>

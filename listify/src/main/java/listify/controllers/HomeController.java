@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import listify.domain.ToDoList;
@@ -60,6 +61,12 @@ public class HomeController {
 		ToDoList list = userService.getToDoList(username, listName);
 		m.addObject("list", list);
 		return m;
+	}
+	
+	@GetMapping("/API/getNewId")
+	@ResponseBody
+	public String getNewId() {
+		return "5";
 	}
 	
 }

@@ -3,6 +3,7 @@ package listify.domain;
 import java.time.LocalDate;
 
 public class Activity {
+	private int id;
 	private String name;
 	private int priority = -1; //-1 = no priority
 	private LocalDate expirationDate = null;
@@ -48,6 +49,23 @@ public class Activity {
 		this.category = category;
 	}
 
+	public Activity(int id, String name, int priority, LocalDate expirationDate, String category) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.priority = priority;
+		this.expirationDate = expirationDate;
+		this.category = category;
+	}
+
+	public Activity(int id, String name, int priority, String category) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.priority = priority;
+		this.category = category;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -78,6 +96,10 @@ public class Activity {
 
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	public int getId() {
+		return id;
 	}
 	
 }
