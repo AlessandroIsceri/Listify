@@ -193,7 +193,7 @@ function updateActivity(){
 	hiddenInputs[2].value = priority
 }
 
-function sendUpdateRequest(){
+async function sendUpdateRequest(){
 	//create a JSON array containing all the activities with realtive informations
 	/*
 		[{
@@ -213,10 +213,19 @@ function sendUpdateRequest(){
 		JSON_array.push({
 			"id" : curLi.id,
 			"name" : hiddenInputs[0].value,
-			"expDate" : hiddenInputs[1].value,
+			//"expirationDate" : hiddenInputs[1].value,
 			"priority" : hiddenInputs[2].value,
 			"category" : hiddenInputs[3].value
 		})	
 	}
 	console.log(JSON_array)
+	await fetch(new Request(URL_PREFIX + "/listify/API/updateList/" + "lista_progetto",
+		{
+			method: "PUT",
+			headers: {
+		        "Content-Type": "application/json",
+		    },
+		  	body: JSON.stringify(JSON_array),
+		}
+	));
 }

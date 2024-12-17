@@ -9,6 +9,9 @@ public class Activity {
 	private LocalDate expirationDate = null;
 	private String category = "To Do";
 	
+	public Activity() {
+		super();
+	}
 	
 	public Activity(String name) {
 		super();
@@ -100,6 +103,10 @@ public class Activity {
 
 	public int getId() {
 		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 }

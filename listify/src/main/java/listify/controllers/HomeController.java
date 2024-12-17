@@ -6,10 +6,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import listify.domain.Activity;
 import listify.domain.ToDoList;
 import listify.domain.User;
 import listify.services.UserService;
@@ -67,6 +70,15 @@ public class HomeController {
 	@ResponseBody
 	public String getNewId() {
 		return "5";
+	}
+	
+	@PutMapping("/API/updateList/{listName}")
+	public String updateList(@RequestBody Activity[] toDoList) {
+		System.out.println(toDoList.length);
+		for(int i = 0; i < toDoList.length; i++) {
+			System.out.println(toDoList[i].getName());
+		}
+		return "";
 	}
 	
 }
