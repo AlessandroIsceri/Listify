@@ -2,6 +2,8 @@ package listify.domain;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Activity {
 	private int id;
 	private String name;
@@ -107,6 +109,12 @@ public class Activity {
 	
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	@Override
+	public String toString() {
+		return "Activity [id=" + id + ", name=" + name + ", priority=" + priority + ", expirationDate=" + expirationDate
+				+ ", category=" + category + "]";
 	}
 	
 }
