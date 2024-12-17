@@ -4,9 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ToDoList {
+	private int id;
 	private String name;
 	private List<Activity> toDoList;
 	
+	public ToDoList(int id, String name, List<Activity> toDoList) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.toDoList = toDoList;
+	}
+	
+	public ToDoList(int id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.toDoList = new ArrayList<Activity>();
+	}
+
 	public ToDoList(String name) {
 		super();
 		this.name = name;
@@ -33,6 +48,18 @@ public class ToDoList {
 
 	public List<Activity> getToDoList() {
 		return toDoList;
+	}
+	
+	public void setToDoList(List<Activity> toDoList) {
+		this.toDoList = toDoList;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 }

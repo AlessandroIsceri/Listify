@@ -42,11 +42,11 @@ function drop(ev) {
 		li = document.getElementById(draggedElementId)
 		hiddenInputs = li.querySelectorAll('input[type="hidden"]');
 		if(ulId == "to-do-activities-ul"){
-			hiddenInputs[3].value = "to-do"
+			hiddenInputs[3].value = "To Do"
 		}else if(ulId == "in-progress-activities-ul"){
-			hiddenInputs[3].value = "in-progress"
+			hiddenInputs[3].value = "In Progress"
 		}else{
-			hiddenInputs[3].value = "completed"
+			hiddenInputs[3].value = "Completed"
 		}
 		return
 	}
@@ -74,11 +74,11 @@ function drop(ev) {
 		li = document.getElementById(draggedElementId)
 		hiddenInputs = li.querySelectorAll('input[type="hidden"]');
 		if(ulId == "to-do-activities-ul"){
-			hiddenInputs[3].value = "to-do"
+			hiddenInputs[3].value = "To Do"
 		}else if(ulId == "in-progress-activities-ul"){
-			hiddenInputs[3].value = "in-progress"
+			hiddenInputs[3].value = "In Progress"
 		}else{
-			hiddenInputs[3].value = "completed"
+			hiddenInputs[3].value = "Completed"
 		}
         //}
     }
@@ -146,11 +146,11 @@ async function addActivity(){
 	inputCategory = document.createElement("input")
 	inputCategory.type = "hidden"
 	if(ulId == "to-do-activities-ul"){
-		inputCategory.value = "to-do"
+		inputCategory.value = "To Do"
 	}else if(ulId == "in-progress-activities-ul"){
-		inputCategory.value = "in-progress"
+		inputCategory.value = "In Progress"
 	}else{
-		inputCategory.value = "completed"
+		inputCategory.value = "Completed"
 	}
 	
 	li.appendChild(inputName)
@@ -213,13 +213,13 @@ async function sendUpdateRequest(){
 		JSON_array.push({
 			"id" : curLi.id,
 			"name" : hiddenInputs[0].value,
-			//"expirationDate" : hiddenInputs[1].value,
+			"expirationDate" : hiddenInputs[1].value,
 			"priority" : hiddenInputs[2].value,
 			"category" : hiddenInputs[3].value
 		})	
 	}
 	console.log(JSON_array)
-	await fetch(new Request(URL_PREFIX + "/listify/API/updateList/" + "lista_progetto",
+	await fetch(new Request(URL_PREFIX + "/listify/API/" + "aless" + "/updateList/" + "1",
 		{
 			method: "PUT",
 			headers: {
@@ -228,4 +228,9 @@ async function sendUpdateRequest(){
 		  	body: JSON.stringify(JSON_array),
 		}
 	));
+}
+
+function deleteActivity(){
+	id = document.getElementById("modifyModalActivityId").value
+	document.getElementById(id).remove();
 }
