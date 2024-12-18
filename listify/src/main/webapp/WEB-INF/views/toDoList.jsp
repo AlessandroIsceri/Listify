@@ -5,16 +5,32 @@
 <head>
 <%@ page isELIgnored="false" %>
 <meta charset="UTF-8">
-<title>${list.name} - Listify</title>
+<title>Listify</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
-<script src="<c:url value="/resources/scripts/toDoList.js" />"></script>
 <script src="https://kit.fontawesome.com/8706b528d6.js" crossorigin="anonymous"></script>
+<script src="<c:url value="/resources/scripts/toDoList.js" />"></script>
 <link href="<c:url value="/resources/styles/toDoList.css" />" rel="stylesheet">
 </head>
 <body onload="init()">
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top" id="navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="">
+                <img src="<c:url value="/resources/listify_logo.png"/>" alt="Logo" width="80" height="80"  class="d-inline-block align-text-top">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <div class="nav-link active"><i class="fa-solid fa-user"></i> Hi, ${username}</div>
+                    <a class="nav-link" aria-current="page" href="#"><i class="fa-solid fa-house"></i> Home</a>
+                	<a class="nav-link" aria-current="page" href="#" id="logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
 	<!-- Vertically centered modal for new activities-->
     <div class="modal fade" id="newActivityModal" tabindex="-1" aria-labelledby="newActivityModal" aria-hidden="true">
@@ -91,22 +107,33 @@
     </div>
     
     <!-- html page -->
-    <div class="container">
-    	Hi ${username}!
-    	${list.name} to-do list: <br>
-        <button class="btn btn-success w-100" id="addActivity" data-bs-toggle="modal" data-bs-target="#newActivityModal">Add Activity</button>
-        <div class="row">
-            <div class="col-4" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <ul class="list-group p-3" id="to-do-activities-ul">
-                	To-do Activities:
+    <div class="container-fluid">
+    	<div class="row bg-light">
+    		<div class="col-2">
+	    		<div class="input-group input-group-lg">
+					<input type="text" class="form-control bg-light border-0" id="list-name" style="cursor: pointer; pointer-events: auto;" value="${list.name}" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+				</div>
+			</div>
+			<div class="col-3">
+				<button class="btn btn-primary" id="addActivity" data-bs-toggle="modal" data-bs-target="#newActivityModal">Add Activity</button>
+            	<button type="button" class="btn btn-primary" id="saveChanges" onclick="sendUpdateRequest()">Save Changes</button>
+			</div>
+    	</div>
+    	<br><br>
+        <div class="row justify-content-center">
+        	<div class="col-1">
+        	</div>
+            <div class="col-3" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <ul class="list-group p-3 bg-light gap-2" id="to-do-activities-ul">
+                	<h4>To-do Activities:</h4>
                     <c:forEach items="${list.toDoList}" var="activity">
                     	<c:if test="${activity.category == 'To Do'}">
-				    		<li class="list-group-item list-group-item-light" draggable="true" ondrag="drag(event)" id="${activity.id}" data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
+				    		<li class="list-group-item border-0 rounded-pill" draggable="true" ondrag="drag(event)" id="${activity.id}" data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
 								<input type="hidden" value="${activity.name}">
 								<input type="hidden" value="${activity.expirationDate}">
 								<input type="hidden" value="${activity.priority}">
 								<input type="hidden" value="To Do">
-								<h5>${activity.name}</h5>
+								<span><b>${activity.name}</b></span>
 					  			<p><i class="fa-regular fa-clock"></i><span> ${activity.expirationDate}</span><br>
 								<i class="fa-solid fa-exclamation"></i><span> Priority: ${activity.priority}</span></p>
 				    		</li>
@@ -114,17 +141,17 @@
 					</c:forEach>
                 </ul>
             </div>
-            <div class="col-4" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <ul class="list-group p-3" id="in-progress-activities-ul"> 
-                	In-progress Activities:
+            <div class="col-3" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <ul class="list-group p-3 bg-light gap-2" id="in-progress-activities-ul"> 
+                	<h4>In-progress Activities:</h4>
                 	<c:forEach items="${list.toDoList}" var="activity">
                     	<c:if test="${activity.category == 'In Progress'}">
-				    		<li class="list-group-item" draggable="true" ondrag="drag(event)" id="${activity.id}" data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
+				    		<li class="list-group-item border-0 rounded-pill" draggable="true" ondrag="drag(event)" id="${activity.id}" data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
 								<input type="hidden" value="${activity.name}">
 								<input type="hidden" value="${activity.expirationDate}">
 								<input type="hidden" value="${activity.priority}">
 								<input type="hidden" value="In Progress">
-								<h5>${activity.name}</h5>
+								<span><b>${activity.name}</b></span>
 					  			<p><i class="fa-regular fa-clock"></i><span> ${activity.expirationDate}</span><br>
 								<i class="fa-solid fa-exclamation"></i><span> Priority: ${activity.priority}</span></p>
 				    		</li>			
@@ -132,17 +159,17 @@
 					</c:forEach>   
                 </ul>
             </div>
-            <div class="col-4" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <ul class="list-group p-3"  id="completed-activities-ul">
-                	Completed-activities
+            <div class="col-3" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <ul class="list-group p-3 bg-light gap-2"  id="completed-activities-ul">
+                	<h4>Completed Activities:</h4>
                 	<c:forEach items="${list.toDoList}" var="activity">
                     	<c:if test="${activity.category == 'Completed'}">
-				    		<li class="list-group-item" draggable="true" ondrag="drag(event)" id="${activity.id}" data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
+				    		<li class="list-group-item border-0 rounded-pill" draggable="true" ondrag="drag(event)" id="${activity.id}" data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
 								<input type="hidden" value="${activity.name}">
 								<input type="hidden" value="${activity.expirationDate}">
 								<input type="hidden" value="${activity.priority}">
 								<input type="hidden" value="Completed">
-								<h5>${activity.name}</h5>
+								<span><b>${activity.name}</b></span>
 					  			<p><i class="fa-regular fa-clock"></i><span> ${activity.expirationDate}</span><br>
 								<i class="fa-solid fa-exclamation"></i><span> Priority: ${activity.priority}</span></p>
 				    		</li>
@@ -150,8 +177,9 @@
 					</c:forEach> 
                 </ul>
             </div>
+            <div class="col-1">
+            </div>
         </div>
-        <button type="button" class="btn btn-success w-100" id="saveChanges" onclick="sendUpdateRequest()">Save Changes</button>
     </div>
 
 </body>

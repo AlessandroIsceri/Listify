@@ -91,6 +91,8 @@ async function addActivity(){
 	
     li = document.createElement("li")
     li.classList.add("list-group-item")
+	li.classList.add("border-0")
+	li.classList.add("rounded-pill")
     li.draggable = "true"
     li.ondrag = drag
     activityName = document.getElementById("modalActivityName").value
@@ -105,8 +107,8 @@ async function addActivity(){
 	    fillForm(this); // Passa il riferimento all'elemento cliccato
 	});
 	
-	h5 = document.createElement("h5")
-	h5.innerHTML = activityName
+	span = document.createElement("span")
+	span.innerHTML = "<b>"+activityName+"</b>"
 	p = document.createElement("p")
 	
 	date = document.getElementById("modalActivityExpDate").value
@@ -157,7 +159,7 @@ async function addActivity(){
 	li.appendChild(inputDate)
 	li.appendChild(inputPriority)
 	li.appendChild(inputCategory)
-	li.appendChild(h5)
+	li.appendChild(span)
 	li.appendChild(p)
 	ul.appendChild(li)
 	
@@ -184,7 +186,7 @@ function updateActivity(){
 	expDate = document.getElementById("modifyModalActivityExpDate").value
 	id = document.getElementById("modifyModalActivityId").value
 	li = document.getElementById(id)
-	li.children[4].innerHTML = name;
+	li.children[4].innerHTML = "<b>"+name+"</b>";
 	li.children[5].children[4].innerHTML = " Priority: " + priority
 	li.children[5].children[1].innerHTML = " " + expDate
 	hiddenInputs = li.querySelectorAll('input[type="hidden"]');
