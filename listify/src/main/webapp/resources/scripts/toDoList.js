@@ -4,7 +4,7 @@ draggedElement = null
 
 //function that retrieves new id for the activity from the server
 async function getNewId(){
-    let response = await fetch(URL_PREFIX + "/listify/API/getNewId/");
+    let response = await fetch(URL_PREFIX + "/listify/API/getNewActivityId/");
     return response.json();
 }
 

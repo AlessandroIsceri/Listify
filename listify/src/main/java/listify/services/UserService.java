@@ -91,5 +91,31 @@ public class UserService {
 		}
 		return false;
 	}
+
+	public boolean deleteList(String username, int listId) {
+		for(User user : users) {
+			if(username.equals(user.getUsername())){
+				List<ToDoList> lists = user.getToDoLists();
+				for(ToDoList list : lists) {
+					if(listId == list.getId()){
+						//update the list
+						lists.remove(list);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean createList(String username, String listName) {
+		for(User user : users) {
+			if(username.equals(user.getUsername())){
+				user.addToDoList(new ToDoList(listName));
+				return true;
+			}
+		}
+		return false;
+	}
 	
 }

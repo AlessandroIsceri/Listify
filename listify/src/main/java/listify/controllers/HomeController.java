@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,9 +75,15 @@ public class HomeController {
 		return m;
 	}
 	
-	@GetMapping("/API/getNewId")
+	@GetMapping("/API/getNewActivityId")
 	@ResponseBody
-	public String getNewId() {
+	public String getNewActivityId() {
+		return "5";
+	}
+	
+	@GetMapping("/API/getNewListId")
+	@ResponseBody
+	public String getNewListId() {
 		return "5";
 	}
 	
@@ -101,7 +108,25 @@ public class HomeController {
 		}else {
 			return ResponseEntity.notFound().build();
 		}
-		
 	}
 	
+	@DeleteMapping("/API/{username}/deleteList/{listId}")
+	public ResponseEntity deleteList(@PathVariable(value="username") String username, 
+			 						@PathVariable(value="listId") int listId){
+		if(userService.deleteList(username, listId)) {
+			return ResponseEntity.ok().build(); 
+		}else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	@PostMapping("/API/{username}/createNewList/{listName}")
+	public ResponseEntity createList(@PathVariable(value="username") String username, 
+									 @PathVariable(value="listName") String listName){
+		if(userService.createList(username, listName)) {
+			return ResponseEntity.ok().build(); 
+		}else {
+			return ResponseEntity.notFound().build();
+		}
+	}
 }
