@@ -75,5 +75,21 @@ public class UserService {
 		}
 		return false;
 	}
+
+	public boolean updateToDoListName(String username, int listId, String newListName) {
+		for(User user : users) {
+			if(username.equals(user.getUsername())){
+				List<ToDoList> lists = user.getToDoLists();
+				for(ToDoList list : lists) {
+					if(listId == list.getId()){
+						//update the list
+						list.setName(newListName);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 	
 }

@@ -196,15 +196,36 @@ function updateActivity(){
 }
 
 async function sendUpdateRequest(){
+	alert = document.getElementById("alert-box")
+	//first, update list name
+	listId = document.getElementById("list-id").value
+	newListName = document.getElementById("list-name").value;
+	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + "aless" + "/updateListName/" + listId,
+			{
+				method: "PUT",
+				headers: {
+			        "Content-Type": "application/json",
+			    },
+			  	body: newListName,
+			}
+	));
+	if(res.status == 404){
+		//error
+		document.getElementById("alert-message").innerHTML = "An error occured during the update"
+		return 
+	}
+	
 	//create a JSON array containing all the activities with realtive informations
 	/*
-		[{
+		[	
+			{
 			"id" : activityId
 			"name" : name,
 			"priority" : priority,
 			"expDate" : expDate,
 			"category" : category
-		}, 
+		    }, 
+			... 
 		] 
 	*/
 	JSON_array = []
@@ -220,8 +241,8 @@ async function sendUpdateRequest(){
 			"category" : hiddenInputs[3].value
 		})	
 	}
-	console.log(JSON_array)
-	await fetch(new Request(URL_PREFIX + "/listify/API/" + "aless" + "/updateList/" + "1",
+	
+	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + "aless" + "/updateList/" + listId,
 		{
 			method: "PUT",
 			headers: {
@@ -230,9 +251,24 @@ async function sendUpdateRequest(){
 		  	body: JSON.stringify(JSON_array),
 		}
 	));
+	if(res.status == 404){
+		//error
+		document.getElementById("alert-message").innerHTML = "An error occured during the update"
+		return 
+	}else{
+		//200 -> ok 
+		document.getElementById("alert-message").innerHTML = "Updated correctly!"
+	}
+	//show the alert
+	alert.classList.remove('d-none');
 }
 
 function deleteActivity(){
 	id = document.getElementById("modifyModalActivityId").value
 	document.getElementById(id).remove();
+}
+
+function removeAlertBox(){
+	alert = document.getElementById("alert-box")
+	alert.classList.add('d-none');
 }

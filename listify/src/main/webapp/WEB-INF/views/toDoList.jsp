@@ -16,8 +16,8 @@
 
 	<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top" id="navbar">
         <div class="container-fluid">
-            <a class="navbar-brand" href="">
-                <img src="<c:url value="/resources/listify_logo.png"/>" alt="Logo" width="80" height="80"  class="d-inline-block align-text-top">
+            <a class="navbar-brand" disabled>
+                <img src="<c:url value="/resources/listify_logo.png"/>" alt="Logo" width="50" height="50"  class="d-inline-block align-text-top">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -25,7 +25,7 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                     <div class="nav-link active"><i class="fa-solid fa-user"></i> Hi, ${username}</div>
-                    <a class="nav-link" aria-current="page" href="#"><i class="fa-solid fa-house"></i> Home</a>
+                    <a class="nav-link" aria-current="page" href="/listify/${username}/home"><i class="fa-solid fa-house"></i> Home</a>
                 	<a class="nav-link" aria-current="page" href="#" id="logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
                 </div>
             </div>
@@ -108,17 +108,22 @@
     
     <!-- html page -->
     <div class="container-fluid">
+    	<input type="hidden" id="list-id" value="${list.id}">
     	<div class="row bg-light">
     		<div class="col-2">
 	    		<div class="input-group input-group-lg">
 					<input type="text" class="form-control bg-light border-0" id="list-name" style="cursor: pointer; pointer-events: auto;" value="${list.name}" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
 				</div>
 			</div>
-			<div class="col-3">
+			<div class="col-6">
 				<button class="btn btn-primary" id="addActivity" data-bs-toggle="modal" data-bs-target="#newActivityModal">Add Activity</button>
             	<button type="button" class="btn btn-primary" id="saveChanges" onclick="sendUpdateRequest()">Save Changes</button>
 			</div>
     	</div>
+    	<div class="alert alert-success alert-dismissible fade show d-none" role="alert" id="alert-box">
+			<span id="alert-message"> You should check in on some of those fields below. </span>
+			<button type="button" class="btn-close" onclick="removeAlertBox()"></button>
+		</div>
     	<br><br>
         <div class="row justify-content-center">
         	<div class="col-1">

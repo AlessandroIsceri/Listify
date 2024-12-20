@@ -15,7 +15,7 @@ Hi ${username}, welcome to your home page
 
 your todolists: <input type="button" value="+"><br>
 <c:forEach items="${toDoLists}" var="list">
-    <a href="${username}/${list.id}">${list.name}<a/><br>
+    <a href="toDoList/${list.id}">${list.name}<a/><br>
 </c:forEach>
 
 </body>

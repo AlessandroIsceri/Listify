@@ -47,13 +47,13 @@ public class HomeController {
 		ModelAndView m = new ModelAndView();
 		String username = userService.login(email, password);
 		if(username != null) {
-			return new ModelAndView("redirect:/home/"+username);
+			return new ModelAndView("redirect:"+username+"/home");
 		}
 		m.setViewName("failedLogin");
 		return m;
 	}
 	
-	@GetMapping("/home/{username}")
+	@GetMapping("{username}/home")
 	public ModelAndView getHomePage(@PathVariable(value="username") String username){
 		ModelAndView m = new ModelAndView();
 		User user = userService.getUser(username);
@@ -63,7 +63,7 @@ public class HomeController {
 		return m;
 	}
 	
-	@GetMapping("/home/{username}/{listId}")
+	@GetMapping("{username}/toDoList/{listId}")
 	public ModelAndView getListPage(@PathVariable(value="username") String username, 
 									@PathVariable(value="listId") int listId){
 		ModelAndView m = new ModelAndView();
@@ -85,6 +85,18 @@ public class HomeController {
 							 @PathVariable(value="listId") int listId,
 							 @RequestBody Activity[] toDoList) {
 		if(userService.updateToDoList(username, listId, toDoList)) {
+			return ResponseEntity.ok().build(); 
+		}else {
+			return ResponseEntity.notFound().build();
+		}
+		
+	}
+	
+	@PutMapping("/API/{username}/updateListName/{listId}")
+	public ResponseEntity updateList(@PathVariable(value="username") String username, 
+							 @PathVariable(value="listId") int listId,
+							 @RequestBody String newListName) {
+		if(userService.updateToDoListName(username, listId, newListName)) {
 			return ResponseEntity.ok().build(); 
 		}else {
 			return ResponseEntity.notFound().build();
