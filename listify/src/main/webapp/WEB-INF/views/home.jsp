@@ -11,12 +11,49 @@
 <script src="https://kit.fontawesome.com/8706b528d6.js" crossorigin="anonymous"></script>
 </head>
 <body>
-Hi ${username}, welcome to your home page
 
-your todolists: <input type="button" value="+"><br>
-<c:forEach items="${toDoLists}" var="list">
-    <a href="toDoList/${list.id}">${list.name}<a/><br>
-</c:forEach>
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top" id="navbar">
+    <div class="container-fluid">
+        <a class="navbar-brand" disabled>
+            <img src="<c:url value="/resources/listify_logo.png"/>" alt="Logo" width="50" height="50"  class="d-inline-block align-text-top">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <div class="nav-link active"><i class="fa-solid fa-user"></i> Hi, ${username}</div>
+                <a class="nav-link" aria-current="page" href="/listify/${username}/home"><i class="fa-solid fa-house"></i> Home</a>
+            	<a class="nav-link" aria-current="page" href="#" id="logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
 
+<br><br>
+
+<div class="container">
+	your todolists: <button type="button" class="btn btn-success">+</button><br>
+	<table class="table table-hover">
+		<thead>
+		    <tr>
+	  	    	<th scope="col">#</th>
+	  	        <th scope="col">To-Do List Name</th>
+		        <th scope="col">Operations</th>
+		  	</tr>
+		</thead>
+	  	<tbody>
+	  		<c:set var="count" value="1" scope="page" />
+			<c:forEach items="${toDoLists}" var="list">
+				<tr class="">
+		     		<th scope="row">${count}</th>
+		      		<td class=""><a href="toDoList/${list.id}">${list.name}<a/></td>
+		      		<td class=""><button type="button" class="btn"><i class="fa-solid fa-trash-can" style="color:#DC3545"></i></button> <button type="button" class="btn"><i class="fa-solid fa-pen-to-square" style="color:#0D6EFD"></i></button></td>
+	    		</tr>
+	    	<c:set var="count" value="${count + 1}" scope="page"/>
+			</c:forEach>
+		</tbody>
+	</table>
+</div>
 </body>
 </html>
