@@ -1,4 +1,5 @@
 const URL_PREFIX = window.location.origin;
+var username = null
 draggedElement = null
 
 //function that retrieves new id for the activity from the server
@@ -9,7 +10,9 @@ async function getNewId(){
 
 function init(){
 	document.getElementById("modalActivityExpDate").valueAsDate = new Date();
+	username = document.getElementById("username").value
 }
+
 function allowDrop(ev) {
     ev.preventDefault();
 }
@@ -200,7 +203,7 @@ async function sendUpdateRequest(){
 	//first, update list name
 	listId = document.getElementById("list-id").value
 	newListName = document.getElementById("list-name").value;
-	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + "aless" + "/updateListName/" + listId,
+	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateListName/" + listId,
 			{
 				method: "PUT",
 				headers: {
@@ -242,7 +245,7 @@ async function sendUpdateRequest(){
 		})	
 	}
 	
-	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + "aless" + "/updateList/" + listId,
+	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId,
 		{
 			method: "PUT",
 			headers: {

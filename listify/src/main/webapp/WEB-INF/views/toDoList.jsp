@@ -37,7 +37,7 @@
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="newActivityModal">Add a new Activity</h5>
+              <h5 class="modal-title" id="newActivityModalh5">Add a new Activity</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -76,7 +76,7 @@
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="modifyActivityModal">modify an Activity</h5>
+              <h5 class="modal-title" id="modifyActivityModalh5">modify an Activity</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -106,6 +106,7 @@
         </div>
     </div>
     
+    <input type="hidden" value="${username}" id="username">
     <!-- html page -->
     <div class="container-fluid">
     	<input type="hidden" id="list-id" value="${list.id}">
