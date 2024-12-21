@@ -1,6 +1,7 @@
 package listify.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -42,16 +43,14 @@ public class HomeController {
 		return m;
 	}
 	
-	@PostMapping("/login")
-	public ModelAndView getPage(@RequestParam("email") String email,
-								@RequestParam("password") String password){
-		ModelAndView m = new ModelAndView();
-		String username = userService.login(email, password);
+	@PostMapping("/API/login")
+	public ResponseEntity<String> getPage(@RequestBody Map<String, String> body){
+		String username = userService.login(body.get("email"), body.get("password"));
 		if(username != null) {
-			return new ModelAndView("redirect:"+username+"/home");
+			return ResponseEntity.ok().body(username);
+		}else {
+			return ResponseEntity.notFound().build();
 		}
-		m.setViewName("failedLogin");
-		return m;
 	}
 	
 	@GetMapping("{username}/home")
