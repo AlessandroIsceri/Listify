@@ -17,27 +17,52 @@
 	<!-- Vertically centered modal -->
     <div class="modal d-block" id="incomesModal" tabindex="-1" aria-labelledby="incomesModal" aria-hidden="false">
         <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title mx-auto d-block" id="incomesModal">
-                <img src="<c:url value="/resources/listify_logo.png"/>" alt="Logo" width="90vh" height="90vh" ></h5>
+            <div class="modal-content">
+                <div class="modal-header" style="border-bottom:0px solid black">
+                    <h5 class="modal-title mx-auto d-block" id="incomesModal">
+                    <img src="<c:url value="/resources/listify_logo.png"/>" alt="Logo" width="90vh" height="90vh" ></h5>
+                    
+                </div>
+               	<ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="true">Login</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab" aria-controls="register" aria-selected="false">Register</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+                        <div class="modal-body">
+                            <label for="login-email">Email: </label>
+                            <input class="form-control" type="email" id="login-email">
+                            <label for="login-password">Password:</label>
+                            <input class="form-control" type="password" id="login-password">
+                        </div>
+                        <div class="modal-footer">
+                        	<span id="loginError" style="color:red; display: none;">Error: wrong username or password</span>
+                            <button type="button" class="btn btn-primary" id="login" onclick="login()">Login</button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
+                        <div class="modal-body">
+                            <label for="register-email">Email: </label>
+                            <input class="form-control" type="email" id="register-email">
+                            <label for="register-username">Username: </label>
+                            <input class="form-control" type="text" id="register-username">
+                            <label for="register-password">Password:</label>
+                            <input class="form-control" type="password" id="register-password">
+                        </div>
+                        <div class="modal-footer">
+	                        <span id="newAccountError" style="color:red; display: none;">Error: username already exists or email already used</span>
+	                		<span id="newAccountErrorEmpty" style="color:red; display: none;">Error: empty username or password</span>
+                            <button type="button" class="btn btn-primary" id="newAccount" onclick="newAccount()">Register</button>
+                        </div>
+                    </div>
+                </div>
+                
+                
             </div>
-            <div class="modal-body">
-                <h2 class="fs-5">Login</h2>
-                <hr>
-                <label for="email">Email: </label>
-                <input class="form-control" type="text" id="email">
-                <label for="password">Password:</label>
-                <input class="form-control" type="password" id="password">
-                <span id="loginError" style="color:red; display: none;">Error, wrong username or password</span>
-                <span id="newAccountError" style="color:red; display: none;">Error, username already exists</span>
-                <span id="newAccountErrorEmpty" style="color:red; display: none;">Error, empty username or password</span>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary" id="login" onclick="login()">Login</button>
-              <button type="button" class="btn btn-primary" id="newAccount">Create a new account</button>
-            </div>
-          </div>
         </div>
     </div>
 </body>

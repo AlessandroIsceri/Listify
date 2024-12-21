@@ -118,4 +118,15 @@ public class UserService {
 		return false;
 	}
 	
+	public boolean createUser(String email, String username, String password) {
+		//check if the user already exists
+		for(User user : users) {
+			if(email.equals(user.getEmail()) || username.equals(user.getUsername())){
+				return false;
+			}
+		}
+		users.add(new User(email, password, username));
+		return true;
+	}
+	
 }

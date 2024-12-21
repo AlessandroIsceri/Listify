@@ -3,6 +3,7 @@ package listify.controllers;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -117,6 +118,16 @@ public class HomeController {
 									 @PathVariable(value="listName") String listName){
 		if(userService.createList(username, listName)) {
 			return ResponseEntity.ok().build(); 
+		}else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	@PostMapping("/API/register")
+	public ResponseEntity createUser(@RequestBody Map<String, String> body){
+		
+		if(userService.createUser(body.get("email"), body.get("username"), body.get("password"))) {
+			return ResponseEntity.status(HttpStatus.CREATED).build(); 
 		}else {
 			return ResponseEntity.notFound().build();
 		}

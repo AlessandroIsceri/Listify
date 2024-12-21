@@ -9,8 +9,8 @@ function cleanSpan(){
 
 async function login(){
 	cleanSpan();
-	let email = document.getElementById("email").value;
-	let password = document.getElementById("password").value;
+	let email = document.getElementById("login-email").value;
+	let password = document.getElementById("login-password").value;
 	
 	//encrypt password
 	//let encryptedPassword = hex_sha512(password);
@@ -29,3 +29,30 @@ async function login(){
 		window.location.replace(URL_PREFIX + "/listify/" + username + "/home") //redirect to home page
 	}
 }
+
+async function newAccount(){
+	cleanSpan();
+	let email = document.getElementById("register-email").value;
+	let username = document.getElementById("register-username").value;
+	let password = document.getElementById("register-password").value;
+	
+	//if one of the input is empty, error
+	if(email.length == 0 || password.length == 0 || username.length == 0){
+	    document.getElementById("newAccountErrorEmpty").style.display = "block";
+	    return;
+	}
+	
+	const response = await fetch(URL_PREFIX + "/listify/API/register/", {
+	    method: "POST",
+	    headers: {
+	        "Content-Type": "application/json",
+	    },
+	    body: JSON.stringify({"email" : email, "username":username, "password" : password}),
+		});
+	
+	if (response.status == 201) {
+		window.location.replace(URL_PREFIX + "/listify/" + username + "/home") //redirect to home page
+	} else{
+	    document.getElementById("newAccountError").style.display = "block";
+	}
+}  
