@@ -49,7 +49,7 @@ async function addList(){
 	listName = document.getElementById("newToDoListName").value
 	//request new id from application and set it
 	response = await fetch(URL_PREFIX + "/listify/API/getNewListId/");
-    newId = response.json()
+    newId = await response.json()
 	
 	//send request to create the new list
 	await fetch(URL_PREFIX + "/listify/API/" + username + "/createNewList/" + listName, {method: "POST"});
@@ -130,4 +130,6 @@ async function addList(){
 	
 	tbody.appendChild(tr)
 	
+	//reset form
+	document.getElementById("newToDoListName").value = "";
 }

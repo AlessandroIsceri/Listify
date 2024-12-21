@@ -68,10 +68,25 @@
 	    </div>
 	</div>
 	<input type="hidden" value="${username}" id="username">
-	<br><br>
-	
+
+	<div class="container-fluid">
+		<div class="row bg-light">
+    		<div class="col-2">
+	    		<div class="input-group input-group-lg">
+					<input type="text" disabled class="form-control bg-light border-0" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg" value="Your To Do Lists">
+				</div>
+			</div>
+			<div class="col-6">
+				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newToDoListModal">Add To Do List</button>
+			</div>
+    	</div>
+    	<div class="alert alert-success alert-dismissible fade show d-none" role="alert" id="alert-box">
+			<span id="alert-message"> </span>
+			<button type="button" class="btn-close" onclick="removeAlertBox()"></button>
+		</div>
+	</div>
 	<div class="container">
-		your todolists: <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newToDoListModal">+</button><br>
+		<br>
 		<table class="table table-hover">
 			<thead>
 			    <tr>

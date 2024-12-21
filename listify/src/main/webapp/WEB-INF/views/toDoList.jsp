@@ -126,9 +126,10 @@
 			<span id="alert-message"> You should check in on some of those fields below. </span>
 			<button type="button" class="btn-close" onclick="removeAlertBox()"></button>
 		</div>
-    	<br><br>
+    	<br>
         <div class="row justify-content-center">
         	<div class="col-3">
+        		<br><br>
             	<canvas id="pieChart"></canvas>
             </div>
             <div class="col-3" ondrop="drop(event)" ondragover="allowDrop(event)">
