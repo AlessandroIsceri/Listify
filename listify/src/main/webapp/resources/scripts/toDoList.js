@@ -1,6 +1,7 @@
 const URL_PREFIX = window.location.origin;
 var username = null
 draggedElement = null
+pieChart = null
 
 //function that retrieves new id for the activity from the server
 async function getNewId(){
@@ -11,6 +12,7 @@ async function getNewId(){
 function init(){
 	document.getElementById("modalActivityExpDate").valueAsDate = new Date();
 	username = document.getElementById("username").value
+	createPieChart()
 }
 
 function allowDrop(ev) {
@@ -40,17 +42,32 @@ function drop(ev) {
 	draggedElementId = draggedElement.id
 	if(target == null || parent == null){
 		//empty target list
+		draggedElementUlId = document.getElementById(draggedElementId).parentElement.id
 		ul.appendChild(document.getElementById(draggedElementId))
 		ulId = ul.id
 		li = document.getElementById(draggedElementId)
 		hiddenInputs = li.querySelectorAll('input[type="hidden"]');
 		if(ulId == "to-do-activities-ul"){
 			hiddenInputs[3].value = "To Do"
+			pieChart.data.datasets[0].data[0] = pieChart.data.datasets[0].data[0] + 1;
 		}else if(ulId == "in-progress-activities-ul"){
 			hiddenInputs[3].value = "In Progress"
+			pieChart.data.datasets[0].data[1] = pieChart.data.datasets[0].data[1] + 1;
 		}else{
 			hiddenInputs[3].value = "Completed"
+			pieChart.data.datasets[0].data[2] = pieChart.data.datasets[0].data[2] + 1;
 		}
+		
+		if(draggedElementUlId == "to-do-activities-ul"){
+			pieChart.data.datasets[0].data[0] = pieChart.data.datasets[0].data[0] - 1;
+		}else if(draggedElementUlId == "in-progress-activities-ul"){
+			pieChart.data.datasets[0].data[1] = pieChart.data.datasets[0].data[1] - 1;
+		}else{
+			pieChart.data.datasets[0].data[2] = pieChart.data.datasets[0].data[2] - 1;
+		}
+		
+		//update the chart 
+		pieChart.update(); 
 		return
 	}
 	
@@ -70,20 +87,32 @@ function drop(ev) {
     }else{ //different categories
 		ul = document.getElementById(targetCategory)
 		ulId = ul.id
+		draggedElementUlId = document.getElementById(draggedElementId).parentElement.id
 		ul.appendChild(document.getElementById(draggedElementId))
-        //if(target != undefined){ //if there is at least one element in target list
         insertAfter(draggedElement, target)
 		
 		li = document.getElementById(draggedElementId)
 		hiddenInputs = li.querySelectorAll('input[type="hidden"]');
 		if(ulId == "to-do-activities-ul"){
 			hiddenInputs[3].value = "To Do"
+			pieChart.data.datasets[0].data[0] = pieChart.data.datasets[0].data[0] + 1;
 		}else if(ulId == "in-progress-activities-ul"){
 			hiddenInputs[3].value = "In Progress"
+			pieChart.data.datasets[0].data[1] = pieChart.data.datasets[0].data[1] + 1;
 		}else{
 			hiddenInputs[3].value = "Completed"
+			pieChart.data.datasets[0].data[2] = pieChart.data.datasets[0].data[2] + 1;
 		}
-        //}
+		
+		if(draggedElementUlId == "to-do-activities-ul"){
+			pieChart.data.datasets[0].data[0] = pieChart.data.datasets[0].data[0] - 1;
+		}else if(draggedElementUlId == "in-progress-activities-ul"){
+			pieChart.data.datasets[0].data[1] = pieChart.data.datasets[0].data[1] - 1;
+		}else{
+			pieChart.data.datasets[0].data[2] = pieChart.data.datasets[0].data[2] - 1;
+		}
+		//update the chart 
+		pieChart.update(); 
     }
 }
 
@@ -172,6 +201,16 @@ async function addActivity(){
 	document.getElementById("modalActivityName").value = "";
 	document.getElementById("modalActivityPriority").value = "1";
 	
+	//update the chart 
+	if(ulId == "to-do-activities-ul"){
+		pieChart.data.datasets[0].data[0] = pieChart.data.datasets[0].data[0] + 1;
+	}else if(ulId == "in-progress-activities-ul"){
+		pieChart.data.datasets[0].data[1] = pieChart.data.datasets[0].data[1] + 1;
+	}else{
+		pieChart.data.datasets[0].data[2] = pieChart.data.datasets[0].data[2] + 1;
+	}
+	
+	pieChart.update(); 
 }
 
 function fillForm(li){
@@ -268,10 +307,55 @@ async function sendUpdateRequest(){
 
 function deleteActivity(){
 	id = document.getElementById("modifyModalActivityId").value
+	li = document.getElementById(id)
+	ulId = li.parentElement.id
+	//update the chart 
+	if(ulId == "to-do-activities-ul"){
+		pieChart.data.datasets[0].data[0] = pieChart.data.datasets[0].data[0] - 1;
+	}else if(ulId == "in-progress-activities-ul"){
+		pieChart.data.datasets[0].data[1] = pieChart.data.datasets[0].data[1] - 1;
+	}else{
+		pieChart.data.datasets[0].data[2] = pieChart.data.datasets[0].data[2] - 1;
+	}
+	pieChart.update(); 
 	document.getElementById(id).remove();
 }
 
 function removeAlertBox(){
 	alert = document.getElementById("alert-box")
 	alert.classList.add('d-none');
+}
+
+function createPieChart(){
+	ctx = document.getElementById('pieChart');
+	
+	ulToDo = document.getElementById("to-do-activities-ul")
+	numberToDoActivities = ulToDo.children.length - 1 //-1 because every ul has h4 as first element (we want to count only the lis)
+	
+	ulInProgress = document.getElementById("in-progress-activities-ul")
+	numberInProgressActivities = ulInProgress.children.length - 1
+	
+	ulCompleted = document.getElementById("completed-activities-ul")
+	numberCompletedActivities = ulCompleted.children.length - 1
+	
+	pieChart = new Chart(ctx, {
+	    type: 'pie',
+	    data: {
+			labels: [
+			    'To-Do',
+			    'In-Progress',
+			    'Completed'
+			  ],
+			  datasets: [{
+			    label: 'Activity Number',
+			    data: [numberToDoActivities, numberInProgressActivities, numberCompletedActivities],
+			    backgroundColor: [
+			      '#DC3545',
+			      '#0D6EFD',
+			      '#198754'
+			    ],
+			    hoverOffset: 4
+			  }]
+	    }
+	});
 }
