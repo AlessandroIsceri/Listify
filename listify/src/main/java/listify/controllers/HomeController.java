@@ -36,13 +36,6 @@ public class HomeController {
         System.out.println("HomeController is loaded!");
 	}
 	
-	@GetMapping("/login")
-	public ModelAndView getLoginPage(){
-		ModelAndView m = new ModelAndView();
-		m.setViewName("login");	
-		return m;
-	}
-	
 	@PostMapping("/API/login")
 	public ResponseEntity<String> getPage(@RequestBody Map<String, String> body){
 		String username = userService.login(body.get("email"), body.get("password"));
