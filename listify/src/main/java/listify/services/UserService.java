@@ -9,6 +9,9 @@ import java.util.List;
 import listify.domain.Activity;
 import listify.domain.ToDoList;
 import listify.domain.User;
+import listify.repository.ActivityRepository;
+import listify.repository.ToDoListRepository;
+import listify.repository.UserRepository;
 
 public class UserService {
 	List<User> users;
@@ -24,7 +27,7 @@ public class UserService {
 	private UserService() {
 		users = new ArrayList<User>();
 		// populate the database with some data
-		User aless = new User("aless@gmail.com", "pw", "aless"); //create user to test the application without DB connection
+		/*User aless = new User("aless@gmail.com", "pw", "aless"); //create user to test the application without DB connection
         //create 2 to-to lists to display
         ToDoList list1 = new ToDoList(1, "lista_progetto");
         list1.addItem(new Activity(1, "impostare gitlab", 10, LocalDate.of(2025, 1, 20), "In Progress"));
@@ -33,7 +36,24 @@ public class UserService {
         ToDoList list2 = new ToDoList(2, "lista_spesa"); 
         aless.addToDoList(list1);
         aless.addToDoList(list2);
-        users.add(aless);
+        users.add(aless);*/
+        
+        UserRepository userRepository = new UserRepository();
+        ToDoListRepository toDoListRepository = new ToDoListRepository();
+        ActivityRepository activityepository = new ActivityRepository();
+        users = userRepository.getUsers();
+        
+        for(User user : users) {
+        	//retrieve todolist information
+        	ArrayList<ToDoList> toDoLists = toDoListRepository.getToDoLists(user);
+        	for(ToDoList list : toDoLists) {
+        		ArrayList<Activity> activities = activityepository.getActivities(list);
+        		for(Activity activity : activities) {
+        			list.addItem(activity);
+        		}
+        		user.addToDoList(list);
+        	}
+        }
 	}
 	
 	public String login(String email, String password) {
