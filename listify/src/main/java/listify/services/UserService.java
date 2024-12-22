@@ -12,8 +12,16 @@ import listify.domain.User;
 
 public class UserService {
 	List<User> users;
+	private static UserService instance;
+
+	public static UserService getInstance(){
+		if (instance == null){
+			instance = new UserService();
+		}
+		return instance;
+	}
 	
-	public UserService() {
+	private UserService() {
 		users = new ArrayList<User>();
 		// populate the database with some data
 		User aless = new User("aless@gmail.com", "pw", "aless"); //create user to test the application without DB connection
