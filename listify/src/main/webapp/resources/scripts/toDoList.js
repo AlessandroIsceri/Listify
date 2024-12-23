@@ -1,17 +1,15 @@
 const URL_PREFIX = window.location.origin;
-var username = null
+username = null
+listId = null
 draggedElement = null
 pieChart = null
 
 //function that retrieves new id for the activity from the server
-async function getNewId(){
-    let response = await fetch(URL_PREFIX + "/listify/API/getNewActivityId/");
-    return response.json();
-}
 
 function init(){
 	document.getElementById("modalActivityExpDate").valueAsDate = new Date();
 	username = document.getElementById("username").value
+	listId = document.getElementById("list-id").value
 	createPieChart()
 }
 
@@ -128,10 +126,32 @@ async function addActivity(){
     li.draggable = "true"
     li.ondrag = drag
     activityName = document.getElementById("modalActivityName").value
+	priority = document.getElementById("modalActivityPriority").value
+	date = document.getElementById("modalActivityExpDate").value
     
+	if(ulId == "to-do-activities-ul"){
+		category = "To Do";
+	}else if(ulId == "in-progress-activities-ul"){
+		category = "In Progress";
+	}else{
+		category = "Completed";
+	}
+	
 	//request new id from application and set it
-	newId = await getNewId()
-	li.id = newId
+	newId = await fetch(URL_PREFIX + "/listify/API/" + username + "/toDoList/" + listId + "/getNewActivityId", {
+			method: "POST",
+			headers: {
+		        "Content-Type": "application/json",
+		    },
+		  	body: JSON.stringify({
+				"name": activityName,
+				"priority": priority,
+				"expirationDate": date,
+				"category": category					
+			}),
+		}
+	);
+	li.id = await newId.json()
 	
 	li.setAttribute('data-bs-toggle', 'modal');
 	li.setAttribute('data-bs-target', '#modifyActivityModal');
@@ -143,14 +163,12 @@ async function addActivity(){
 	span.innerHTML = "<b>"+activityName+"</b>"
 	p = document.createElement("p")
 	
-	date = document.getElementById("modalActivityExpDate").value
 	clockIcon = document.createElement("i")
 	clockIcon.classList.add("fa-regular")
 	clockIcon.classList.add("fa-clock")
 	clockSpan = document.createElement("span")
 	clockSpan.innerHTML = " " + date
 	
-	priority = document.getElementById("modalActivityPriority").value
 	priorityIcon = document.createElement("i")
 	priorityIcon.classList.add("fa-solid")
 	priorityIcon.classList.add("fa-exclamation")
@@ -240,7 +258,6 @@ function updateActivity(){
 async function sendUpdateRequest(){
 	alert = document.getElementById("alert-box")
 	//first, update list name
-	listId = document.getElementById("list-id").value
 	newListName = document.getElementById("list-name").value;
 	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateListName/" + listId,
 			{

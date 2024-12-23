@@ -42,10 +42,12 @@ public class APIController {
 		}
 	}
 	
-	@GetMapping("/API/getNewActivityId")
+	@PostMapping("/API/{username}/toDoList/{listId}/getNewActivityId")
 	@ResponseBody
-	public String getNewActivityId() {
-		return "5";
+	public String getNewActivityId(@PathVariable(value="username") String username, 
+			 					   @PathVariable(value="listId") int listId,
+			 					  @RequestBody Activity activity) {
+		return "" + userService.createActivity(username, listId, activity);
 	}
 	
 	@GetMapping("/API/getNewListId")
