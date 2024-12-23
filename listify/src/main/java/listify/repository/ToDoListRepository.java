@@ -10,20 +10,7 @@ import java.util.ArrayList;
 import listify.domain.ToDoList;
 import listify.domain.User;
 
-public class ToDoListRepository {
-	private String url = "jdbc:mysql://localhost:3306/listify";
-	private String user = "root";
-	private Connection connection = null;
-	
-	private void openConnection() throws Exception{
-		Class.forName("com.mysql.cj.jdbc.Driver");
-        connection = DriverManager.getConnection(url, user, "");
-        System.out.println("CONNECTED CORRECTLY");
-	}
-	
-	private void closeConnection() throws Exception{
-		connection.close();
-	}
+public class ToDoListRepository extends Repository{
 	
 	public ArrayList<ToDoList> getToDoLists(User user) {
 		ArrayList<ToDoList> toDoLists = new ArrayList<>();
