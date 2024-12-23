@@ -28,6 +28,7 @@ async function updateListName(){
 		}
 	));
 	document.getElementById("list-" + listId + "-name").innerHTML = newListName
+	document.getElementById("list-" + listId + "-name-hidden").value = newListName
 }
 
 async function deleteToDoList(button){

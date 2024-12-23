@@ -103,7 +103,7 @@
 			      		<td><a href="toDoList/${list.id}" id="list-${list.id}-name">${list.name}</a></td>
 			      		<td>
 			      			<input type="hidden" value="${list.id}">
-			      			<input type="hidden" value="${list.name}">
+			      			<input type="hidden" value="${list.name}" id="list-${list.id}-name-hidden">
 			      			<button type="button" class="btn" onclick="deleteToDoList(this)">
 			      				<i class="fa-solid fa-trash-can" style="color:#DC3545"></i>
 			      			</button>
