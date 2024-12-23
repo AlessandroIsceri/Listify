@@ -161,5 +161,22 @@ public class UserService {
 		}
 		return false;
 	}
+
+	public int createActivity(String username, int listId, Activity activity) {
+		
+		int newId = activityRepository.createActivity(listId, activity);
+		activity.setId(newId);
+		for(User user : users) {
+			if(username.equals(user.getUsername())){
+				List<ToDoList> lists = user.getToDoLists();
+				for(ToDoList list : lists) {
+					if(listId == list.getId()){
+						list.addItem(activity);
+					}
+				}
+			}
+		}
+		return newId;
+	}
 	
 }

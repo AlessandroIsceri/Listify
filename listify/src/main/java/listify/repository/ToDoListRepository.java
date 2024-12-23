@@ -32,7 +32,7 @@ public class ToDoListRepository extends Repository{
 		try {
             openConnection();
             Statement statement = connection.createStatement();
-            statement.executeUpdate("UPDATE todolist SET name = \"" + newListName + "\" WHERE list_id = " + listId);
+            statement.executeUpdate("UPDATE todolist SET name = \"" + newListName + "\" WHERE id = " + listId);
             closeConnection();
             return true;
         } catch (Exception e) {
@@ -45,7 +45,7 @@ public class ToDoListRepository extends Repository{
 		try {
             openConnection();
             Statement statement = connection.createStatement();
-            statement.executeUpdate("DELETE FROM todolist WHERE list_id = " + listId);
+            statement.executeUpdate("DELETE FROM todolist WHERE id = " + listId);
             closeConnection();
             return true;
         } catch (Exception e) {

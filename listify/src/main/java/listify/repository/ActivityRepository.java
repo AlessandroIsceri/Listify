@@ -2,6 +2,7 @@ package listify.repository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Date;
 import java.sql.Statement;
@@ -43,5 +44,24 @@ public class ActivityRepository extends Repository{
             System.out.println(e);
         }
 		
+	}
+
+	public int createActivity(int listId, Activity activity) {
+		try {
+            openConnection();
+            String query = "INSERT INTO activity (name, priority, expirationDate, category, list_id) VALUES (\"" + activity.getName() + "\", " + activity.getPriority() + ", \"" + activity.getExpirationDate() + "\", \"" + activity.getCategory() + "\", "+ listId + ")";
+            PreparedStatement  statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            statement.executeUpdate();
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            int generatedId = -1;
+            if (generatedKeys.next()) {
+                generatedId = generatedKeys.getInt(1); 
+            }
+            closeConnection();
+            return generatedId;
+        } catch (Exception e) {
+            System.out.println(e);
+            return -1;
+        }
 	}
 }
