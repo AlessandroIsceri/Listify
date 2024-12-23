@@ -18,7 +18,7 @@ public class ActivityRepository extends Repository{
 		try {
             openConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from activity where list_id = " + list.getId());
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM activity WHERE list_id = " + list.getId());
             while (resultSet.next()) {
             	activities.add(new Activity(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("priority"), resultSet.getDate("expirationDate").toLocalDate(), resultSet.getString("category")));
             }
@@ -27,5 +27,21 @@ public class ActivityRepository extends Repository{
             System.out.println(e);
         }
 		return activities;
+	}
+
+	public void updateActivities(int listId, Activity[] updatedToDoList) {
+		try {
+			for(int i = 0; i < updatedToDoList.length; i++) {
+				Activity activity = updatedToDoList[i];
+				openConnection();
+	            Statement statement = connection.createStatement();
+				//all the activities already exists: just update them
+	            statement.executeUpdate("UPDATE activity SET name = \"" + activity.getName() + "\", priority = " + activity.getPriority() + ", expirationDate = \"" + activity.getExpirationDate() + "\"" + ", category = \"" + activity.getCategory() + "\" WHERE id = " + activity.getId());
+	            closeConnection();
+			}
+		} catch (Exception e) {
+            System.out.println(e);
+        }
+		
 	}
 }

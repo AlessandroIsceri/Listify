@@ -16,6 +16,9 @@ import listify.repository.UserRepository;
 public class UserService {
 	List<User> users;
 	private static UserService instance;
+	private UserRepository userRepository;
+	private ToDoListRepository toDoListRepository;
+	private ActivityRepository activityRepository;
 
 	public static UserService getInstance(){
 		if (instance == null){
@@ -26,28 +29,17 @@ public class UserService {
 	
 	private UserService() {
 		users = new ArrayList<User>();
-		// populate the database with some data
-		/*User aless = new User("aless@gmail.com", "pw", "aless"); //create user to test the application without DB connection
-        //create 2 to-to lists to display
-        ToDoList list1 = new ToDoList(1, "lista_progetto");
-        list1.addItem(new Activity(1, "impostare gitlab", 10, LocalDate.of(2025, 1, 20), "In Progress"));
-        list1.addItem(new Activity(2, "scrivere codice", 3, LocalDate.of(2025, 4, 12), "To Do"));
-        list1.addItem(new Activity(3, "scrivere test", 5, "Completed"));
-        ToDoList list2 = new ToDoList(2, "lista_spesa"); 
-        aless.addToDoList(list1);
-        aless.addToDoList(list2);
-        users.add(aless);*/
+        userRepository = new UserRepository();
+        toDoListRepository = new ToDoListRepository();
+        activityRepository = new ActivityRepository();
         
-        UserRepository userRepository = new UserRepository();
-        ToDoListRepository toDoListRepository = new ToDoListRepository();
-        ActivityRepository activityepository = new ActivityRepository();
+        // retrieve data from DB
         users = userRepository.getUsers();
-        
         for(User user : users) {
         	//retrieve todolist information
         	ArrayList<ToDoList> toDoLists = toDoListRepository.getToDoLists(user);
         	for(ToDoList list : toDoLists) {
-        		ArrayList<Activity> activities = activityepository.getActivities(list);
+        		ArrayList<Activity> activities = activityRepository.getActivities(list);
         		for(Activity activity : activities) {
         			list.addItem(activity);
         		}
@@ -95,7 +87,9 @@ public class UserService {
 				for(ToDoList list : lists) {
 					if(listId == list.getId()){
 						//update the list
+						activityRepository.updateActivities(listId, updatedToDoList);
 						list.setToDoList(Arrays.asList(updatedToDoList));
+						//update the list on the db
 						return true;
 					}
 				}
@@ -110,9 +104,12 @@ public class UserService {
 				List<ToDoList> lists = user.getToDoLists();
 				for(ToDoList list : lists) {
 					if(listId == list.getId()){
-						//update the list
-						list.setName(newListName);
-						return true;
+						//update the list name on the DB
+						if(toDoListRepository.updateToDoListName(listId, newListName)) {
+							//update the list in memory
+							list.setName(newListName);
+							return true;
+						}
 					}
 				}
 			}
@@ -126,9 +123,12 @@ public class UserService {
 				List<ToDoList> lists = user.getToDoLists();
 				for(ToDoList list : lists) {
 					if(listId == list.getId()){
-						//update the list
-						lists.remove(list);
-						return true;
+						//delete the list from the db
+						if(toDoListRepository.deleteList(listId)) {
+							//update the list in memory
+							lists.remove(list);
+							return true;
+						}
 					}
 				}
 			}
@@ -139,7 +139,9 @@ public class UserService {
 	public boolean createList(String username, String listName) {
 		for(User user : users) {
 			if(username.equals(user.getUsername())){
-				user.addToDoList(new ToDoList(listName));
+				if(toDoListRepository.createList(username, listName)) {
+					user.addToDoList(new ToDoList(listName));
+				}
 				return true;
 			}
 		}
@@ -153,8 +155,11 @@ public class UserService {
 				return false;
 			}
 		}
-		users.add(new User(email, password, username));
-		return true;
+		if(userRepository.createUser(email, password, username)) {
+			users.add(new User(email, password, username));
+			return true;
+		}
+		return false;
 	}
 	
 }

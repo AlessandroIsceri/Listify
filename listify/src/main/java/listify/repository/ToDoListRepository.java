@@ -17,7 +17,7 @@ public class ToDoListRepository extends Repository{
 		try {
             openConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from todolist where user_email = \"" + user.getEmail() + "\"");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM todolist WHERE username = \"" + user.getUsername() + "\"");
             while (resultSet.next()) {
             	toDoLists.add(new ToDoList(resultSet.getInt("id"), resultSet.getString("name")));
             }
@@ -27,5 +27,44 @@ public class ToDoListRepository extends Repository{
         }
 		return toDoLists;
 	}
-	
+
+	public boolean updateToDoListName(int listId, String newListName) {
+		try {
+            openConnection();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("UPDATE todolist SET name = \"" + newListName + "\" WHERE list_id = " + listId);
+            closeConnection();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+	}
+
+	public boolean deleteList(int listId) {
+		try {
+            openConnection();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("DELETE FROM todolist WHERE list_id = " + listId);
+            closeConnection();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+		
+	}
+
+	public boolean createList(String username, String listName) {
+		try {
+            openConnection();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("INSERT INTO todolist (name, username) VALUES (\"" + listName + "\", \"" + username + "\")");
+            closeConnection();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+	}
 }

@@ -16,7 +16,7 @@ public class UserRepository extends Repository{
 		try {
             openConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from user");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM user");
             while (resultSet.next()) {
             	users.add(new User(resultSet.getString("email"), resultSet.getString("password"), resultSet.getString("username")));
             }
@@ -25,5 +25,18 @@ public class UserRepository extends Repository{
             System.out.println(e);
         }
 		return users;
+	}
+
+	public boolean createUser(String email, String password, String username) {
+		try {
+            openConnection();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("INSERT INTO user (email, username, password) VALUES (\"" + email + "\", \"" + username + "\", \"" + password + "\")");
+            closeConnection();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
 	}	
 }
