@@ -30,7 +30,7 @@ public class ActivityRepository extends Repository{
 		return activities;
 	}
 
-	public void updateActivities(int listId, Activity[] updatedToDoList) {
+	/*public void updateActivities(int listId, Activity[] updatedToDoList) {
 		try {
 			for(int i = 0; i < updatedToDoList.length; i++) {
 				Activity activity = updatedToDoList[i];
@@ -44,7 +44,7 @@ public class ActivityRepository extends Repository{
             System.out.println(e);
         }
 		
-	}
+	}*/
 
 	public int createActivity(int listId, Activity activity) {
 		try {
@@ -62,6 +62,48 @@ public class ActivityRepository extends Repository{
         } catch (Exception e) {
             System.out.println(e);
             return -1;
+        }
+	}
+
+	public boolean deleteActivity(int activityId) {
+		try {
+            openConnection();
+            Statement statement = connection.createStatement();
+            System.out.println("DELETE FROM activity WHERE id = " + activityId);
+            statement.executeUpdate("DELETE FROM activity WHERE id = " + activityId);
+            closeConnection();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+	}
+
+	public boolean updateActivity(int activityId, Activity activity) {
+		try {
+            openConnection();
+            Statement statement = connection.createStatement();
+            System.out.println("UPDATE activity SET name = \"" + activity.getName() + "\", priority = " + activity.getPriority() + ", expirationDate = \"" + activity.getExpirationDate() + "\"" + ", category = \"" + activity.getCategory() + "\" WHERE id = " + activityId);
+            statement.executeUpdate("UPDATE activity SET name = \"" + activity.getName() + "\", priority = " + activity.getPriority() + ", expirationDate = \"" + activity.getExpirationDate() + "\"" + ", category = \"" + activity.getCategory() + "\" WHERE id = " + activityId);
+            closeConnection();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+	}
+
+	public boolean updateActivityCategory(int activityId, String category) {
+		try {
+            openConnection();
+            Statement statement = connection.createStatement();
+            System.out.println("UPDATE activity SET category = \"" + category + "\" WHERE id = " + activityId);
+            statement.executeUpdate("UPDATE activity SET category = \"" + category + "\" WHERE id = " + activityId);
+            closeConnection();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
         }
 	}
 }

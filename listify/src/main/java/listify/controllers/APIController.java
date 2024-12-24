@@ -56,7 +56,7 @@ public class APIController {
 		return "5";
 	}
 	
-	@PutMapping("/API/{username}/updateList/{listId}")
+	/*@PutMapping("/API/{username}/updateList/{listId}")
 	public ResponseEntity updateList(@PathVariable(value="username") String username, 
 							 @PathVariable(value="listId") int listId,
 							 @RequestBody Activity[] toDoList) {
@@ -65,7 +65,40 @@ public class APIController {
 		}else {
 			return ResponseEntity.notFound().build();
 		}
-		
+	}*/
+	@DeleteMapping("/API/{username}/updateList/{listId}/deleteActivity/{activityId}")
+	public ResponseEntity deleteActivity(@PathVariable(value="username") String username, 
+			 							 @PathVariable(value="listId") int listId,
+			 							 @PathVariable(value="activityId") int activityId) {
+		if(userService.deleteActivity(username, listId, activityId)) {
+			return ResponseEntity.ok().build(); 
+		}else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	@PutMapping("/API/{username}/updateList/{listId}/updateActivity/{activityId}")
+	public ResponseEntity updateActivity(@PathVariable(value="username") String username, 
+			 							 @PathVariable(value="listId") int listId,
+			 							 @PathVariable(value="activityId") int activityId,
+			 							 @RequestBody Activity activity) {
+		if(userService.updateActivity(username, listId, activityId, activity)) {
+			return ResponseEntity.ok().build(); 
+		}else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	@PutMapping("/API/{username}/updateList/{listId}/updateActivityCategory/{activityId}")
+	public ResponseEntity updateActivity(@PathVariable(value="username") String username, 
+			 							 @PathVariable(value="listId") int listId,
+			 							 @PathVariable(value="activityId") int activityId,
+			 							 @RequestBody String category) {
+		if(userService.updateActivityCategory(username, listId, activityId, category)) {
+			return ResponseEntity.ok().build(); 
+		}else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
 	@PutMapping("/API/{username}/updateListName/{listId}")

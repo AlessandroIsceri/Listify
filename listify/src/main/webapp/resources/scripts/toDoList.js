@@ -25,7 +25,7 @@ function insertAfter(newNode, existingNode) {
     existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
 }
 
-function drop(ev) {
+async function drop(ev) {
     ev.preventDefault();
 	parent = ev.target
 	while(parent != null && parent.tagName != "DIV"){
@@ -66,6 +66,17 @@ function drop(ev) {
 		
 		//update the chart 
 		pieChart.update(); 
+		
+		category = hiddenInputs[3].value
+		res = await fetch(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId + "/updateActivityCategory/" + draggedElementId, {
+				method: "PUT",
+				headers: {
+			        "Content-Type": "application/json",
+			    },
+			  	body: category,
+			}
+		);
+		
 		return
 	}
 	
@@ -111,6 +122,18 @@ function drop(ev) {
 		}
 		//update the chart 
 		pieChart.update(); 
+		
+		//send the request to the controller
+		//"/API/{username}/updateList/{listId}/updateActivityCategory/{activityId}"
+		category = hiddenInputs[3].value
+		res = await fetch(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId + "/updateActivityCategory/" + draggedElementId, {
+				method: "PUT",
+				headers: {
+			        "Content-Type": "application/json",
+			    },
+			  	body: category,
+			}
+		);
     }
 }
 
@@ -240,7 +263,7 @@ function fillForm(li){
 	document.getElementById("modifyModalActivityId").value = li.id
 }
 
-function updateActivity(){
+async function updateActivity(){
 	name = document.getElementById("modifyModalActivityName").value
 	priority = document.getElementById("modifyModalActivityPriority").value
 	expDate = document.getElementById("modifyModalActivityExpDate").value
@@ -253,13 +276,48 @@ function updateActivity(){
 	hiddenInputs[0].value = name
 	hiddenInputs[1].value = expDate
 	hiddenInputs[2].value = priority
+	
+	ulId = li.parentElement.id
+	//update the chart 
+	if(ulId == "to-do-activities-ul"){
+		category = "To Do"
+	}else if(ulId == "in-progress-activities-ul"){
+		category = "In Progress"
+	}else{
+		category = "Completed"
+	}
+	
+	//send update request to the db
+	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId + "/updateActivity/" + id,
+		{
+			method: "PUT",
+			headers: {
+		        "Content-Type": "application/json",
+		    },
+		  	body: JSON.stringify({
+				"name":name,
+				"priority":priority,
+				"expirationDate":expDate,
+				"category": category
+			}),
+		}
+	));
+	console.log(res)
+	if(res.status == 404){
+		//error
+		document.getElementById("alert-message").innerHTML = "An error occured during the update"
+		return 
+	}else{
+		//200 -> ok 
+		document.getElementById("alert-message").innerHTML = "Updated correctly!"
+	}
 }
 
 async function sendUpdateRequest(){
 	alert = document.getElementById("alert-box")
 	//first, update list name
 	newListName = document.getElementById("list-name").value;
-	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateListName/" + listId,
+	/*res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateListName/" + listId,
 			{
 				method: "PUT",
 				headers: {
@@ -286,7 +344,7 @@ async function sendUpdateRequest(){
 		    }, 
 			... 
 		] 
-	*/
+	
 	JSON_array = []
 	lis = document.querySelectorAll('li');
 	for(i = 0; i < lis.length; i++){
@@ -320,9 +378,10 @@ async function sendUpdateRequest(){
 	}
 	//show the alert
 	alert.classList.remove('d-none');
+	*/
 }
 
-function deleteActivity(){
+async function deleteActivity(){
 	id = document.getElementById("modifyModalActivityId").value
 	li = document.getElementById(id)
 	ulId = li.parentElement.id
@@ -336,6 +395,22 @@ function deleteActivity(){
 	}
 	pieChart.update(); 
 	document.getElementById(id).remove();
+	
+	//send request to the controller
+	///API/{username}/updateList/{listId}/deleteActivity/{activityId}
+	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId + "/deleteActivity/" + id,
+		{
+			method: "DELETE"
+		}
+	));
+	if(res.status == 404){
+		//error
+		document.getElementById("alert-message").innerHTML = "An error occured during the deletion"
+		return 
+	}else{
+		//200 -> ok 
+		document.getElementById("alert-message").innerHTML = "Deleted correctly!"
+	}
 }
 
 function removeAlertBox(){

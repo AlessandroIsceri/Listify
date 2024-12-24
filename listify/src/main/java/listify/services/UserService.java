@@ -80,7 +80,7 @@ public class UserService {
 		return null;
 	}
 	
-	public boolean updateToDoList(String username, int listId, Activity[] updatedToDoList) {
+	/*public boolean updateToDoList(String username, int listId, Activity[] updatedToDoList) {
 		for(User user : users) {
 			if(username.equals(user.getUsername())){
 				List<ToDoList> lists = user.getToDoLists();
@@ -96,7 +96,7 @@ public class UserService {
 			}
 		}
 		return false;
-	}
+	}*/
 
 	public boolean updateToDoListName(String username, int listId, String newListName) {
 		for(User user : users) {
@@ -177,6 +177,75 @@ public class UserService {
 			}
 		}
 		return newId;
+	}
+
+	public boolean deleteActivity(String username, int listId, int activityId) {
+		for(User user : users) {
+			if(username.equals(user.getUsername())){
+				List<ToDoList> lists = user.getToDoLists();
+				for(ToDoList list : lists) {
+					if(listId == list.getId()){
+						for(Activity activity: list.getToDoList()) {
+							if(activityId == activity.getId()) {
+								//delete the activity from the db
+								System.out.println("activity found locally");
+								if(activityRepository.deleteActivity(activityId)) {
+									list.removeItem(activity);
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean updateActivity(String username, int listId, int activityId, Activity activity) {
+		for(User user : users) {
+			if(username.equals(user.getUsername())){
+				List<ToDoList> lists = user.getToDoLists();
+				for(ToDoList list : lists) {
+					if(listId == list.getId()){
+						for(Activity cur_activity: list.getToDoList()) {
+							if(activityId == cur_activity.getId()) {
+								//delete the activity from the db
+								System.out.println("activity found locally");
+								if(activityRepository.updateActivity(activityId, activity)) {
+									cur_activity = activity;
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean updateActivityCategory(String username, int listId, int activityId, String category) {
+		for(User user : users) {
+			if(username.equals(user.getUsername())){
+				List<ToDoList> lists = user.getToDoLists();
+				for(ToDoList list : lists) {
+					if(listId == list.getId()){
+						for(Activity cur_activity: list.getToDoList()) {
+							if(activityId == cur_activity.getId()) {
+								//delete the activity from the db
+								System.out.println("activity found locally");
+								if(activityRepository.updateActivityCategory(activityId, category)) {
+									cur_activity.setCategory(category);
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 	
 }

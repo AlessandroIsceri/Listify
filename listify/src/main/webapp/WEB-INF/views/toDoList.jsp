@@ -119,7 +119,6 @@
 			</div>
 			<div class="col-6">
 				<button class="btn btn-primary" id="addActivity" data-bs-toggle="modal" data-bs-target="#newActivityModal">Add Activity</button>
-            	<button type="button" class="btn btn-primary" id="saveChanges" onclick="sendUpdateRequest()">Save Changes</button>
 			</div>
     	</div>
     	<div class="alert alert-success alert-dismissible fade show d-none" role="alert" id="alert-box">
