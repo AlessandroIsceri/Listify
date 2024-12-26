@@ -77,6 +77,23 @@ async function drop(ev) {
 			}
 		);
 		
+		if(res.status == 404){
+			//error
+			//create a success message for the user
+			document.getElementById("toast-header").innerHTML = "ERROR"
+			document.getElementById("toast-body").innerHTML = "An error occured during the update"
+			document.getElementById("toast-img").classList.add("bg-danger")
+			document.getElementById("toast-div").classList.add("show")	
+			return 
+		}else{
+			//200 -> ok 
+			//create a success message for the user
+			document.getElementById("toast-header").innerHTML = "SUCCESS"
+			document.getElementById("toast-body").innerHTML = "The activiy has been updated correctly"
+			document.getElementById("toast-img").classList.add("bg-success")
+			document.getElementById("toast-div").classList.add("show")	
+		}
+		
 		return
 	}
 	
@@ -134,6 +151,22 @@ async function drop(ev) {
 			  	body: category,
 			}
 		);
+		if(res.status == 404){
+			//error
+			//create a success message for the user
+			document.getElementById("toast-header").innerHTML = "ERROR"
+			document.getElementById("toast-body").innerHTML = "An error occured during the update"
+			document.getElementById("toast-img").classList.add("bg-danger")
+			document.getElementById("toast-div").classList.add("show")	
+			return 
+		}else{
+			//200 -> ok 
+			//create a success message for the user
+			document.getElementById("toast-header").innerHTML = "SUCCESS"
+			document.getElementById("toast-body").innerHTML = "The activiy has been updated correctly"
+			document.getElementById("toast-img").classList.add("bg-success")
+			document.getElementById("toast-div").classList.add("show")	
+		}
     }
 }
 
@@ -161,7 +194,7 @@ async function addActivity(){
 	}
 	
 	//request new id from application and set it
-	newId = await fetch(URL_PREFIX + "/listify/API/" + username + "/toDoList/" + listId + "/createActivity", {
+	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/toDoList/" + listId + "/createActivity", {
 			method: "POST",
 			headers: {
 		        "Content-Type": "application/json",
@@ -174,84 +207,94 @@ async function addActivity(){
 			}),
 		}
 	);
-	li.id = await newId.json()
-	
-	li.setAttribute('data-bs-toggle', 'modal');
-	li.setAttribute('data-bs-target', '#modifyActivityModal');
-	li.addEventListener('click', function() {
-	    fillForm(this); // Passa il riferimento all'elemento cliccato
-	});
-	
-	span = document.createElement("span")
-	span.innerHTML = "<b>"+activityName+"</b>"
-	p = document.createElement("p")
-	
-	clockIcon = document.createElement("i")
-	clockIcon.classList.add("fa-regular")
-	clockIcon.classList.add("fa-clock")
-	clockSpan = document.createElement("span")
-	clockSpan.innerHTML = " " + date
-	
-	priorityIcon = document.createElement("i")
-	priorityIcon.classList.add("fa-solid")
-	priorityIcon.classList.add("fa-exclamation")
-	prioritySpan = document.createElement("span")
-	prioritySpan.innerHTML = " Priority: " + priority
-	
-	p.appendChild(clockIcon)
-	p.appendChild(clockSpan)
-	p.appendChild(document.createElement("br"))
-	p.appendChild(priorityIcon)
-	p.appendChild(prioritySpan)
-	
-	
-	//add 3 input fields hidden <input type="hidden" value="${activity.name}">
-	inputName = document.createElement("input")
-	inputName.type = "hidden"
-	inputName.value = activityName
-	
-	inputDate = document.createElement("input")
-	inputDate.type = "hidden"
-	inputDate.value = date
-	
-	inputPriority = document.createElement("input")
-	inputPriority.type = "hidden"
-	inputPriority.value = priority
-	
-	inputCategory = document.createElement("input")
-	inputCategory.type = "hidden"
-	if(ulId == "to-do-activities-ul"){
-		inputCategory.value = "To Do"
-	}else if(ulId == "in-progress-activities-ul"){
-		inputCategory.value = "In Progress"
-	}else{
-		inputCategory.value = "Completed"
+	newId = await response.json()
+	if(newId != -1){
+		li.id = newId
+		
+		li.setAttribute('data-bs-toggle', 'modal');
+		li.setAttribute('data-bs-target', '#modifyActivityModal');
+		li.addEventListener('click', function() {
+		    fillForm(this); // Passa il riferimento all'elemento cliccato
+		});
+		
+		span = document.createElement("span")
+		span.innerHTML = "<b>"+activityName+"</b>"
+		p = document.createElement("p")
+		
+		clockIcon = document.createElement("i")
+		clockIcon.classList.add("fa-regular")
+		clockIcon.classList.add("fa-clock")
+		clockSpan = document.createElement("span")
+		clockSpan.innerHTML = " " + date
+		
+		priorityIcon = document.createElement("i")
+		priorityIcon.classList.add("fa-solid")
+		priorityIcon.classList.add("fa-exclamation")
+		prioritySpan = document.createElement("span")
+		prioritySpan.innerHTML = " Priority: " + priority
+		
+		p.appendChild(clockIcon)
+		p.appendChild(clockSpan)
+		p.appendChild(document.createElement("br"))
+		p.appendChild(priorityIcon)
+		p.appendChild(prioritySpan)
+		
+		
+		//add 3 input fields hidden <input type="hidden" value="${activity.name}">
+		inputName = document.createElement("input")
+		inputName.type = "hidden"
+		inputName.value = activityName
+		
+		inputDate = document.createElement("input")
+		inputDate.type = "hidden"
+		inputDate.value = date
+		
+		inputPriority = document.createElement("input")
+		inputPriority.type = "hidden"
+		inputPriority.value = priority
+		
+		inputCategory = document.createElement("input")
+		inputCategory.type = "hidden"
+		if(ulId == "to-do-activities-ul"){
+			inputCategory.value = "To Do"
+		}else if(ulId == "in-progress-activities-ul"){
+			inputCategory.value = "In Progress"
+		}else{
+			inputCategory.value = "Completed"
+		}
+		
+		li.appendChild(inputName)
+		li.appendChild(inputDate)
+		li.appendChild(inputPriority)
+		li.appendChild(inputCategory)
+		li.appendChild(span)
+		li.appendChild(p)
+		ul.appendChild(li)
+		
+		//reset form
+		document.getElementById("modalActivityCategory").value = "to-do-activities-ul"
+		document.getElementById("modalActivityExpDate").valueAsDate = new Date();
+		document.getElementById("modalActivityName").value = "";
+		document.getElementById("modalActivityPriority").value = "1";
+		
+		//update the chart 
+		if(ulId == "to-do-activities-ul"){
+			pieChart.data.datasets[0].data[0] = pieChart.data.datasets[0].data[0] + 1;
+		}else if(ulId == "in-progress-activities-ul"){
+			pieChart.data.datasets[0].data[1] = pieChart.data.datasets[0].data[1] + 1;
+		}else{
+			pieChart.data.datasets[0].data[2] = pieChart.data.datasets[0].data[2] + 1;
+		}
+		
+		pieChart.update();
+		
+		//create a success message for the user
+		document.getElementById("toast-header").innerHTML = "SUCCESS"
+		document.getElementById("toast-body").innerHTML = "The activiy has been created correctly"
+		document.getElementById("toast-img").classList.add("bg-success")
+		document.getElementById("toast-div").classList.add("show")	
+		 	
 	}
-	
-	li.appendChild(inputName)
-	li.appendChild(inputDate)
-	li.appendChild(inputPriority)
-	li.appendChild(inputCategory)
-	li.appendChild(span)
-	li.appendChild(p)
-	ul.appendChild(li)
-	
-	//reset form
-	document.getElementById("modalActivityCategory").value = "to-do-activities-ul"
-	document.getElementById("modalActivityExpDate").valueAsDate = new Date();
-	document.getElementById("modalActivityName").value = "";
-	document.getElementById("modalActivityPriority").value = "1";
-	
-	//update the chart 
-	if(ulId == "to-do-activities-ul"){
-		pieChart.data.datasets[0].data[0] = pieChart.data.datasets[0].data[0] + 1;
-	}else if(ulId == "in-progress-activities-ul"){
-		pieChart.data.datasets[0].data[1] = pieChart.data.datasets[0].data[1] + 1;
-	}else{
-		pieChart.data.datasets[0].data[2] = pieChart.data.datasets[0].data[2] + 1;
-	}
-	
-	pieChart.update(); 
 }
 
 function fillForm(li){
@@ -305,80 +348,20 @@ async function updateActivity(){
 	console.log(res)
 	if(res.status == 404){
 		//error
-		document.getElementById("alert-message").innerHTML = "An error occured during the update"
+		//create a success message for the user
+		document.getElementById("toast-header").innerHTML = "ERROR"
+		document.getElementById("toast-body").innerHTML = "An error occured during the update"
+		document.getElementById("toast-img").classList.add("bg-danger")
+		document.getElementById("toast-div").classList.add("show")	
 		return 
 	}else{
 		//200 -> ok 
-		document.getElementById("alert-message").innerHTML = "Updated correctly!"
+		//create a success message for the user
+		document.getElementById("toast-header").innerHTML = "SUCCESS"
+		document.getElementById("toast-body").innerHTML = "The activiy has been updated correctly"
+		document.getElementById("toast-img").classList.add("bg-success")
+		document.getElementById("toast-div").classList.add("show")	
 	}
-}
-
-async function sendUpdateRequest(){
-	alert = document.getElementById("alert-box")
-	//first, update list name
-	newListName = document.getElementById("list-name").value;
-	/*res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateListName/" + listId,
-			{
-				method: "PUT",
-				headers: {
-			        "Content-Type": "application/json",
-			    },
-			  	body: newListName,
-			}
-	));
-	if(res.status == 404){
-		//error
-		document.getElementById("alert-message").innerHTML = "An error occured during the update"
-		return 
-	}
-	
-	//create a JSON array containing all the activities with realtive informations
-	/*
-		[	
-			{
-			"id" : activityId
-			"name" : name,
-			"priority" : priority,
-			"expDate" : expDate,
-			"category" : category
-		    }, 
-			... 
-		] 
-	
-	JSON_array = []
-	lis = document.querySelectorAll('li');
-	for(i = 0; i < lis.length; i++){
-		curLi = lis[i]
-		hiddenInputs = curLi.querySelectorAll('input[type="hidden"]');
-		JSON_array.push({
-			"id" : curLi.id,
-			"name" : hiddenInputs[0].value,
-			"expirationDate" : hiddenInputs[1].value,
-			"priority" : hiddenInputs[2].value,
-			"category" : hiddenInputs[3].value
-		})	
-	}
-	
-	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId,
-		{
-			method: "PUT",
-			headers: {
-		        "Content-Type": "application/json",
-		    },
-		  	body: JSON.stringify(JSON_array),
-		}
-	));
-	if(res.status == 404){
-		//error
-		document.getElementById("alert-message").innerHTML = "An error occured during the update"
-		return 
-	}else{
-		//200 -> ok 
-		document.getElementById("alert-message").innerHTML = "Updated correctly!"
-	}
-	//show the alert
-	alert.classList.remove('d-none');
-	*/
 }
 
 async function deleteActivity(){
@@ -404,12 +387,19 @@ async function deleteActivity(){
 		}
 	));
 	if(res.status == 404){
-		//error
-		document.getElementById("alert-message").innerHTML = "An error occured during the deletion"
+		//create a success message for the user
+		document.getElementById("toast-header").innerHTML = "ERROR"
+		document.getElementById("toast-body").innerHTML = "An error occured during the deletion"
+		document.getElementById("toast-img").classList.add("bg-danger")
+		document.getElementById("toast-div").classList.add("show")
 		return 
 	}else{
 		//200 -> ok 
-		document.getElementById("alert-message").innerHTML = "Deleted correctly!"
+		//create a success message for the user
+		document.getElementById("toast-header").innerHTML = "SUCCESS"
+		document.getElementById("toast-body").innerHTML = "The activiy has been deleted correctly"
+		document.getElementById("toast-img").classList.add("bg-success")
+		document.getElementById("toast-div").classList.add("show")
 	}
 }
 

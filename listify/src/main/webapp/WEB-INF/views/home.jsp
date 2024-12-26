@@ -13,6 +13,19 @@
 </head>
 <body onload="init()">
 
+	<!-- message box -->
+	<div class="toast-container position-fixed bottom-0 end-0 p-3">
+		<div class="toast" id="toast-div">
+    		<div class="toast-header">
+    			<div class="rounded me-2" id="toast-img" style="width: 20px; height: 20px;"></div>
+      			<strong class="me-auto" id="toast-header"></strong>
+      			<button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+    		</div>
+    		<div class="toast-body" id="toast-body">
+    		</div>
+  		</div>
+  	</div>
+
 	<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top" id="navbar">
 	    <div class="container-fluid">
 	        <a class="navbar-brand" disabled>
