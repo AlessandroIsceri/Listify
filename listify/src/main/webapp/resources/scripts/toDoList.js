@@ -161,7 +161,7 @@ async function addActivity(){
 	}
 	
 	//request new id from application and set it
-	newId = await fetch(URL_PREFIX + "/listify/API/" + username + "/toDoList/" + listId + "/getNewActivityId", {
+	newId = await fetch(URL_PREFIX + "/listify/API/" + username + "/toDoList/" + listId + "/createActivity", {
 			method: "POST",
 			headers: {
 		        "Content-Type": "application/json",

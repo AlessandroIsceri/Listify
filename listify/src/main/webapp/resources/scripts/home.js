@@ -49,8 +49,8 @@ async function deleteToDoList(button){
 async function addList(){
 	listName = document.getElementById("newToDoListName").value
 	
-	//send request to create the new list /API/{username}/createNewList/{listName}
-	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/createNewList", 
+	//send request to create the new list /API/{username}/createList
+	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/createList", 
 		{
 			method: "POST", 	
 			headers: {

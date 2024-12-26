@@ -41,30 +41,14 @@ public class APIController {
 		}
 	}
 	
-	@PostMapping("/API/{username}/toDoList/{listId}/getNewActivityId")
+	@PostMapping("/API/{username}/toDoList/{listId}/createActivity")
 	@ResponseBody
-	public String getNewActivityId(@PathVariable(value="username") String username, 
+	public String createActivity(@PathVariable(value="username") String username, 
 			 					   @PathVariable(value="listId") int listId,
 			 					  @RequestBody Activity activity) {
 		return "" + userService.createActivity(username, listId, activity);
 	}
 	
-	/*@GetMapping("/API/{username}/toDoList/getNewListId")
-	@ResponseBody
-	public String getNewListId(@RequestBody String name) {
-		userService.createList(username, name)
-	}*/
-	
-	/*@PutMapping("/API/{username}/updateList/{listId}")
-	public ResponseEntity updateList(@PathVariable(value="username") String username, 
-							 @PathVariable(value="listId") int listId,
-							 @RequestBody Activity[] toDoList) {
-		if(userService.updateToDoList(username, listId, toDoList)) {
-			return ResponseEntity.ok().build(); 
-		}else {
-			return ResponseEntity.notFound().build();
-		}
-	}*/
 	@DeleteMapping("/API/{username}/updateList/{listId}/deleteActivity/{activityId}")
 	public ResponseEntity deleteActivity(@PathVariable(value="username") String username, 
 			 							 @PathVariable(value="listId") int listId,
@@ -121,7 +105,7 @@ public class APIController {
 		}
 	}
 	
-	@PostMapping("/API/{username}/createNewList")
+	@PostMapping("/API/{username}/createList")
 	public String createList(@PathVariable(value="username") String username, 
 							 @RequestBody String listName){
 		return "" + userService.createList(username, listName);
