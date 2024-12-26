@@ -106,8 +106,10 @@ public class APIController {
 	}
 	
 	@PostMapping("/API/{username}/createList")
+	@ResponseBody
 	public String createList(@PathVariable(value="username") String username, 
 							 @RequestBody String listName){
+		System.out.println("creating list " + listName + "...");
 		return "" + userService.createList(username, listName);
 	}
 	

@@ -57,13 +57,16 @@ public class ToDoListRepository extends Repository{
 		try {
             openConnection();
             String query = "INSERT INTO todolist (name, username) VALUES (\"" + listName + "\", \"" + username + "\")";
-            PreparedStatement  statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            System.out.println(query);
+            PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            statement.executeUpdate();
             ResultSet generatedKeys = statement.getGeneratedKeys();
             int generatedId = -1;
             if (generatedKeys.next()) {
                 generatedId = generatedKeys.getInt(1); 
             }
             closeConnection();
+            System.out.println(generatedId);
             return generatedId;
         } catch (Exception e) {
             System.out.println(e);

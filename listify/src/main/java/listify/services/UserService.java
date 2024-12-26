@@ -136,11 +136,11 @@ public class UserService {
 		return false;
 	}
 
-	public boolean createList(String username, String listName) {
-		int newId = toDoListRepository.createList(username, listName)
+	public int createList(String username, String listName) {
+		int newId = toDoListRepository.createList(username, listName);
 		for(User user : users) {
 			if(username.equals(user.getUsername())){
-				user.addToDoList(new ToDoList(listName));
+				user.addToDoList(new ToDoList(newId, listName));
 			}
 		}
 		return newId;
