@@ -114,7 +114,7 @@
     	<div class="row bg-light">
     		<div class="col-2">
 	    		<div class="input-group input-group-lg">
-					<input type="text" class="form-control bg-light border-0" id="list-name" style="cursor: pointer; pointer-events: auto;" value="${list.name}" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+					<input type="text" disabled class="form-control bg-light border-0" id="list-name" value="${list.name}" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
 				</div>
 			</div>
 			<div class="col-6">
