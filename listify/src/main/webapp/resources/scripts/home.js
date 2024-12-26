@@ -78,13 +78,13 @@ async function addList(){
 	listName = document.getElementById("newToDoListName").value
 	
 	//send request to create the new list /API/{username}/createList
-	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/createList", 
-		{
-			method: "POST", 	
-			headers: {
-		        "Content-Type": "application/json",
-		    },
-		  	body: listName});
+	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/createList", {
+		method: "POST", 	
+		headers: {
+	        "Content-Type": "application/json",
+	    },
+	  	body: listName
+	});
 	newId = await response.json()
 	
 	if(newId != -1){ //the list has been created on the DB

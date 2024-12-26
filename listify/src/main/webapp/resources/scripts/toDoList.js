@@ -12,6 +12,7 @@ function init(){
 	createPieChart()
 }
 
+//function to print a toast message
 function printToast(headerMessage, boydMessage, bgClass){
 	document.getElementById("toast-header").innerHTML = headerMessage
 	document.getElementById("toast-body").innerHTML = boydMessage
@@ -44,16 +45,16 @@ async function updateCategory(ulId, draggedElementId){
 			
 	//send update request to the controller
 	res = await fetch(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId + "/updateActivityCategory/" + draggedElementId, {
-			method: "PUT",
-			headers: {
-		        "Content-Type": "application/json",
-		    },
-		  	body: category,
-		}
-	);
+		method: "PUT",
+		headers: {
+	        "Content-Type": "application/json",
+	    },
+	  	body: category,
+	});
 	if(res.status == 404){
 		//error
 		printToast("ERROR", "An error occured during the update", "bg-danger")
+		return 404
 	}else{
 		//200 -> ok 
 		
@@ -82,6 +83,7 @@ async function updateCategory(ulId, draggedElementId){
 		//update the chart 
 		pieChart.update(); 
 		printToast("SUCCESS", "The activiy has been updated correctly", "bg-success")
+		return 200
 	}
 			
 }
@@ -104,11 +106,12 @@ async function drop(ev) {
 	targetCategory = parent.childNodes[1].id
 	draggedElementId = draggedElement.id
 	
-	if(target == null || parent == null){//empty target list
+	if(target == null || parent == null){ //empty target list
 		draggedElementUlId = document.getElementById(draggedElementId).parentElement.id
-		ul.appendChild(document.getElementById(draggedElementId))
 		ulId = ul.id
-		updateCategory(ulId, draggedElementId)
+		if(updateCategory(ulId, draggedElementId) == 200){
+			ul.appendChild(document.getElementById(draggedElementId))
+		}
 		return
 	}
 	
@@ -128,10 +131,11 @@ async function drop(ev) {
 		ul = document.getElementById(targetCategory)
 		ulId = ul.id
 		draggedElementUlId = document.getElementById(draggedElementId).parentElement.id
-		ul.appendChild(document.getElementById(draggedElementId))
-        insertAfter(draggedElement, target)
 		
-		updateCategory(ulId, draggedElementId)
+		if(updateCategory(ulId, draggedElementId) == 200){
+			ul.appendChild(document.getElementById(draggedElementId))
+	        insertAfter(draggedElement, target)
+		}
     }
 }
 
