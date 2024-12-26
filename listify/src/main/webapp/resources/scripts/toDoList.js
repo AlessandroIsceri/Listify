@@ -4,8 +4,7 @@ listId = null
 draggedElement = null
 pieChart = null
 
-//function that retrieves new id for the activity from the server
-
+//initialize useful variables and pie chart
 function init(){
 	document.getElementById("modalActivityExpDate").valueAsDate = new Date();
 	username = document.getElementById("username").value
@@ -13,6 +12,14 @@ function init(){
 	createPieChart()
 }
 
+function printToast(headerMessage, boydMessage, bgClass){
+	document.getElementById("toast-header").innerHTML = headerMessage
+	document.getElementById("toast-body").innerHTML = boydMessage
+	document.getElementById("toast-img").classList.add(bgClass)
+	document.getElementById("toast-div").classList.add("show")	
+}
+
+//drag and drop functions
 function allowDrop(ev) {
     ev.preventDefault();
 }
@@ -79,19 +86,11 @@ async function drop(ev) {
 		
 		if(res.status == 404){
 			//error
-			//create a success message for the user
-			document.getElementById("toast-header").innerHTML = "ERROR"
-			document.getElementById("toast-body").innerHTML = "An error occured during the update"
-			document.getElementById("toast-img").classList.add("bg-danger")
-			document.getElementById("toast-div").classList.add("show")	
+			printToast("ERROR", "An error occured during the update", "bg-danger")
 			return 
 		}else{
 			//200 -> ok 
-			//create a success message for the user
-			document.getElementById("toast-header").innerHTML = "SUCCESS"
-			document.getElementById("toast-body").innerHTML = "The activiy has been updated correctly"
-			document.getElementById("toast-img").classList.add("bg-success")
-			document.getElementById("toast-div").classList.add("show")	
+			printToast("SUCCESS", "The activiy has been updated correctly", "bg-success")
 		}
 		
 		return
@@ -153,19 +152,11 @@ async function drop(ev) {
 		);
 		if(res.status == 404){
 			//error
-			//create a success message for the user
-			document.getElementById("toast-header").innerHTML = "ERROR"
-			document.getElementById("toast-body").innerHTML = "An error occured during the update"
-			document.getElementById("toast-img").classList.add("bg-danger")
-			document.getElementById("toast-div").classList.add("show")	
+			printToast("ERROR", "An error occured during the update", "bg-danger")
 			return 
 		}else{
 			//200 -> ok 
-			//create a success message for the user
-			document.getElementById("toast-header").innerHTML = "SUCCESS"
-			document.getElementById("toast-body").innerHTML = "The activiy has been updated correctly"
-			document.getElementById("toast-img").classList.add("bg-success")
-			document.getElementById("toast-div").classList.add("show")	
+			printToast("SUCCESS", "The activiy has been updated correctly", "bg-success")
 		}
     }
 }
@@ -175,12 +166,6 @@ async function addActivity(){
 	ulId = document.getElementById("modalActivityCategory").value
     ul = document.getElementById(ulId)
 	
-    li = document.createElement("li")
-    li.classList.add("list-group-item")
-	li.classList.add("border-0")
-	li.classList.add("rounded-pill")
-    li.draggable = "true"
-    li.ondrag = drag
     activityName = document.getElementById("modalActivityName").value
 	priority = document.getElementById("modalActivityPriority").value
 	date = document.getElementById("modalActivityExpDate").value
@@ -209,6 +194,12 @@ async function addActivity(){
 	);
 	newId = await response.json()
 	if(newId != -1){
+		li = document.createElement("li")
+	    li.classList.add("list-group-item")
+		li.classList.add("border-0")
+		li.classList.add("rounded-pill")
+	    li.draggable = "true"
+	    li.ondrag = drag
 		li.id = newId
 		
 		li.setAttribute('data-bs-toggle', 'modal');
@@ -255,13 +246,7 @@ async function addActivity(){
 		
 		inputCategory = document.createElement("input")
 		inputCategory.type = "hidden"
-		if(ulId == "to-do-activities-ul"){
-			inputCategory.value = "To Do"
-		}else if(ulId == "in-progress-activities-ul"){
-			inputCategory.value = "In Progress"
-		}else{
-			inputCategory.value = "Completed"
-		}
+		inputCategory.value = category
 		
 		li.appendChild(inputName)
 		li.appendChild(inputDate)
@@ -285,15 +270,11 @@ async function addActivity(){
 		}else{
 			pieChart.data.datasets[0].data[2] = pieChart.data.datasets[0].data[2] + 1;
 		}
-		
 		pieChart.update();
 		
-		//create a success message for the user
-		document.getElementById("toast-header").innerHTML = "SUCCESS"
-		document.getElementById("toast-body").innerHTML = "The activiy has been created correctly"
-		document.getElementById("toast-img").classList.add("bg-success")
-		document.getElementById("toast-div").classList.add("show")	
-		 	
+		showToast("SUCCESS", "The activiy has been created correctly", "bg-success")
+	}else{
+		showToast("ERROR", "An error occured during the creation", "bg-danger")
 	}
 }
 
@@ -345,30 +326,38 @@ async function updateActivity(){
 			}),
 		}
 	));
-	console.log(res)
 	if(res.status == 404){
 		//error
-		//create a success message for the user
-		document.getElementById("toast-header").innerHTML = "ERROR"
-		document.getElementById("toast-body").innerHTML = "An error occured during the update"
-		document.getElementById("toast-img").classList.add("bg-danger")
-		document.getElementById("toast-div").classList.add("show")	
+		printToast("ERROR", "An error occured during the update", "bg-danger")
 		return 
 	}else{
 		//200 -> ok 
-		//create a success message for the user
-		document.getElementById("toast-header").innerHTML = "SUCCESS"
-		document.getElementById("toast-body").innerHTML = "The activiy has been updated correctly"
-		document.getElementById("toast-img").classList.add("bg-success")
-		document.getElementById("toast-div").classList.add("show")	
+	    printToast("SUCCESS", "The activiy has been updated correctly", "bg-success")
 	}
 }
 
 async function deleteActivity(){
 	id = document.getElementById("modifyModalActivityId").value
+	
+	//send request to the controller
+	///API/{username}/updateList/{listId}/deleteActivity/{activityId}
+	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId + "/deleteActivity/" + id,
+		{
+			method: "DELETE"
+		}
+	));
+	if(res.status == 404){
+		showToast("ERROR", "An error occured during the deletion", "bg-danger")
+		return 
+	}else{
+		//200 -> ok 
+		showToast("SUCCESS", "The activiy has been deleted correctly", "bg-success")
+	}
+	
+	//update the chart 
 	li = document.getElementById(id)
 	ulId = li.parentElement.id
-	//update the chart 
+	
 	if(ulId == "to-do-activities-ul"){
 		pieChart.data.datasets[0].data[0] = pieChart.data.datasets[0].data[0] - 1;
 	}else if(ulId == "in-progress-activities-ul"){
@@ -379,33 +368,6 @@ async function deleteActivity(){
 	pieChart.update(); 
 	document.getElementById(id).remove();
 	
-	//send request to the controller
-	///API/{username}/updateList/{listId}/deleteActivity/{activityId}
-	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId + "/deleteActivity/" + id,
-		{
-			method: "DELETE"
-		}
-	));
-	if(res.status == 404){
-		//create a success message for the user
-		document.getElementById("toast-header").innerHTML = "ERROR"
-		document.getElementById("toast-body").innerHTML = "An error occured during the deletion"
-		document.getElementById("toast-img").classList.add("bg-danger")
-		document.getElementById("toast-div").classList.add("show")
-		return 
-	}else{
-		//200 -> ok 
-		//create a success message for the user
-		document.getElementById("toast-header").innerHTML = "SUCCESS"
-		document.getElementById("toast-body").innerHTML = "The activiy has been deleted correctly"
-		document.getElementById("toast-img").classList.add("bg-success")
-		document.getElementById("toast-div").classList.add("show")
-	}
-}
-
-function removeAlertBox(){
-	alert = document.getElementById("alert-box")
-	alert.classList.add('d-none');
 }
 
 function createPieChart(){
