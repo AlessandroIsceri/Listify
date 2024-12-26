@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -50,11 +49,11 @@ public class APIController {
 		return "" + userService.createActivity(username, listId, activity);
 	}
 	
-	@GetMapping("/API/getNewListId")
+	/*@GetMapping("/API/{username}/toDoList/getNewListId")
 	@ResponseBody
-	public String getNewListId() {
-		return "5";
-	}
+	public String getNewListId(@RequestBody String name) {
+		userService.createList(username, name)
+	}*/
 	
 	/*@PutMapping("/API/{username}/updateList/{listId}")
 	public ResponseEntity updateList(@PathVariable(value="username") String username, 
@@ -122,19 +121,14 @@ public class APIController {
 		}
 	}
 	
-	@PostMapping("/API/{username}/createNewList/{listName}")
-	public ResponseEntity createList(@PathVariable(value="username") String username, 
-									 @PathVariable(value="listName") String listName){
-		if(userService.createList(username, listName)) {
-			return ResponseEntity.ok().build(); 
-		}else {
-			return ResponseEntity.notFound().build();
-		}
+	@PostMapping("/API/{username}/createNewList")
+	public String createList(@PathVariable(value="username") String username, 
+							 @RequestBody String listName){
+		return "" + userService.createList(username, listName);
 	}
 	
 	@PostMapping("/API/register")
 	public ResponseEntity createUser(@RequestBody Map<String, String> body){
-		
 		if(userService.createUser(body.get("email"), body.get("username"), body.get("password"))) {
 			return ResponseEntity.status(HttpStatus.CREATED).build(); 
 		}else {

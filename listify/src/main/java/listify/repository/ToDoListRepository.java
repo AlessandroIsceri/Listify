@@ -1,9 +1,7 @@
 package listify.repository;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
@@ -55,16 +53,21 @@ public class ToDoListRepository extends Repository{
 		
 	}
 
-	public boolean createList(String username, String listName) {
+	public int createList(String username, String listName) {
 		try {
             openConnection();
-            Statement statement = connection.createStatement();
-            statement.executeUpdate("INSERT INTO todolist (name, username) VALUES (\"" + listName + "\", \"" + username + "\")");
+            String query = "INSERT INTO todolist (name, username) VALUES (\"" + listName + "\", \"" + username + "\")";
+            PreparedStatement  statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            int generatedId = -1;
+            if (generatedKeys.next()) {
+                generatedId = generatedKeys.getInt(1); 
+            }
             closeConnection();
-            return true;
+            return generatedId;
         } catch (Exception e) {
             System.out.println(e);
-            return false;
+            return -1;
         }
 	}
 }

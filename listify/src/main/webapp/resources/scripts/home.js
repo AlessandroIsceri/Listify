@@ -48,12 +48,16 @@ async function deleteToDoList(button){
 
 async function addList(){
 	listName = document.getElementById("newToDoListName").value
-	//request new id from application and set it
-	response = await fetch(URL_PREFIX + "/listify/API/getNewListId/");
-    newId = await response.json()
 	
-	//send request to create the new list
-	await fetch(URL_PREFIX + "/listify/API/" + username + "/createNewList/" + listName, {method: "POST"});
+	//send request to create the new list /API/{username}/createNewList/{listName}
+	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/createNewList", 
+		{
+			method: "POST", 	
+			headers: {
+		        "Content-Type": "application/json",
+		    },
+		  	body: listName});
+	newId = await response.json()
 	
 	//create a new line in the table and fill it
 	tbody = document.querySelectorAll('tbody')[0];	

@@ -137,15 +137,13 @@ public class UserService {
 	}
 
 	public boolean createList(String username, String listName) {
+		int newId = toDoListRepository.createList(username, listName)
 		for(User user : users) {
 			if(username.equals(user.getUsername())){
-				if(toDoListRepository.createList(username, listName)) {
-					user.addToDoList(new ToDoList(listName));
-				}
-				return true;
+				user.addToDoList(new ToDoList(listName));
 			}
 		}
-		return false;
+		return newId;
 	}
 	
 	public boolean createUser(String email, String username, String password) {
