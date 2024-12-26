@@ -8,64 +8,16 @@ public class Activity {
 	private int priority = -1; //-1 = no priority
 	private LocalDate expirationDate = null;
 	private String category = "To Do";
-	
+
 	public Activity() {
 		super();
 	}
 	
-	public Activity(String name) {
-		super();
-		this.name = name;
-	}
-	
-	public Activity(String name, int priority) {
-		super();
-		this.name = name;
-		this.priority = priority;
-	}
-
-	public Activity(String name, int priority, String category) {
-		super();
-		this.name = name;
-		this.priority = priority;
-		this.category = category;
-	}
-
-	public Activity(String name, LocalDate expirationDate) {
-		super();
-		this.name = name;
-		this.expirationDate = expirationDate;
-	}
-
-	public Activity(String name, int priority, LocalDate expirationDate) {
-		super();
-		this.name = name;
-		this.priority = priority;
-		this.expirationDate = expirationDate;
-	}
-	
-	public Activity(String name, int priority, LocalDate expirationDate, String category) {
-		super();
-		this.name = name;
-		this.priority = priority;
-		this.expirationDate = expirationDate;
-		this.category = category;
-	}
-
 	public Activity(int id, String name, int priority, LocalDate expirationDate, String category) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.priority = priority;
 		this.expirationDate = expirationDate;
-		this.category = category;
-	}
-
-	public Activity(int id, String name, int priority, String category) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.priority = priority;
 		this.category = category;
 	}
 

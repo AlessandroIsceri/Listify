@@ -79,24 +79,6 @@ public class UserService {
 		}
 		return null;
 	}
-	
-	/*public boolean updateToDoList(String username, int listId, Activity[] updatedToDoList) {
-		for(User user : users) {
-			if(username.equals(user.getUsername())){
-				List<ToDoList> lists = user.getToDoLists();
-				for(ToDoList list : lists) {
-					if(listId == list.getId()){
-						//update the list
-						activityRepository.updateActivities(listId, updatedToDoList);
-						list.setToDoList(Arrays.asList(updatedToDoList));
-						//update the list on the db
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}*/
 
 	public boolean updateToDoListName(String username, int listId, String newListName) {
 		for(User user : users) {

@@ -32,34 +32,42 @@ function insertAfter(newNode, existingNode) {
     existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
 }
 
-async function drop(ev) {
-    ev.preventDefault();
-	parent = ev.target
-	while(parent != null && parent.tagName != "DIV"){
-		parent = parent.parentElement
+async function updateCategory(ulId, draggedElementId){
+	//get the new category
+	if(ulId == "to-do-activities-ul"){
+		category = "To Do"
+	}else if(ulId == "in-progress-activities-ul"){
+		category = "In Progress"
+	}else{
+		category = "Completed"
 	}
-	target = ev.target
-	while(target != null && target.tagName != "LI"){
-		target = target.parentElement
-	}
-	ul = parent.childNodes[1]
-	targetCategory = parent.childNodes[1].id
-	draggedElementId = draggedElement.id
-	if(target == null || parent == null){
-		//empty target list
-		draggedElementUlId = document.getElementById(draggedElementId).parentElement.id
-		ul.appendChild(document.getElementById(draggedElementId))
-		ulId = ul.id
+			
+	//send update request to the controller
+	res = await fetch(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId + "/updateActivityCategory/" + draggedElementId, {
+			method: "PUT",
+			headers: {
+		        "Content-Type": "application/json",
+		    },
+		  	body: category,
+		}
+	);
+	if(res.status == 404){
+		//error
+		printToast("ERROR", "An error occured during the update", "bg-danger")
+	}else{
+		//200 -> ok 
+		
+		//update HTML page
 		li = document.getElementById(draggedElementId)
 		hiddenInputs = li.querySelectorAll('input[type="hidden"]');
+		hiddenInputs[3].value = category;
+		
+		//update the chart 
 		if(ulId == "to-do-activities-ul"){
-			hiddenInputs[3].value = "To Do"
 			pieChart.data.datasets[0].data[0] = pieChart.data.datasets[0].data[0] + 1;
 		}else if(ulId == "in-progress-activities-ul"){
-			hiddenInputs[3].value = "In Progress"
 			pieChart.data.datasets[0].data[1] = pieChart.data.datasets[0].data[1] + 1;
 		}else{
-			hiddenInputs[3].value = "Completed"
 			pieChart.data.datasets[0].data[2] = pieChart.data.datasets[0].data[2] + 1;
 		}
 		
@@ -73,31 +81,38 @@ async function drop(ev) {
 		
 		//update the chart 
 		pieChart.update(); 
-		
-		category = hiddenInputs[3].value
-		res = await fetch(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId + "/updateActivityCategory/" + draggedElementId, {
-				method: "PUT",
-				headers: {
-			        "Content-Type": "application/json",
-			    },
-			  	body: category,
-			}
-		);
-		
-		if(res.status == 404){
-			//error
-			printToast("ERROR", "An error occured during the update", "bg-danger")
-			return 
-		}else{
-			//200 -> ok 
-			printToast("SUCCESS", "The activiy has been updated correctly", "bg-success")
-		}
-		
+		printToast("SUCCESS", "The activiy has been updated correctly", "bg-success")
+	}
+			
+}
+
+async function drop(ev) {
+    ev.preventDefault();
+	//get parent element of targetted element (div)
+	parent = ev.target
+	while(parent != null && parent.tagName != "DIV"){
+		parent = parent.parentElement
+	}
+	
+	//get li targetted element
+	target = ev.target
+	while(target != null && target.tagName != "LI"){
+		target = target.parentElement
+	}
+	
+	ul = parent.childNodes[1]
+	targetCategory = parent.childNodes[1].id
+	draggedElementId = draggedElement.id
+	
+	if(target == null || parent == null){//empty target list
+		draggedElementUlId = document.getElementById(draggedElementId).parentElement.id
+		ul.appendChild(document.getElementById(draggedElementId))
+		ulId = ul.id
+		updateCategory(ulId, draggedElementId)
 		return
 	}
 	
 	targetId = target.id
-	
     if(targetCategory == draggedElement.parentElement.id){ //same category
         if(targetId != draggedElementId){ //different elements
             //invert the position of the two elements
@@ -116,56 +131,14 @@ async function drop(ev) {
 		ul.appendChild(document.getElementById(draggedElementId))
         insertAfter(draggedElement, target)
 		
-		li = document.getElementById(draggedElementId)
-		hiddenInputs = li.querySelectorAll('input[type="hidden"]');
-		if(ulId == "to-do-activities-ul"){
-			hiddenInputs[3].value = "To Do"
-			pieChart.data.datasets[0].data[0] = pieChart.data.datasets[0].data[0] + 1;
-		}else if(ulId == "in-progress-activities-ul"){
-			hiddenInputs[3].value = "In Progress"
-			pieChart.data.datasets[0].data[1] = pieChart.data.datasets[0].data[1] + 1;
-		}else{
-			hiddenInputs[3].value = "Completed"
-			pieChart.data.datasets[0].data[2] = pieChart.data.datasets[0].data[2] + 1;
-		}
-		
-		if(draggedElementUlId == "to-do-activities-ul"){
-			pieChart.data.datasets[0].data[0] = pieChart.data.datasets[0].data[0] - 1;
-		}else if(draggedElementUlId == "in-progress-activities-ul"){
-			pieChart.data.datasets[0].data[1] = pieChart.data.datasets[0].data[1] - 1;
-		}else{
-			pieChart.data.datasets[0].data[2] = pieChart.data.datasets[0].data[2] - 1;
-		}
-		//update the chart 
-		pieChart.update(); 
-		
-		//send the request to the controller
-		//"/API/{username}/updateList/{listId}/updateActivityCategory/{activityId}"
-		category = hiddenInputs[3].value
-		res = await fetch(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId + "/updateActivityCategory/" + draggedElementId, {
-				method: "PUT",
-				headers: {
-			        "Content-Type": "application/json",
-			    },
-			  	body: category,
-			}
-		);
-		if(res.status == 404){
-			//error
-			printToast("ERROR", "An error occured during the update", "bg-danger")
-			return 
-		}else{
-			//200 -> ok 
-			printToast("SUCCESS", "The activiy has been updated correctly", "bg-success")
-		}
+		updateCategory(ulId, draggedElementId)
     }
 }
 
 async function addActivity(){
-	//add the activity to HTML page
+	//get Activity values
 	ulId = document.getElementById("modalActivityCategory").value
     ul = document.getElementById(ulId)
-	
     activityName = document.getElementById("modalActivityName").value
 	priority = document.getElementById("modalActivityPriority").value
 	date = document.getElementById("modalActivityExpDate").value
@@ -194,67 +167,8 @@ async function addActivity(){
 	);
 	newId = await response.json()
 	if(newId != -1){
-		li = document.createElement("li")
-	    li.classList.add("list-group-item")
-		li.classList.add("border-0")
-		li.classList.add("rounded-pill")
-	    li.draggable = "true"
-	    li.ondrag = drag
-		li.id = newId
-		
-		li.setAttribute('data-bs-toggle', 'modal');
-		li.setAttribute('data-bs-target', '#modifyActivityModal');
-		li.addEventListener('click', function() {
-		    fillForm(this); // Passa il riferimento all'elemento cliccato
-		});
-		
-		span = document.createElement("span")
-		span.innerHTML = "<b>"+activityName+"</b>"
-		p = document.createElement("p")
-		
-		clockIcon = document.createElement("i")
-		clockIcon.classList.add("fa-regular")
-		clockIcon.classList.add("fa-clock")
-		clockSpan = document.createElement("span")
-		clockSpan.innerHTML = " " + date
-		
-		priorityIcon = document.createElement("i")
-		priorityIcon.classList.add("fa-solid")
-		priorityIcon.classList.add("fa-exclamation")
-		prioritySpan = document.createElement("span")
-		prioritySpan.innerHTML = " Priority: " + priority
-		
-		p.appendChild(clockIcon)
-		p.appendChild(clockSpan)
-		p.appendChild(document.createElement("br"))
-		p.appendChild(priorityIcon)
-		p.appendChild(prioritySpan)
-		
-		
-		//add 3 input fields hidden <input type="hidden" value="${activity.name}">
-		inputName = document.createElement("input")
-		inputName.type = "hidden"
-		inputName.value = activityName
-		
-		inputDate = document.createElement("input")
-		inputDate.type = "hidden"
-		inputDate.value = date
-		
-		inputPriority = document.createElement("input")
-		inputPriority.type = "hidden"
-		inputPriority.value = priority
-		
-		inputCategory = document.createElement("input")
-		inputCategory.type = "hidden"
-		inputCategory.value = category
-		
-		li.appendChild(inputName)
-		li.appendChild(inputDate)
-		li.appendChild(inputPriority)
-		li.appendChild(inputCategory)
-		li.appendChild(span)
-		li.appendChild(p)
-		ul.appendChild(li)
+		//update HTML page
+		createLiElement(ul, newId, activityName, date, priority, category)
 		
 		//reset form
 		document.getElementById("modalActivityCategory").value = "to-do-activities-ul"
@@ -278,6 +192,75 @@ async function addActivity(){
 	}
 }
 
+function createLiElement(ul, newId, activityName, date, priority, category){
+	//create li element
+	li = document.createElement("li")
+    li.classList.add("list-group-item")
+	li.classList.add("border-0")
+	li.classList.add("rounded-pill")
+    li.draggable = "true"
+    li.ondrag = drag
+	li.id = newId
+	
+	li.setAttribute('data-bs-toggle', 'modal');
+	li.setAttribute('data-bs-target', '#modifyActivityModal');
+	li.addEventListener('click', function() {
+	    fillForm(this); // Passa il riferimento all'elemento cliccato
+	});
+	
+	//create span and paragraph for the li element
+	span = document.createElement("span")
+	span.innerHTML = "<b>"+activityName+"</b>"
+	p = document.createElement("p")
+	
+	
+	//icons
+	clockIcon = document.createElement("i")
+	clockIcon.classList.add("fa-regular")
+	clockIcon.classList.add("fa-clock")
+	clockSpan = document.createElement("span")
+	clockSpan.innerHTML = " " + date
+	
+	priorityIcon = document.createElement("i")
+	priorityIcon.classList.add("fa-solid")
+	priorityIcon.classList.add("fa-exclamation")
+	prioritySpan = document.createElement("span")
+	prioritySpan.innerHTML = " Priority: " + priority
+	
+	
+	//append the elements to the paragraph
+	p.appendChild(clockIcon)
+	p.appendChild(clockSpan)
+	p.appendChild(document.createElement("br"))
+	p.appendChild(priorityIcon)
+	p.appendChild(prioritySpan)
+	
+	//add 4 input fields hidden
+	inputName = document.createElement("input")
+	inputName.type = "hidden"
+	inputName.value = activityName
+	
+	inputDate = document.createElement("input")
+	inputDate.type = "hidden"
+	inputDate.value = date
+	
+	inputPriority = document.createElement("input")
+	inputPriority.type = "hidden"
+	inputPriority.value = priority
+	
+	inputCategory = document.createElement("input")
+	inputCategory.type = "hidden"
+	inputCategory.value = category
+	
+	li.appendChild(inputName)
+	li.appendChild(inputDate)
+	li.appendChild(inputPriority)
+	li.appendChild(inputCategory)
+	li.appendChild(span)
+	li.appendChild(p)
+	ul.appendChild(li)
+}
+
 function fillForm(li){
 	//autofill form when updating an activity
 	hiddenInputs = li.querySelectorAll('input[type="hidden"]');
@@ -288,18 +271,12 @@ function fillForm(li){
 }
 
 async function updateActivity(){
+	//get activity values
 	name = document.getElementById("modifyModalActivityName").value
 	priority = document.getElementById("modifyModalActivityPriority").value
 	expDate = document.getElementById("modifyModalActivityExpDate").value
 	id = document.getElementById("modifyModalActivityId").value
 	li = document.getElementById(id)
-	li.children[4].innerHTML = "<b>"+name+"</b>";
-	li.children[5].children[4].innerHTML = " Priority: " + priority
-	li.children[5].children[1].innerHTML = " " + expDate
-	hiddenInputs = li.querySelectorAll('input[type="hidden"]');
-	hiddenInputs[0].value = name
-	hiddenInputs[1].value = expDate
-	hiddenInputs[2].value = priority
 	
 	ulId = li.parentElement.id
 	//update the chart 
@@ -332,6 +309,16 @@ async function updateActivity(){
 		return 
 	}else{
 		//200 -> ok 
+		
+		//update HTML page
+		li.children[4].innerHTML = "<b>"+name+"</b>";
+		li.children[5].children[4].innerHTML = " Priority: " + priority
+		li.children[5].children[1].innerHTML = " " + expDate
+		hiddenInputs = li.querySelectorAll('input[type="hidden"]');
+		hiddenInputs[0].value = name
+		hiddenInputs[1].value = expDate
+		hiddenInputs[2].value = priority
+		
 	    printToast("SUCCESS", "The activiy has been updated correctly", "bg-success")
 	}
 }
@@ -340,7 +327,6 @@ async function deleteActivity(){
 	id = document.getElementById("modifyModalActivityId").value
 	
 	//send request to the controller
-	///API/{username}/updateList/{listId}/deleteActivity/{activityId}
 	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId + "/deleteActivity/" + id,
 		{
 			method: "DELETE"
@@ -351,25 +337,26 @@ async function deleteActivity(){
 		return 
 	}else{
 		//200 -> ok 
+		//update the chart and the HTML page
+		
+		li = document.getElementById(id)
+		ulId = li.parentElement.id
+		
+		if(ulId == "to-do-activities-ul"){
+			pieChart.data.datasets[0].data[0] = pieChart.data.datasets[0].data[0] - 1;
+		}else if(ulId == "in-progress-activities-ul"){
+			pieChart.data.datasets[0].data[1] = pieChart.data.datasets[0].data[1] - 1;
+		}else{
+			pieChart.data.datasets[0].data[2] = pieChart.data.datasets[0].data[2] - 1;
+		}
+		pieChart.update(); 
+		document.getElementById(id).remove();
+		
 		showToast("SUCCESS", "The activiy has been deleted correctly", "bg-success")
 	}
-	
-	//update the chart 
-	li = document.getElementById(id)
-	ulId = li.parentElement.id
-	
-	if(ulId == "to-do-activities-ul"){
-		pieChart.data.datasets[0].data[0] = pieChart.data.datasets[0].data[0] - 1;
-	}else if(ulId == "in-progress-activities-ul"){
-		pieChart.data.datasets[0].data[1] = pieChart.data.datasets[0].data[1] - 1;
-	}else{
-		pieChart.data.datasets[0].data[2] = pieChart.data.datasets[0].data[2] - 1;
-	}
-	pieChart.update(); 
-	document.getElementById(id).remove();
-	
 }
 
+//function to create the pie chart
 function createPieChart(){
 	ctx = document.getElementById('pieChart');
 	

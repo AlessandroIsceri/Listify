@@ -89,7 +89,7 @@ async function addList(){
 	
 	if(newId != -1){ //the list has been created on the DB
 		//update HTML page
-		createTableRow()
+		createTableRow(listName, newId)
 		
 		//reset form
 		document.getElementById("newToDoListName").value = "";
@@ -101,29 +101,35 @@ async function addList(){
 }
 
 //create a new line in the table and fill it
-function createTableRow(){
+function createTableRow(listName, newId){
 	tbody = document.querySelectorAll('tbody')[0];	
-			
+	
+	//create the row
 	rowCount++
 	tr = document.createElement("tr")
 	th = document.createElement("th")
 	th.setAttribute("scope","row")
 	th.innerHTML = rowCount
+	
+	//list name cell
 	tdName = document.createElement("td")
 	aName = document.createElement("a")
 	aName.href = "toDoList/" + newId
 	aName.id = "list-" + newId + "-name"
 	aName.innerHTML = listName
 	
+	//list operations cell
 	tdOperations = document.createElement("td")
+	
+	//hidden elements
 	inputId = document.createElement("input")
 	inputId.setAttribute("type", "hidden")
 	inputId.value = newId
-	
 	inputName = document.createElement("input")
 	inputName.setAttribute("type", "hidden")
 	inputName.value = listName
 	
+	//delete button
 	deleteButton = document.createElement('button');
     deleteButton.type = 'button';
     deleteButton.className = 'btn';
@@ -131,10 +137,12 @@ function createTableRow(){
         deleteToDoList(this);
     };
 
+	//delete icon
     trashIcon = document.createElement('i');
     trashIcon.className = 'fa-solid fa-trash-can';
     trashIcon.style.color = '#DC3545';
 	
+	//edit button
 	editButton = document.createElement('button');
     editButton.type = 'button';
     editButton.className = 'btn';
@@ -144,15 +152,20 @@ function createTableRow(){
         fillForm(this);
     };
 
+	//edit icon
 	editIcon = document.createElement('i');
     editIcon.className = 'fa-solid fa-pen-to-square';
     editIcon.style.color = '#0D6EFD';
 
+	//append all the elements created
 	tdName.appendChild(aName)
+	
 	tdOperations.appendChild(inputId)	
 	tdOperations.appendChild(inputName)
+	
 	deleteButton.appendChild(trashIcon)
 	editButton.appendChild(editIcon)
+	
 	tdOperations.appendChild(deleteButton)
 	tdOperations.appendChild(editButton)
 	

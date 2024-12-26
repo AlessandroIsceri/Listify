@@ -9,22 +9,16 @@ public class User {
 	private String username;
 	private List<ToDoList> toDoLists;
 	
-	public User(String email, String password, String username, List<ToDoList> toDoLists) {
+	public User() {
 		super();
-		this.email = email;
-		this.password = password;
-		this.username = username;
-		this.toDoLists = toDoLists;
-	}
-
-	public User(String email, String password, String username) {
-		super();
-		this.email = email;
-		this.password = password;
-		this.username = username;
-		this.toDoLists = new ArrayList<ToDoList>();
 	}
 	
+	public User(String email, String password, String username) {
+		this.email = email;
+		this.password = password;
+		this.username = username;
+	}
+
 	public String getEmail() {
 		return email;
 	}

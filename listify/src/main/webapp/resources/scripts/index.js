@@ -12,9 +12,6 @@ async function login(){
 	let email = document.getElementById("login-email").value;
 	let password = document.getElementById("login-password").value;
 	
-	//encrypt password
-	//let encryptedPassword = hex_sha512(password);
-	
 	response = await fetch(URL_PREFIX + "/listify/API/login/", {
 	    method: "POST",
 	    headers: {
@@ -48,7 +45,7 @@ async function newAccount(){
 	        "Content-Type": "application/json",
 	    },
 	    body: JSON.stringify({"email" : email, "username":username, "password" : password}),
-		});
+	});
 	
 	if (response.status == 201) {
 		window.location.replace(URL_PREFIX + "/listify/" + username + "/home") //redirect to home page

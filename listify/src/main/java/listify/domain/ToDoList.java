@@ -1,6 +1,5 @@
 package listify.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ToDoList {
@@ -8,24 +7,13 @@ public class ToDoList {
 	private String name;
 	private List<Activity> toDoList;
 	
-	public ToDoList(int id, String name, List<Activity> toDoList) {
+	public ToDoList() {
 		super();
-		this.id = id;
-		this.name = name;
-		this.toDoList = toDoList;
-	}
-	
-	public ToDoList(int id, String name) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.toDoList = new ArrayList<Activity>();
 	}
 
-	public ToDoList(String name) {
-		super();
+	public ToDoList(int id, String name) {
+		this.id = id;
 		this.name = name;
-		this.toDoList = new ArrayList<Activity>();
 	}
 
 	public boolean addItem(Activity item) {
