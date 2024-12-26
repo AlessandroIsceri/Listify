@@ -2,8 +2,6 @@ package listify.domain;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 public class Activity {
 	private int id;
 	private String name;
