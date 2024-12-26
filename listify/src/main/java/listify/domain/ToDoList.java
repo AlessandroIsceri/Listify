@@ -1,5 +1,6 @@
 package listify.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ToDoList {
@@ -14,6 +15,7 @@ public class ToDoList {
 	public ToDoList(int id, String name) {
 		this.id = id;
 		this.name = name;
+		toDoList = new ArrayList<Activity>();
 	}
 
 	public boolean addItem(Activity item) {

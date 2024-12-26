@@ -17,6 +17,7 @@ public class User {
 		this.email = email;
 		this.password = password;
 		this.username = username;
+		this.toDoLists = new ArrayList<ToDoList>();
 	}
 
 	public String getEmail() {

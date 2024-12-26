@@ -127,6 +127,7 @@ function createTableRow(listName, newId){
 	inputId.value = newId
 	inputName = document.createElement("input")
 	inputName.setAttribute("type", "hidden")
+	inputName.id = "list-"+newId+"-name-hidden"
 	inputName.value = listName
 	
 	//delete button

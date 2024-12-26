@@ -66,7 +66,6 @@ public class ActivityRepository extends Repository{
 		try {
             openConnection();
             Statement statement = connection.createStatement();
-            System.out.println("UPDATE activity SET name = \"" + activity.getName() + "\", priority = " + activity.getPriority() + ", expirationDate = \"" + activity.getExpirationDate() + "\"" + ", category = \"" + activity.getCategory() + "\" WHERE id = " + activityId);
             statement.executeUpdate("UPDATE activity SET name = \"" + activity.getName() + "\", priority = " + activity.getPriority() + ", expirationDate = \"" + activity.getExpirationDate() + "\"" + ", category = \"" + activity.getCategory() + "\" WHERE id = " + activityId);
             closeConnection();
             return true;

@@ -1,9 +1,6 @@
 package listify.services;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import listify.domain.Activity;
@@ -53,6 +50,7 @@ public class ListifyService {
 	public String login(String email, String password) {
 		for(User user : users) {
 			if(email.equals(user.getEmail()) && password.equals(user.getPassword())){
+				System.out.println("here");
 				return user.getUsername();
 			}
 		}

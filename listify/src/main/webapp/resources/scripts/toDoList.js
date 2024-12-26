@@ -82,7 +82,7 @@ async function updateCategory(ulId, draggedElementId){
 		
 		//update the chart 
 		pieChart.update(); 
-		printToast("SUCCESS", "The activiy has been updated correctly", "bg-success")
+		printToast("SUCCESS", "The activity has been updated correctly", "bg-success")
 		return 200
 	}
 			
@@ -109,7 +109,7 @@ async function drop(ev) {
 	if(target == null || parent == null){ //empty target list
 		draggedElementUlId = document.getElementById(draggedElementId).parentElement.id
 		ulId = ul.id
-		if(updateCategory(ulId, draggedElementId) == 200){
+		if(await updateCategory(ulId, draggedElementId) == 200){
 			ul.appendChild(document.getElementById(draggedElementId))
 		}
 		return
@@ -132,7 +132,7 @@ async function drop(ev) {
 		ulId = ul.id
 		draggedElementUlId = document.getElementById(draggedElementId).parentElement.id
 		
-		if(updateCategory(ulId, draggedElementId) == 200){
+		if(await updateCategory(ulId, draggedElementId) == 200){
 			ul.appendChild(document.getElementById(draggedElementId))
 	        insertAfter(draggedElement, target)
 		}
@@ -190,9 +190,9 @@ async function addActivity(){
 		}
 		pieChart.update();
 		
-		showToast("SUCCESS", "The activiy has been created correctly", "bg-success")
+		printToast("SUCCESS", "The activity has been created correctly", "bg-success")
 	}else{
-		showToast("ERROR", "An error occured during the creation", "bg-danger")
+		printToast("ERROR", "An error occured during the creation", "bg-danger")
 	}
 }
 
@@ -323,7 +323,7 @@ async function updateActivity(){
 		hiddenInputs[1].value = expDate
 		hiddenInputs[2].value = priority
 		
-	    printToast("SUCCESS", "The activiy has been updated correctly", "bg-success")
+	    printToast("SUCCESS", "The activity has been updated correctly", "bg-success")
 	}
 }
 
@@ -337,7 +337,7 @@ async function deleteActivity(){
 		}
 	));
 	if(res.status == 404){
-		showToast("ERROR", "An error occured during the deletion", "bg-danger")
+		printToast("ERROR", "An error occured during the deletion", "bg-danger")
 		return 
 	}else{
 		//200 -> ok 
@@ -356,7 +356,7 @@ async function deleteActivity(){
 		pieChart.update(); 
 		document.getElementById(id).remove();
 		
-		showToast("SUCCESS", "The activiy has been deleted correctly", "bg-success")
+		printToast("SUCCESS", "The activity has been deleted correctly", "bg-success")
 	}
 }
 
