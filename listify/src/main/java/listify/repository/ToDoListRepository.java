@@ -10,6 +10,7 @@ import listify.domain.User;
 
 public class ToDoListRepository extends Repository{
 	
+	//get all the todolists
 	public ArrayList<ToDoList> getToDoLists(User user) {
 		ArrayList<ToDoList> toDoLists = new ArrayList<>();
 		try {
@@ -26,6 +27,7 @@ public class ToDoListRepository extends Repository{
 		return toDoLists;
 	}
 
+	//update the name of an existing to do list
 	public boolean updateToDoListName(int listId, String newListName) {
 		try {
             openConnection();
@@ -39,6 +41,7 @@ public class ToDoListRepository extends Repository{
         }
 	}
 
+	//delete an existing list
 	public boolean deleteList(int listId) {
 		try {
             openConnection();
@@ -53,11 +56,11 @@ public class ToDoListRepository extends Repository{
 		
 	}
 
+	//create a new list and return its id
 	public int createList(String username, String listName) {
 		try {
             openConnection();
             String query = "INSERT INTO todolist (name, username) VALUES (\"" + listName + "\", \"" + username + "\")";
-            System.out.println(query);
             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.executeUpdate();
             ResultSet generatedKeys = statement.getGeneratedKeys();

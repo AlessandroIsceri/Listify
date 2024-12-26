@@ -16,15 +16,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import listify.domain.Activity;
-import listify.services.UserService;
+import listify.services.ListifyService;
 
 @Controller
 public class APIController {
-	private UserService userService;
+	private ListifyService listifyService;
 	ObjectMapper objectMapper = new ObjectMapper();
 	
 	public APIController() {
-		userService = UserService.getInstance();
+		listifyService = ListifyService.getInstance();
 		// register module to handle dates
 		objectMapper.registerModule(new JavaTimeModule());
 		objectMapper.findAndRegisterModules();
@@ -33,9 +33,46 @@ public class APIController {
 	
 	@PostMapping("/API/login")
 	public ResponseEntity<String> getPage(@RequestBody Map<String, String> body){
-		String username = userService.login(body.get("email"), body.get("password"));
+		String username = listifyService.login(body.get("email"), body.get("password"));
 		if(username != null) {
 			return ResponseEntity.ok().body(username);
+		}else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	@PostMapping("/API/register")
+	public ResponseEntity createUser(@RequestBody Map<String, String> body){
+		if(listifyService.createUser(body.get("email"), body.get("username"), body.get("password"))) {
+			return ResponseEntity.status(HttpStatus.CREATED).build(); 
+		}else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	@PostMapping("/API/{username}/createList")
+	@ResponseBody
+	public String createList(@PathVariable(value="username") String username, 
+							 @RequestBody String listName){
+		return "" + listifyService.createList(username, listName);
+	}
+	
+	@PutMapping("/API/{username}/updateListName/{listId}")
+	public ResponseEntity updateList(@PathVariable(value="username") String username, 
+									 @PathVariable(value="listId") int listId,
+									 @RequestBody String newListName) {
+		if(listifyService.updateToDoListName(username, listId, newListName)) {
+			return ResponseEntity.ok().build(); 
+		}else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	@DeleteMapping("/API/{username}/deleteList/{listId}")
+	public ResponseEntity deleteList(@PathVariable(value="username") String username, 
+			 						 @PathVariable(value="listId") int listId){
+		if(listifyService.deleteList(username, listId)) {
+			return ResponseEntity.ok().build(); 
 		}else {
 			return ResponseEntity.notFound().build();
 		}
@@ -44,20 +81,9 @@ public class APIController {
 	@PostMapping("/API/{username}/toDoList/{listId}/createActivity")
 	@ResponseBody
 	public String createActivity(@PathVariable(value="username") String username, 
-			 					   @PathVariable(value="listId") int listId,
-			 					  @RequestBody Activity activity) {
-		return "" + userService.createActivity(username, listId, activity);
-	}
-	
-	@DeleteMapping("/API/{username}/updateList/{listId}/deleteActivity/{activityId}")
-	public ResponseEntity deleteActivity(@PathVariable(value="username") String username, 
-			 							 @PathVariable(value="listId") int listId,
-			 							 @PathVariable(value="activityId") int activityId) {
-		if(userService.deleteActivity(username, listId, activityId)) {
-			return ResponseEntity.ok().build(); 
-		}else {
-			return ResponseEntity.notFound().build();
-		}
+			 					 @PathVariable(value="listId") int listId,
+			 					 @RequestBody Activity activity) {
+		return "" + listifyService.createActivity(username, listId, activity);
 	}
 	
 	@PutMapping("/API/{username}/updateList/{listId}/updateActivity/{activityId}")
@@ -65,7 +91,7 @@ public class APIController {
 			 							 @PathVariable(value="listId") int listId,
 			 							 @PathVariable(value="activityId") int activityId,
 			 							 @RequestBody Activity activity) {
-		if(userService.updateActivity(username, listId, activityId, activity)) {
+		if(listifyService.updateActivity(username, listId, activityId, activity)) {
 			return ResponseEntity.ok().build(); 
 		}else {
 			return ResponseEntity.notFound().build();
@@ -77,49 +103,21 @@ public class APIController {
 			 							 @PathVariable(value="listId") int listId,
 			 							 @PathVariable(value="activityId") int activityId,
 			 							 @RequestBody String category) {
-		if(userService.updateActivityCategory(username, listId, activityId, category)) {
+		if(listifyService.updateActivityCategory(username, listId, activityId, category)) {
 			return ResponseEntity.ok().build(); 
 		}else {
 			return ResponseEntity.notFound().build();
 		}
 	}
 	
-	@PutMapping("/API/{username}/updateListName/{listId}")
-	public ResponseEntity updateList(@PathVariable(value="username") String username, 
-							 @PathVariable(value="listId") int listId,
-							 @RequestBody String newListName) {
-		if(userService.updateToDoListName(username, listId, newListName)) {
+	@DeleteMapping("/API/{username}/updateList/{listId}/deleteActivity/{activityId}")
+	public ResponseEntity deleteActivity(@PathVariable(value="username") String username, 
+			 							 @PathVariable(value="listId") int listId,
+			 							 @PathVariable(value="activityId") int activityId) {
+		if(listifyService.deleteActivity(username, listId, activityId)) {
 			return ResponseEntity.ok().build(); 
 		}else {
 			return ResponseEntity.notFound().build();
 		}
 	}
-	
-	@DeleteMapping("/API/{username}/deleteList/{listId}")
-	public ResponseEntity deleteList(@PathVariable(value="username") String username, 
-			 						@PathVariable(value="listId") int listId){
-		if(userService.deleteList(username, listId)) {
-			return ResponseEntity.ok().build(); 
-		}else {
-			return ResponseEntity.notFound().build();
-		}
-	}
-	
-	@PostMapping("/API/{username}/createList")
-	@ResponseBody
-	public String createList(@PathVariable(value="username") String username, 
-							 @RequestBody String listName){
-		System.out.println("creating list " + listName + "...");
-		return "" + userService.createList(username, listName);
-	}
-	
-	@PostMapping("/API/register")
-	public ResponseEntity createUser(@RequestBody Map<String, String> body){
-		if(userService.createUser(body.get("email"), body.get("username"), body.get("password"))) {
-			return ResponseEntity.status(HttpStatus.CREATED).build(); 
-		}else {
-			return ResponseEntity.notFound().build();
-		}
-	}
-	
 }

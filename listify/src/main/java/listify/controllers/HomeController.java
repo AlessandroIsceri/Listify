@@ -10,15 +10,15 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import listify.domain.ToDoList;
 import listify.domain.User;
-import listify.services.UserService;
+import listify.services.ListifyService;
 
 @Controller
 public class HomeController {
-	private UserService userService;
+	private ListifyService listifyService;
 	ObjectMapper objectMapper = new ObjectMapper();
 	
 	public HomeController() {
-		userService = UserService.getInstance();
+		listifyService = ListifyService.getInstance();
 		// register module to handle dates
 		objectMapper.registerModule(new JavaTimeModule());
 		objectMapper.findAndRegisterModules();
@@ -28,7 +28,7 @@ public class HomeController {
 	@GetMapping("{username}/home")
 	public ModelAndView getHomePage(@PathVariable(value="username") String username){
 		ModelAndView m = new ModelAndView();
-		User user = userService.getUser(username);
+		User user = listifyService.getUser(username);
 		m.addObject("username", user.getUsername());
 		m.addObject("toDoLists", user.getToDoLists());
 		m.setViewName("home");	
@@ -41,7 +41,7 @@ public class HomeController {
 		ModelAndView m = new ModelAndView();
 		m.setViewName("toDoList");
 		m.addObject("username", username);
-		ToDoList list = userService.getToDoList(username, listId);
+		ToDoList list = listifyService.getToDoList(username, listId);
 		m.addObject("list", list);
 		return m;
 	}

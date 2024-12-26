@@ -13,21 +13,22 @@ import listify.repository.ActivityRepository;
 import listify.repository.ToDoListRepository;
 import listify.repository.UserRepository;
 
-public class UserService {
+public class ListifyService {
 	List<User> users;
-	private static UserService instance;
+	private static ListifyService instance;
 	private UserRepository userRepository;
 	private ToDoListRepository toDoListRepository;
 	private ActivityRepository activityRepository;
 
-	public static UserService getInstance(){
+	//singleton
+	public static ListifyService getInstance(){
 		if (instance == null){
-			instance = new UserService();
+			instance = new ListifyService();
 		}
 		return instance;
 	}
 	
-	private UserService() {
+	private ListifyService() {
 		users = new ArrayList<User>();
         userRepository = new UserRepository();
         toDoListRepository = new ToDoListRepository();
@@ -39,6 +40,7 @@ public class UserService {
         	//retrieve todolist information
         	ArrayList<ToDoList> toDoLists = toDoListRepository.getToDoLists(user);
         	for(ToDoList list : toDoLists) {
+        		//retrieve activity information
         		ArrayList<Activity> activities = activityRepository.getActivities(list);
         		for(Activity activity : activities) {
         			list.addItem(activity);
@@ -58,6 +60,7 @@ public class UserService {
 	}
 	
 	public User getUser(String username) {
+		//no need to search in the DB -> faster
 		for(User user : users) {
 			if(username.equals(user.getUsername())){
 				return user;
@@ -120,9 +123,11 @@ public class UserService {
 
 	public int createList(String username, String listName) {
 		int newId = toDoListRepository.createList(username, listName);
-		for(User user : users) {
-			if(username.equals(user.getUsername())){
-				user.addToDoList(new ToDoList(newId, listName));
+		if(newId != -1) { //-1 -> error in the db
+			for(User user : users) {
+				if(username.equals(user.getUsername())){
+					user.addToDoList(new ToDoList(newId, listName));
+				}
 			}
 		}
 		return newId;
@@ -143,15 +148,16 @@ public class UserService {
 	}
 
 	public int createActivity(String username, int listId, Activity activity) {
-		
 		int newId = activityRepository.createActivity(listId, activity);
-		activity.setId(newId);
-		for(User user : users) {
-			if(username.equals(user.getUsername())){
-				List<ToDoList> lists = user.getToDoLists();
-				for(ToDoList list : lists) {
-					if(listId == list.getId()){
-						list.addItem(activity);
+		if(newId != -1) { //-1 -> error in the db
+			activity.setId(newId);
+			for(User user : users) {
+				if(username.equals(user.getUsername())){
+					List<ToDoList> lists = user.getToDoLists();
+					for(ToDoList list : lists) {
+						if(listId == list.getId()){
+							list.addItem(activity);
+						}
 					}
 				}
 			}
@@ -168,7 +174,6 @@ public class UserService {
 						for(Activity activity: list.getToDoList()) {
 							if(activityId == activity.getId()) {
 								//delete the activity from the db
-								System.out.println("activity found locally");
 								if(activityRepository.deleteActivity(activityId)) {
 									list.removeItem(activity);
 									return true;
@@ -191,7 +196,6 @@ public class UserService {
 						for(Activity cur_activity: list.getToDoList()) {
 							if(activityId == cur_activity.getId()) {
 								//delete the activity from the db
-								System.out.println("activity found locally");
 								if(activityRepository.updateActivity(activityId, activity)) {
 									cur_activity = activity;
 									return true;
@@ -214,7 +218,6 @@ public class UserService {
 						for(Activity cur_activity: list.getToDoList()) {
 							if(activityId == cur_activity.getId()) {
 								//delete the activity from the db
-								System.out.println("activity found locally");
 								if(activityRepository.updateActivityCategory(activityId, category)) {
 									cur_activity.setCategory(category);
 									return true;

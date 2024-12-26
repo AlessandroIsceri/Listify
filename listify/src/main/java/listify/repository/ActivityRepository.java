@@ -10,6 +10,7 @@ import listify.domain.ToDoList;
 
 public class ActivityRepository extends Repository{
 	
+	//get all the activities in the DB
 	public ArrayList<Activity> getActivities(ToDoList list) {
 		ArrayList<Activity> activities = new ArrayList<>();
 		try {
@@ -26,6 +27,7 @@ public class ActivityRepository extends Repository{
 		return activities;
 	}
 
+	//create a new activity and return its id
 	public int createActivity(int listId, Activity activity) {
 		try {
             openConnection();
@@ -45,11 +47,11 @@ public class ActivityRepository extends Repository{
         }
 	}
 
+	//delete an activity from the DB
 	public boolean deleteActivity(int activityId) {
 		try {
             openConnection();
             Statement statement = connection.createStatement();
-            System.out.println("DELETE FROM activity WHERE id = " + activityId);
             statement.executeUpdate("DELETE FROM activity WHERE id = " + activityId);
             closeConnection();
             return true;
@@ -59,6 +61,7 @@ public class ActivityRepository extends Repository{
         }
 	}
 
+	//update an activity
 	public boolean updateActivity(int activityId, Activity activity) {
 		try {
             openConnection();
@@ -73,11 +76,11 @@ public class ActivityRepository extends Repository{
         }
 	}
 
+	//update the category of an activity
 	public boolean updateActivityCategory(int activityId, String category) {
 		try {
             openConnection();
             Statement statement = connection.createStatement();
-            System.out.println("UPDATE activity SET category = \"" + category + "\" WHERE id = " + activityId);
             statement.executeUpdate("UPDATE activity SET category = \"" + category + "\" WHERE id = " + activityId);
             closeConnection();
             return true;

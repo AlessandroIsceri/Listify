@@ -8,6 +8,7 @@ import listify.domain.User;
 
 public class UserRepository extends Repository{
 
+	//get all the users
 	public ArrayList<User> getUsers() {
 		ArrayList<User> users = new ArrayList<>();
 		try {
@@ -24,6 +25,7 @@ public class UserRepository extends Repository{
 		return users;
 	}
 
+	//create a new user
 	public boolean createUser(String email, String password, String username) {
 		try {
             openConnection();
