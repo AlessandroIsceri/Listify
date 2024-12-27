@@ -28,6 +28,12 @@ function printToast(headerMessage, boydMessage, bgClass){
 async function updateListName(){
 	listId = document.getElementById("modifyToDoListNameId").value
 	newListName = document.getElementById("modifyToDoListName").value
+	
+	if(newListName.length == 0){
+		printToast("ERROR", "The new list name is empty!", "bg-danger")
+		return 
+	}
+	
 	//send update request 
 	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateListName/" + listId,
 		{
@@ -76,6 +82,11 @@ async function deleteToDoList(button){
 
 async function addList(){
 	listName = document.getElementById("newToDoListName").value
+	
+	if(listName.length == 0){
+		printToast("ERROR", "The list name is empty!", "bg-danger")
+		return 
+	}
 	
 	//send request to create the new list /API/{username}/createList
 	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/createList", {

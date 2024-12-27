@@ -155,6 +155,11 @@ async function addActivity(){
 		category = "Completed";
 	}
 	
+	if(activityName.length == 0){
+		printToast("ERROR", "The activity name is empty!", "bg-danger")
+		return 
+	}
+	
 	//request new id from application and set it
 	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/toDoList/" + listId + "/createActivity", {
 			method: "POST",
@@ -290,6 +295,11 @@ async function updateActivity(){
 		category = "In Progress"
 	}else{
 		category = "Completed"
+	}
+	
+	if(name.length == 0){
+		printToast("ERROR", "The activity name is empty!", "bg-danger")
+		return 
 	}
 	
 	//send update request to the db
