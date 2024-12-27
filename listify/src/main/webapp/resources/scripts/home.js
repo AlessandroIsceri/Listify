@@ -176,3 +176,15 @@ function createTableRow(listName, newId){
 	
 	tbody.appendChild(tr)
 }
+
+async function logout(){
+	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/logout", {
+			method: "POST"
+	});
+	if(response.status == 200){
+		//redirect to login page
+		window.location.href = URL_PREFIX + "/listify/";
+	}else{
+		printToast("ERROR", "An error occurred during the logout", "bg-danger")
+	}
+}

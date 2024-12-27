@@ -39,7 +39,7 @@
 	            <div class="navbar-nav">
 	                <div class="nav-link active"><i class="fa-solid fa-user"></i> Hi, ${username}</div>
 	                <a class="nav-link" aria-current="page" href="/listify/${username}/home"><i class="fa-solid fa-house"></i> Home</a>
-	            	<a class="nav-link" aria-current="page" href="#" id="logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
+	            	<a class="nav-link" href="" aria-current="page" onclick="logout()" id="logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
 	            </div>
 	        </div>
 	    </div>

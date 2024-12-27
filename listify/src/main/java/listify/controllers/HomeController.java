@@ -1,8 +1,11 @@
 package listify.controllers;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +29,12 @@ public class HomeController {
 	}
 	
 	@GetMapping("{username}/home")
-	public ModelAndView getHomePage(@PathVariable(value="username") String username){
+	public ModelAndView getHomePage(HttpSession session, 
+									@PathVariable(value="username") String username){
+		//check if a logged user is trying to access a webpage of another user
+		if(!(username.equals(session.getAttribute("username")))) {
+			return new ModelAndView("errorPage");
+		}
 		ModelAndView m = new ModelAndView();
 		User user = listifyService.getUser(username);
 		m.addObject("username", user.getUsername());
@@ -36,8 +44,13 @@ public class HomeController {
 	}
 	
 	@GetMapping("{username}/toDoList/{listId}")
-	public ModelAndView getListPage(@PathVariable(value="username") String username, 
+	public ModelAndView getListPage(HttpSession session,
+									@PathVariable(value="username") String username, 
 									@PathVariable(value="listId") int listId){
+		//check if a logged user is trying to access a webpage of another user
+		if(!(username.equals(session.getAttribute("username")))) {
+			return new ModelAndView("errorPage");
+		}
 		ModelAndView m = new ModelAndView();
 		m.setViewName("toDoList");
 		m.addObject("username", username);
