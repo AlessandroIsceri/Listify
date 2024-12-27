@@ -193,9 +193,13 @@ public class ListifyService {
 					if(listId == list.getId()){
 						for(Activity cur_activity: list.getToDoList()) {
 							if(activityId == cur_activity.getId()) {
-								//delete the activity from the db
+								//update the activity in the db
 								if(activityRepository.updateActivity(activityId, activity)) {
-									cur_activity = activity;
+									//update the activity at run-time
+									cur_activity.setName(activity.getName());
+									cur_activity.setCategory(activity.getCategory());
+									cur_activity.setPriority(activity.getPriority());
+									cur_activity.setExpirationDate(activity.getExpirationDate());
 									return true;
 								}
 							}

@@ -1,8 +1,10 @@
 package listify.repository;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import listify.domain.Activity;
@@ -18,7 +20,11 @@ public class ActivityRepository extends Repository{
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM activity WHERE list_id = " + list.getId());
             while (resultSet.next()) {
-            	activities.add(new Activity(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("priority"), resultSet.getDate("expirationDate").toLocalDate(), resultSet.getString("category")));
+            	LocalDate date = null;
+            	if(resultSet.getDate("expirationDate") != null) {
+            		date = resultSet.getDate("expirationDate").toLocalDate();
+            	}
+            	activities.add(new Activity(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("priority"), date, resultSet.getString("category")));
             }
             closeConnection();
         } catch (Exception e) {
@@ -31,7 +37,11 @@ public class ActivityRepository extends Repository{
 	public int createActivity(int listId, Activity activity) {
 		try {
             openConnection();
-            String query = "INSERT INTO activity (name, priority, expirationDate, category, list_id) VALUES (\"" + activity.getName() + "\", " + activity.getPriority() + ", \"" + activity.getExpirationDate() + "\", \"" + activity.getCategory() + "\", "+ listId + ")";
+            String expDate = "NULL";
+            if(activity.getExpirationDate() != null) {
+            	expDate = "\"" + activity.getExpirationDate() + "\"";
+            }
+            String query = "INSERT INTO activity (name, priority, expirationDate, category, list_id) VALUES (\"" + activity.getName() + "\", " + activity.getPriority() + ", " + expDate + ", \"" + activity.getCategory() + "\", "+ listId + ")";
             PreparedStatement  statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.executeUpdate();
             ResultSet generatedKeys = statement.getGeneratedKeys();
@@ -65,8 +75,13 @@ public class ActivityRepository extends Repository{
 	public boolean updateActivity(int activityId, Activity activity) {
 		try {
             openConnection();
+            String expDate = "NULL";
+            if(activity.getExpirationDate() != null) {
+            	expDate = "\"" + activity.getExpirationDate() + "\"";
+            }
             Statement statement = connection.createStatement();
-            statement.executeUpdate("UPDATE activity SET name = \"" + activity.getName() + "\", priority = " + activity.getPriority() + ", expirationDate = \"" + activity.getExpirationDate() + "\"" + ", category = \"" + activity.getCategory() + "\" WHERE id = " + activityId);
+            statement.executeUpdate("UPDATE activity SET name = \"" + activity.getName() + "\", priority = " + activity.getPriority() + ", expirationDate = " + expDate + ", category = \"" + activity.getCategory() + "\" WHERE id = " + activityId);
+            System.out.println("UPDATE activity SET name = \"" + activity.getName() + "\", priority = " + activity.getPriority() + ", expirationDate = " + expDate + ", category = \"" + activity.getCategory() + "\" WHERE id = " + activityId);
             closeConnection();
             return true;
         } catch (Exception e) {
