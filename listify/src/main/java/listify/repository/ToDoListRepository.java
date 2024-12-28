@@ -22,7 +22,7 @@ public class ToDoListRepository extends Repository{
             }
             closeConnection();
         } catch (Exception e) {
-            System.out.println(e);
+        	e.printStackTrace();
         }
 		return toDoLists;
 	}
@@ -36,7 +36,7 @@ public class ToDoListRepository extends Repository{
             closeConnection();
             return true;
         } catch (Exception e) {
-            System.out.println(e);
+        	e.printStackTrace();
             return false;
         }
 	}
@@ -50,7 +50,7 @@ public class ToDoListRepository extends Repository{
             closeConnection();
             return true;
         } catch (Exception e) {
-            System.out.println(e);
+        	e.printStackTrace();
             return false;
         }
 		
@@ -69,10 +69,9 @@ public class ToDoListRepository extends Repository{
                 generatedId = generatedKeys.getInt(1); 
             }
             closeConnection();
-            System.out.println(generatedId);
             return generatedId;
         } catch (Exception e) {
-            System.out.println(e);
+        	e.printStackTrace();
             return -1;
         }
 	}

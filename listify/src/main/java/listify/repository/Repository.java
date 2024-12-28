@@ -12,7 +12,6 @@ public abstract class Repository {
 	protected void openConnection() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
         connection = DriverManager.getConnection(url, user, "");
-        System.out.println("CONNECTED CORRECTLY");
 	}
 	
 	protected void closeConnection() throws SQLException{

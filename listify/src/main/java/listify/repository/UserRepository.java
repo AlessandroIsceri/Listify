@@ -20,7 +20,7 @@ public class UserRepository extends Repository{
             }
             closeConnection();
         } catch (Exception e) {
-            System.out.println(e);
+        	e.printStackTrace();
         }
 		return users;
 	}
@@ -34,7 +34,7 @@ public class UserRepository extends Repository{
             closeConnection();
             return true;
         } catch (Exception e) {
-            System.out.println(e);
+        	e.printStackTrace();
             return false;
         }
 	}	

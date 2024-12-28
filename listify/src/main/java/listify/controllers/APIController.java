@@ -25,9 +25,7 @@ public class APIController {
 	ObjectMapper objectMapper = new ObjectMapper();
 	
 	public APIController() {
-		System.out.println("istanzio il service... ");
 		listifyService = ListifyService.getInstance();
-		System.out.println("service istanziato");
 		// register module to handle dates
 		objectMapper.registerModule(new JavaTimeModule());
 		objectMapper.findAndRegisterModules();

@@ -27,7 +27,7 @@ public class ActivityRepository extends Repository{
             }
             closeConnection();
         } catch (Exception e) {
-            System.out.println(e);
+        	e.printStackTrace();
         }
 		return activities;
 	}
@@ -51,7 +51,7 @@ public class ActivityRepository extends Repository{
             closeConnection();
             return generatedId;
         } catch (Exception e) {
-            System.out.println(e);
+        	e.printStackTrace();
             return -1;
         }
 	}
@@ -65,7 +65,7 @@ public class ActivityRepository extends Repository{
             closeConnection();
             return true;
         } catch (Exception e) {
-            System.out.println(e);
+        	e.printStackTrace();
             return false;
         }
 	}
@@ -80,11 +80,10 @@ public class ActivityRepository extends Repository{
             }
             Statement statement = connection.createStatement();
             statement.executeUpdate("UPDATE activity SET name = \"" + activity.getName() + "\", priority = " + activity.getPriority() + ", expirationDate = " + expDate + ", category = \"" + activity.getCategory() + "\" WHERE id = " + activityId);
-            System.out.println("UPDATE activity SET name = \"" + activity.getName() + "\", priority = " + activity.getPriority() + ", expirationDate = " + expDate + ", category = \"" + activity.getCategory() + "\" WHERE id = " + activityId);
             closeConnection();
             return true;
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
             return false;
         }
 	}
@@ -98,7 +97,7 @@ public class ActivityRepository extends Repository{
             closeConnection();
             return true;
         } catch (Exception e) {
-            System.out.println(e);
+        	e.printStackTrace();
             return false;
         }
 	}

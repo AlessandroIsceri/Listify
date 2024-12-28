@@ -97,7 +97,6 @@ async function addList(){
 	  	body: listName
 	});
 	
-	console.log(response.status)
 	if(response.status == 201){ //the list has been created on the DB
 		newId = await response.json()
 		//update HTML page
