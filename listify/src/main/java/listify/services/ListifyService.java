@@ -50,7 +50,6 @@ public class ListifyService {
 	public String login(String email, String password) {
 		for(User user : users) {
 			if(email.equals(user.getEmail()) && password.equals(user.getPassword())){
-				System.out.println("here");
 				return user.getUsername();
 			}
 		}
@@ -125,10 +124,11 @@ public class ListifyService {
 			for(User user : users) {
 				if(username.equals(user.getUsername())){
 					user.addToDoList(new ToDoList(newId, listName));
+					return newId;
 				}
 			}
 		}
-		return newId;
+		return -1;
 	}
 	
 	public boolean createUser(String email, String username, String password) {
@@ -155,12 +155,13 @@ public class ListifyService {
 					for(ToDoList list : lists) {
 						if(listId == list.getId()){
 							list.addItem(activity);
+							return newId;
 						}
 					}
 				}
 			}
 		}
-		return newId;
+		return -1;
 	}
 
 	public boolean deleteActivity(String username, int listId, int activityId) {
