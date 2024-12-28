@@ -51,7 +51,7 @@ public class APIController {
 	}
 	
 	@PostMapping("/API/register")
-	public ResponseEntity createUser(HttpSession session, 
+	public ResponseEntity<?> createUser(HttpSession session, 
 									 @RequestBody Map<String, String> body){
 		if(listifyService.createUser(body.get("email"), body.get("username"), body.get("password"))) {
 			session.setAttribute("username", body.get("username")); //set session attribute
@@ -62,7 +62,7 @@ public class APIController {
 	}
 	
 	@PostMapping("/API/{username}/logout")
-	public ResponseEntity logout(HttpSession session){
+	public ResponseEntity<?> logout(HttpSession session){
 		String username = (String) session.getAttribute("username");
 		if(username != null) {
 			session.invalidate(); //destroy the session
@@ -74,23 +74,23 @@ public class APIController {
 	
 	@PostMapping("/API/{username}/createList")
 	@ResponseBody
-	public String createList(HttpSession session,
+	public ResponseEntity<String> createList(HttpSession session,
 							 @PathVariable(value="username") String username, 
 							 @RequestBody String listName){
 		//check if a logged user is trying to access the data of another user
 		if(!(username.equals(session.getAttribute("username")))) {
-			return "-1";
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("-1");
 		}
-		return "" + listifyService.createList(username, listName);
+		return ResponseEntity.status(HttpStatus.CREATED).body(String.valueOf(listifyService.createList(username, listName)));
 	}
 	
 	@PutMapping("/API/{username}/updateListName/{listId}")
-	public ResponseEntity updateList(HttpSession session,
+	public ResponseEntity<?> updateList(HttpSession session,
 									 @PathVariable(value="username") String username, 
 									 @PathVariable(value="listId") int listId,
 									 @RequestBody String newListName) {
 		if(!(username.equals(session.getAttribute("username")))) {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		if(listifyService.updateToDoListName(username, listId, newListName)) {
 			return ResponseEntity.ok().build(); 
@@ -100,11 +100,11 @@ public class APIController {
 	}
 	
 	@DeleteMapping("/API/{username}/deleteList/{listId}")
-	public ResponseEntity deleteList(HttpSession session,
+	public ResponseEntity<?> deleteList(HttpSession session,
 									 @PathVariable(value="username") String username, 
 			 						 @PathVariable(value="listId") int listId){
 		if(!(username.equals(session.getAttribute("username")))) {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		if(listifyService.deleteList(username, listId)) {
 			return ResponseEntity.ok().build(); 
@@ -115,24 +115,24 @@ public class APIController {
 	
 	@PostMapping("/API/{username}/toDoList/{listId}/createActivity")
 	@ResponseBody
-	public String createActivity(HttpSession session,
+	public ResponseEntity<String> createActivity(HttpSession session,
 								 @PathVariable(value="username") String username, 
 			 					 @PathVariable(value="listId") int listId,
 			 					 @RequestBody Activity activity) {
 		if(!(username.equals(session.getAttribute("username")))) {
-			return "-1";
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("-1");
 		}
-		return "" + listifyService.createActivity(username, listId, activity);
+		return ResponseEntity.status(HttpStatus.CREATED).body(String.valueOf(listifyService.createActivity(username, listId, activity)));
 	}
 	
 	@PutMapping("/API/{username}/updateList/{listId}/updateActivity/{activityId}")
-	public ResponseEntity updateActivity(HttpSession session,
+	public ResponseEntity<?> updateActivity(HttpSession session,
 										 @PathVariable(value="username") String username, 
 			 							 @PathVariable(value="listId") int listId,
 			 							 @PathVariable(value="activityId") int activityId,
 			 							 @RequestBody Activity activity) {
 		if(!(username.equals(session.getAttribute("username")))) {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		if(listifyService.updateActivity(username, listId, activityId, activity)) {
 			return ResponseEntity.ok().build(); 
@@ -142,13 +142,13 @@ public class APIController {
 	}
 	
 	@PutMapping("/API/{username}/updateList/{listId}/updateActivityCategory/{activityId}")
-	public ResponseEntity updateActivity(HttpSession session,
+	public ResponseEntity<?> updateActivity(HttpSession session,
 										 @PathVariable(value="username") String username, 
 			 							 @PathVariable(value="listId") int listId,
 			 							 @PathVariable(value="activityId") int activityId,
 			 							 @RequestBody String category) {
 		if(!(username.equals(session.getAttribute("username")))) {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		if(listifyService.updateActivityCategory(username, listId, activityId, category)) {
 			return ResponseEntity.ok().build(); 
@@ -158,12 +158,12 @@ public class APIController {
 	}
 	
 	@DeleteMapping("/API/{username}/updateList/{listId}/deleteActivity/{activityId}")
-	public ResponseEntity deleteActivity(HttpSession session,
+	public ResponseEntity<?> deleteActivity(HttpSession session,
 										 @PathVariable(value="username") String username, 
 			 							 @PathVariable(value="listId") int listId,
 			 							 @PathVariable(value="activityId") int activityId) {
 		if(!(username.equals(session.getAttribute("username")))) {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		if(listifyService.deleteActivity(username, listId, activityId)) {
 			return ResponseEntity.ok().build(); 

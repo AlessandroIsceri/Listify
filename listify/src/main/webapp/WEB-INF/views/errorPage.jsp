@@ -29,7 +29,9 @@
 	    </div>
 	</nav>
 	
-	You are trying to access a reserved area without permissions!
+	<div class="alert alert-danger mt-3" role="alert">
+	    You are trying to access a reserved area without permissions!
+	</div>
 	
 </body>
 </html>

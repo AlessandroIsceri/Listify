@@ -96,9 +96,10 @@ async function addList(){
 	    },
 	  	body: listName
 	});
-	newId = await response.json()
 	
-	if(newId != -1){ //the list has been created on the DB
+	console.log(response.status)
+	if(response.status == 201){ //the list has been created on the DB
+		newId = await response.json()
 		//update HTML page
 		createTableRow(listName, newId)
 		

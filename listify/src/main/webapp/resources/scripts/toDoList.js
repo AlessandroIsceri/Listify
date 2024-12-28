@@ -174,8 +174,8 @@ async function addActivity(){
 			}),
 		}
 	);
-	newId = await response.json()
-	if(newId != -1){
+	if(response.status == 201){
+		newId = await response.json()
 		//update HTML page
 		createLiElement(ul, newId, activityName, date, priority, category)
 		
