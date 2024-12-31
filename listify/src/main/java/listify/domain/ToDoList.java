@@ -8,6 +8,7 @@ public class ToDoList {
 	private String name;
 	private List<Activity> toDoList;
 	
+	//constructor for Jackson
 	public ToDoList() {
 		super();
 	}
@@ -18,6 +19,7 @@ public class ToDoList {
 		toDoList = new ArrayList<Activity>();
 	}
 
+	//methods to add/remove an activity from the to-do list
 	public boolean addItem(Activity item) {
 		return toDoList.add(item);
 	}
@@ -32,6 +34,7 @@ public class ToDoList {
 		return false;
 	}
 
+	//getters and setters
 	public void setName(String name) {
 		this.name = name;
 	}

@@ -13,6 +13,7 @@ import listify.repository.UserRepository;
 public class ListifyService {
 	List<User> users;
 	private static ListifyService instance;
+	//repository objects to handle requests to the DB
 	private UserRepository userRepository;
 	private ToDoListRepository toDoListRepository;
 	private ActivityRepository activityRepository;
@@ -31,10 +32,10 @@ public class ListifyService {
         toDoListRepository = new ToDoListRepository();
         activityRepository = new ActivityRepository();
         
-        // retrieve data from DB
+        // retrieve data from DB when the class is instantiated
         users = userRepository.getUsers();
         for(User user : users) {
-        	//retrieve todolist information
+        	// retrieve todolist information
         	ArrayList<ToDoList> toDoLists = toDoListRepository.getToDoLists(user);
         	for(ToDoList list : toDoLists) {
         		//retrieve activity information
@@ -48,6 +49,7 @@ public class ListifyService {
 	}
 	
 	public String login(String email, String password) {
+		//no need to search in the DB -> faster here
 		for(User user : users) {
 			if(email.equals(user.getEmail()) && password.equals(user.getPassword())){
 				return user.getUsername();
@@ -57,7 +59,7 @@ public class ListifyService {
 	}
 	
 	public User getUser(String username) {
-		//no need to search in the DB -> faster
+		//no need to search in the DB -> faster here
 		for(User user : users) {
 			if(username.equals(user.getUsername())){
 				return user;
@@ -69,9 +71,9 @@ public class ListifyService {
 	public ToDoList getToDoList(String username, int listId) {
 		for(User user : users) {
 			if(username.equals(user.getUsername())){
-				List<ToDoList> lists = user.getToDoLists();
+				List<ToDoList> lists = user.getToDoLists(); //get the list of the target user
 				for(ToDoList list : lists) {
-					if(listId == list.getId()){
+					if(listId == list.getId()){ //found the target list
 						return list;
 					}
 				}
@@ -88,7 +90,7 @@ public class ListifyService {
 					if(listId == list.getId()){
 						//update the list name on the DB
 						if(toDoListRepository.updateToDoListName(listId, newListName)) {
-							//update the list in memory
+							//if the update on the DB was successful, update the list in memory
 							list.setName(newListName);
 							return true;
 						}
@@ -105,9 +107,9 @@ public class ListifyService {
 				List<ToDoList> lists = user.getToDoLists();
 				for(ToDoList list : lists) {
 					if(listId == list.getId()){
-						//delete the list from the db
+						//delete the list from the DB
 						if(toDoListRepository.deleteList(listId)) {
-							//update the list in memory
+							//if the update on the DB was successful, update the list in memory
 							lists.remove(list);
 							return true;
 						}
@@ -120,9 +122,10 @@ public class ListifyService {
 
 	public int createList(String username, String listName) {
 		int newId = toDoListRepository.createList(username, listName);
-		if(newId != -1) { //-1 -> error in the db
+		if(newId != -1) { //-1 -> error in the DB
 			for(User user : users) {
 				if(username.equals(user.getUsername())){
+					//add the new list in memory
 					user.addToDoList(new ToDoList(newId, listName));
 					return newId;
 				}
@@ -138,7 +141,7 @@ public class ListifyService {
 				return false;
 			}
 		}
-		if(userRepository.createUser(email, password, username)) {
+		if(userRepository.createUser(email, password, username)) { //if the creation of the user was successful on the DB
 			users.add(new User(email, password, username));
 			return true;
 		}
@@ -147,13 +150,14 @@ public class ListifyService {
 
 	public int createActivity(String username, int listId, Activity activity) {
 		int newId = activityRepository.createActivity(listId, activity);
-		if(newId != -1) { //-1 -> error in the db
+		if(newId != -1) { //-1 -> error in the DB
 			activity.setId(newId);
 			for(User user : users) {
 				if(username.equals(user.getUsername())){
 					List<ToDoList> lists = user.getToDoLists();
 					for(ToDoList list : lists) {
 						if(listId == list.getId()){
+							//add the activity to the target list
 							list.addItem(activity);
 							return newId;
 						}
@@ -172,8 +176,9 @@ public class ListifyService {
 					if(listId == list.getId()){
 						for(Activity activity: list.getToDoList()) {
 							if(activityId == activity.getId()) {
-								//delete the activity from the db
+								//delete the activity from the DB
 								if(activityRepository.deleteActivity(activityId)) {
+									//if the deletion was successful on the DB, delete the activity in memory
 									list.removeItem(activity);
 									return true;
 								}
@@ -194,9 +199,9 @@ public class ListifyService {
 					if(listId == list.getId()){
 						for(Activity cur_activity: list.getToDoList()) {
 							if(activityId == cur_activity.getId()) {
-								//update the activity in the db
+								//update the activity in the DB
 								if(activityRepository.updateActivity(activityId, activity)) {
-									//update the activity at run-time
+									//if the update of the DB was successful, update the activity at run-time
 									cur_activity.setName(activity.getName());
 									cur_activity.setCategory(activity.getCategory());
 									cur_activity.setPriority(activity.getPriority());
@@ -220,8 +225,9 @@ public class ListifyService {
 					if(listId == list.getId()){
 						for(Activity cur_activity: list.getToDoList()) {
 							if(activityId == cur_activity.getId()) {
-								//delete the activity from the db
+								//update the activity on the DB
 								if(activityRepository.updateActivityCategory(activityId, category)) {
+									//if the update on DB was successful, update the category in memory
 									cur_activity.setCategory(category);
 									return true;
 								}

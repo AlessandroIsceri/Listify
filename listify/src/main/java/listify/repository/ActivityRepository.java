@@ -20,6 +20,7 @@ public class ActivityRepository extends Repository{
             ResultSet resultSet = statement.executeQuery("SELECT * FROM activity WHERE list_id = " + list.getId());
             while (resultSet.next()) {
             	LocalDate date = null;
+            	// to handle possible null pointer exceptions
             	if(resultSet.getDate("expirationDate") != null) {
             		date = resultSet.getDate("expirationDate").toLocalDate();
             	}
@@ -37,6 +38,7 @@ public class ActivityRepository extends Repository{
 		try {
             openConnection();
             String expDate = "NULL";
+            // to handle possible null pointer exceptions
             if(activity.getExpirationDate() != null) {
             	expDate = "\"" + activity.getExpirationDate() + "\"";
             }
@@ -49,10 +51,10 @@ public class ActivityRepository extends Repository{
                 generatedId = generatedKeys.getInt(1); 
             }
             closeConnection();
-            return generatedId;
+            return generatedId; //return the new id (created from the DB)
         } catch (Exception e) {
         	e.printStackTrace();
-            return -1;
+            return -1; //return -1 if an error occured during the creation
         }
 	}
 
@@ -63,10 +65,10 @@ public class ActivityRepository extends Repository{
             Statement statement = connection.createStatement();
             statement.executeUpdate("DELETE FROM activity WHERE id = " + activityId);
             closeConnection();
-            return true;
+            return true; //return true if the deletion was successful on the DB
         } catch (Exception e) {
         	e.printStackTrace();
-            return false;
+            return false; //otherwise, return false
         }
 	}
 
@@ -75,16 +77,17 @@ public class ActivityRepository extends Repository{
 		try {
             openConnection();
             String expDate = "NULL";
+        	// to handle possible null pointer exceptions
             if(activity.getExpirationDate() != null) {
             	expDate = "\"" + activity.getExpirationDate() + "\"";
             }
             Statement statement = connection.createStatement();
             statement.executeUpdate("UPDATE activity SET name = \"" + activity.getName() + "\", priority = " + activity.getPriority() + ", expirationDate = " + expDate + ", category = \"" + activity.getCategory() + "\" WHERE id = " + activityId);
             closeConnection();
-            return true;
+            return true; //return true if the update was successful
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return false; //otherwise, return false
         }
 	}
 
@@ -95,10 +98,10 @@ public class ActivityRepository extends Repository{
             Statement statement = connection.createStatement();
             statement.executeUpdate("UPDATE activity SET category = \"" + category + "\" WHERE id = " + activityId);
             closeConnection();
-            return true;
+            return true; //return true if the update was successful
         } catch (Exception e) {
         	e.printStackTrace();
-            return false;
+            return false; //otherwise, return false
         }
 	}
 }

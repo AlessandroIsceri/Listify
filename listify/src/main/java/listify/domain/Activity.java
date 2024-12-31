@@ -9,6 +9,7 @@ public class Activity {
 	private LocalDate expirationDate = null;
 	private String category = "To Do";
 
+	//constructor for Jackson
 	public Activity() {
 		super();
 	}
@@ -21,6 +22,7 @@ public class Activity {
 		this.category = category;
 	}
 
+	// getters and setters
 	public String getName() {
 		return name;
 	}

@@ -8,7 +8,7 @@ import listify.domain.User;
 
 public class UserRepository extends Repository{
 
-	//get all the users
+	//get all the users from the DB
 	public ArrayList<User> getUsers() {
 		ArrayList<User> users = new ArrayList<>();
 		try {
@@ -32,10 +32,10 @@ public class UserRepository extends Repository{
             Statement statement = connection.createStatement();
             statement.executeUpdate("INSERT INTO user (email, username, password) VALUES (\"" + email + "\", \"" + username + "\", \"" + password + "\")");
             closeConnection();
-            return true;
+            return true; //if the creation was successful return true
         } catch (Exception e) {
         	e.printStackTrace();
-            return false;
+            return false; //otherwise return false
         }
 	}	
 }

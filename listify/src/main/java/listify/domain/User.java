@@ -9,6 +9,7 @@ public class User {
 	private String username;
 	private List<ToDoList> toDoLists;
 	
+	//constructor for Jackson
 	public User() {
 		super();
 	}
@@ -20,6 +21,7 @@ public class User {
 		this.toDoLists = new ArrayList<ToDoList>();
 	}
 
+	//getters and setters
 	public String getEmail() {
 		return email;
 	}

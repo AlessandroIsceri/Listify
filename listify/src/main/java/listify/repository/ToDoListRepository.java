@@ -10,7 +10,7 @@ import listify.domain.User;
 
 public class ToDoListRepository extends Repository{
 	
-	//get all the todolists
+	//get all the todolists from the DB
 	public ArrayList<ToDoList> getToDoLists(User user) {
 		ArrayList<ToDoList> toDoLists = new ArrayList<>();
 		try {
@@ -34,10 +34,10 @@ public class ToDoListRepository extends Repository{
             Statement statement = connection.createStatement();
             statement.executeUpdate("UPDATE todolist SET name = \"" + newListName + "\" WHERE id = " + listId);
             closeConnection();
-            return true;
+            return true; //return true if the update was successful
         } catch (Exception e) {
         	e.printStackTrace();
-            return false;
+            return false; //otherwise, return false
         }
 	}
 
@@ -48,10 +48,10 @@ public class ToDoListRepository extends Repository{
             Statement statement = connection.createStatement();
             statement.executeUpdate("DELETE FROM todolist WHERE id = " + listId);
             closeConnection();
-            return true;
+            return true; //return true if the deletion was successful
         } catch (Exception e) {
         	e.printStackTrace();
-            return false;
+            return false; //otherwise, return false
         }
 		
 	}
@@ -69,10 +69,10 @@ public class ToDoListRepository extends Repository{
                 generatedId = generatedKeys.getInt(1); 
             }
             closeConnection();
-            return generatedId;
+            return generatedId; //return the new id, generated from the DB
         } catch (Exception e) {
         	e.printStackTrace();
-            return -1;
+            return -1; //return -1 if an error occured during the creation
         }
 	}
 }

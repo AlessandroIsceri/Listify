@@ -16,7 +16,7 @@ import listify.services.ListifyService;
 
 @Controller
 public class HomeController {
-	private ListifyService listifyService;
+	private ListifyService listifyService; //business logic object
 	ObjectMapper objectMapper = new ObjectMapper();
 	
 	public HomeController() {

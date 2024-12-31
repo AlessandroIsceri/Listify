@@ -5,8 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public abstract class Repository {
-	private String url = "jdbc:mysql://localhost:3306/listify";
-	private String user = "root";
+	private String url = "jdbc:mysql://localhost:3306/listify"; //DB address
+	private String user = "root"; //DB user
 	protected Connection connection = null;
 	
 	protected void openConnection() throws ClassNotFoundException, SQLException {

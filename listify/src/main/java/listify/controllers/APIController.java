@@ -21,8 +21,8 @@ import listify.services.ListifyService;
 
 @Controller
 public class APIController {
-	private ListifyService listifyService;
-	ObjectMapper objectMapper = new ObjectMapper();
+	private ListifyService listifyService; //business logic object
+	private ObjectMapper objectMapper = new ObjectMapper();
 	
 	public APIController() {
 		listifyService = ListifyService.getInstance();
@@ -37,6 +37,7 @@ public class APIController {
 										  @RequestBody Map<String, String> body){
 		String username = listifyService.login(body.get("email"), body.get("password"));
 		if(username != null) {
+			//successful login
 			session.setAttribute("username", username); //set session attribute
 			return ResponseEntity.ok().body(username);
 		}else {
@@ -48,6 +49,7 @@ public class APIController {
 	public ResponseEntity<?> createUser(HttpSession session, 
 									 @RequestBody Map<String, String> body){
 		if(listifyService.createUser(body.get("email"), body.get("username"), body.get("password"))) {
+			//successful registration
 			session.setAttribute("username", body.get("username")); //set session attribute
 			return ResponseEntity.status(HttpStatus.CREATED).build(); 
 		}else {
@@ -59,6 +61,7 @@ public class APIController {
 	public ResponseEntity<?> logout(HttpSession session){
 		String username = (String) session.getAttribute("username");
 		if(username != null) {
+			//successful logout
 			session.invalidate(); //destroy the session
 			return ResponseEntity.ok().build(); 
 		}else {
@@ -75,6 +78,7 @@ public class APIController {
 		if(!(username.equals(session.getAttribute("username")))) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("-1");
 		}
+		//return the id of the new list with .body()
 		return ResponseEntity.status(HttpStatus.CREATED).body(String.valueOf(listifyService.createList(username, listName)));
 	}
 	
@@ -87,6 +91,7 @@ public class APIController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		if(listifyService.updateToDoListName(username, listId, newListName)) {
+			//successful update
 			return ResponseEntity.ok().build(); 
 		}else {
 			return ResponseEntity.notFound().build();
@@ -101,6 +106,7 @@ public class APIController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		if(listifyService.deleteList(username, listId)) {
+			//successful deletion
 			return ResponseEntity.ok().build(); 
 		}else {
 			return ResponseEntity.notFound().build();
@@ -116,6 +122,7 @@ public class APIController {
 		if(!(username.equals(session.getAttribute("username")))) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("-1");
 		}
+		//return the id of the new activiy with .body()
 		return ResponseEntity.status(HttpStatus.CREATED).body(String.valueOf(listifyService.createActivity(username, listId, activity)));
 	}
 	
@@ -129,6 +136,7 @@ public class APIController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		if(listifyService.updateActivity(username, listId, activityId, activity)) {
+			//successful update
 			return ResponseEntity.ok().build(); 
 		}else {
 			return ResponseEntity.notFound().build();
@@ -145,6 +153,7 @@ public class APIController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		if(listifyService.updateActivityCategory(username, listId, activityId, category)) {
+			//successful update
 			return ResponseEntity.ok().build(); 
 		}else {
 			return ResponseEntity.notFound().build();
@@ -160,6 +169,7 @@ public class APIController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		if(listifyService.deleteActivity(username, listId, activityId)) {
+			//successful deletion
 			return ResponseEntity.ok().build(); 
 		}else {
 			return ResponseEntity.notFound().build();
