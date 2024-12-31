@@ -80,8 +80,8 @@ async function updateCategory(ulId, draggedElementId){
 			pieChart.data.datasets[0].data[2] = pieChart.data.datasets[0].data[2] - 1;
 		}
 		
-		//update the chart 
 		pieChart.update(); 
+		
 		printToast("SUCCESS", "The activity has been updated correctly", "bg-success")
 		return 200
 	}
@@ -110,7 +110,7 @@ async function drop(ev) {
 		draggedElementUlId = document.getElementById(draggedElementId).parentElement.id
 		ulId = ul.id
 		if(await updateCategory(ulId, draggedElementId) == 200){
-			ul.appendChild(document.getElementById(draggedElementId))
+			ul.appendChild(document.getElementById(draggedElementId)) //append the li to the empty ul
 		}
 		return
 	}
@@ -134,7 +134,7 @@ async function drop(ev) {
 		
 		if(await updateCategory(ulId, draggedElementId) == 200){
 			ul.appendChild(document.getElementById(draggedElementId))
-	        insertAfter(draggedElement, target)
+	        insertAfter(draggedElement, target) //adjust the order of the moved li
 		}
     }
 }
@@ -160,7 +160,7 @@ async function addActivity(){
 		return 
 	}
 	
-	//request new id from application and set it
+	//request new id from application and set it (and create the activity on the DB)
 	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/toDoList/" + listId + "/createActivity", {
 			method: "POST",
 			headers: {
@@ -214,7 +214,7 @@ function createLiElement(ul, newId, activityName, date, priority, category){
 	li.setAttribute('data-bs-toggle', 'modal');
 	li.setAttribute('data-bs-target', '#modifyActivityModal');
 	li.addEventListener('click', function() {
-	    fillForm(this); // Passa il riferimento all'elemento cliccato
+	    fillForm(this);
 	});
 	
 	//create span and paragraph for the li element
@@ -288,7 +288,6 @@ async function updateActivity(){
 	li = document.getElementById(id)
 	
 	ulId = li.parentElement.id
-	//update the chart 
 	if(ulId == "to-do-activities-ul"){
 		category = "To Do"
 	}else if(ulId == "in-progress-activities-ul"){
@@ -328,7 +327,7 @@ async function updateActivity(){
 		li.children[4].innerHTML = "<b>"+name+"</b>";
 		li.children[5].children[4].innerHTML = " Priority: " + priority
 		li.children[5].children[1].innerHTML = " " + expDate
-		hiddenInputs = li.querySelectorAll('input[type="hidden"]');
+		hiddenInputs = li.querySelectorAll('input[type="hidden"]')
 		hiddenInputs[0].value = name
 		hiddenInputs[1].value = expDate
 		hiddenInputs[2].value = priority
@@ -352,7 +351,6 @@ async function deleteActivity(){
 	}else{
 		//200 -> ok 
 		//update the chart and the HTML page
-		
 		li = document.getElementById(id)
 		ulId = li.parentElement.id
 		
@@ -403,4 +401,17 @@ function createPieChart(){
 			  }]
 	    }
 	});
+}
+
+async function logout(){
+	//send logout request to the controller
+	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/logout", {
+			method: "POST"
+	});
+	if(response.status == 200){
+		//redirect to login page
+		window.location.href = URL_PREFIX + "/listify/";
+	}else{
+		printToast("ERROR", "An error occurred during the logout", "bg-danger")
+	}
 }

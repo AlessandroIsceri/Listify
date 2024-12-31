@@ -151,7 +151,8 @@ function createTableRow(listName, newId){
 
 	//delete icon
     trashIcon = document.createElement('i');
-    trashIcon.className = 'fa-solid fa-trash-can';
+	trashIcon.classList.add('fa-solid');
+	trashIcon.classList.add('fa-trash-can');
     trashIcon.style.color = '#DC3545';
 	
 	//edit button
@@ -166,7 +167,8 @@ function createTableRow(listName, newId){
 
 	//edit icon
 	editIcon = document.createElement('i');
-    editIcon.className = 'fa-solid fa-pen-to-square';
+    editIcon.classList.add('fa-solid');
+	editIcon.classList.add('fa-pen-to-square');
     editIcon.style.color = '#0D6EFD';
 
 	//append all the elements created
