@@ -57,5 +57,11 @@ public class User {
 	public boolean addToDoList(ToDoList l) {
 		return toDoLists.add(l);
 	}
+
+	@Override
+	public String toString() {
+		return "User [email=" + email + ", password=" + password + ", username=" + username + ", toDoLists=" + toDoLists.toString()
+				+ "]";
+	}
 	
 }

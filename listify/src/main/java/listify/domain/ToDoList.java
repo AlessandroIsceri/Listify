@@ -58,5 +58,9 @@ public class ToDoList {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "ToDoList [id=" + id + ", name=" + name + ", toDoList=" + toDoList.toString() + "]";
+	}
 }
