@@ -11,7 +11,7 @@ import listify.repository.ToDoListRepository;
 import listify.repository.UserRepository;
 
 public class ListifyService {
-	List<User> users;
+	private List<User> users;
 	private static ListifyService instance;
 	//repository objects to handle requests to the DB
 	private UserRepository userRepository;
