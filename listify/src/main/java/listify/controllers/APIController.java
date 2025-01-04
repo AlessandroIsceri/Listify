@@ -79,7 +79,7 @@ public class APIController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("-1");
 		}
 		//return the id of the new list with .body()
-		return ResponseEntity.status(HttpStatus.CREATED).body(String.valueOf(listifyService.createList(username, listName)));
+		return ResponseEntity.status(HttpStatus.CREATED).body(String.valueOf(listifyService.createToDoList(username, listName)));
 	}
 	
 	@PutMapping("/API/{username}/updateListName/{listId}")
@@ -105,7 +105,7 @@ public class APIController {
 		if(!(username.equals(session.getAttribute("username")))) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		if(listifyService.deleteList(username, listId)) {
+		if(listifyService.deleteToDoList(username, listId)) {
 			//successful deletion
 			return ResponseEntity.ok().build(); 
 		}else {
