@@ -13,6 +13,7 @@ public class User {
 	//constructor for Jackson
 	public User() {
 		super();
+		this.toDoLists = new ArrayList<ToDoList>();
 	}
 	
 	public User(String email, String password, String username) {
@@ -55,8 +56,21 @@ public class User {
 		this.toDoLists = toDoLists;
 	}
 	
-	public boolean addToDoList(ToDoList l) {
-		return toDoLists.add(l);
+	public void removeToDoList(ToDoList list) {
+		toDoLists.remove(list);
+	}
+	
+	public void addToDoList(ToDoList l) {
+		toDoLists.add(l);
+	}
+	
+	public ToDoList getToDoList(int listId) {
+		for(ToDoList list : toDoLists) {
+			if(listId == list.getId()){ //found the target list
+				return list;
+			}
+		}
+		return null;
 	}
 
 	@Override

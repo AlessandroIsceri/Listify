@@ -12,6 +12,7 @@ public class ToDoList {
 	//constructor for Jackson
 	public ToDoList() {
 		super();
+		toDoList = new ArrayList<Activity>();
 	}
 
 	public ToDoList(int id, String name) {
@@ -21,18 +22,21 @@ public class ToDoList {
 	}
 
 	//methods to add/remove an activity from the to-do list
-	public boolean addItem(Activity item) {
-		return toDoList.add(item);
+	public void addActivity(Activity activity) {
+		toDoList.add(activity);
 	}
 	
-	public boolean removeItem(Activity item) {
-		for(int i = 0; i < toDoList.size(); i++){
-			if(toDoList.get(i).equals(item)) {
-				toDoList.remove(i);
-				return true;
+	public void removeActivity(Activity activity) {
+		toDoList.remove(activity);
+	}
+	
+	public Activity getActivity(int activityId) {
+		for(Activity activity: toDoList) {
+			if(activityId == activity.getId()) {
+				return activity;
 			}
 		}
-		return false;
+		return null;
 	}
 
 	//getters and setters
