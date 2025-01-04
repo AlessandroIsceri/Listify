@@ -1,6 +1,7 @@
 package listify.domain;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Activity {
 	private int id;
@@ -68,6 +69,24 @@ public class Activity {
 		return "Activity [id=" + id + ", name=" + name + ", priority=" + priority + ", expirationDate=" + expirationDate
 				+ ", category=" + category + "]";
 	}
-	
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(category, expirationDate, id, name, priority);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Activity other = (Activity) obj;
+		return Objects.equals(category, other.category) && Objects.equals(expirationDate, other.expirationDate)
+				&& id == other.id && Objects.equals(name, other.name) && priority == other.priority;
+	}
+
 }
 

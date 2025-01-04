@@ -2,6 +2,7 @@ package listify.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ToDoList {
 	private int id;
@@ -63,4 +64,22 @@ public class ToDoList {
 	public String toString() {
 		return "ToDoList [id=" + id + ", name=" + name + ", toDoList=" + toDoList.toString() + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, toDoList);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ToDoList other = (ToDoList) obj;
+		return id == other.id && Objects.equals(name, other.name) && Objects.equals(toDoList, other.toDoList);
+	}
+	
 }

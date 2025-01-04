@@ -2,6 +2,7 @@ package listify.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class User {
 	private String email;
@@ -62,6 +63,24 @@ public class User {
 	public String toString() {
 		return "User [email=" + email + ", password=" + password + ", username=" + username + ", toDoLists=" + toDoLists.toString()
 				+ "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(email, password, toDoLists, username);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return Objects.equals(email, other.email) && Objects.equals(password, other.password)
+				&& Objects.equals(toDoLists, other.toDoLists) && Objects.equals(username, other.username);
 	}
 	
 }
