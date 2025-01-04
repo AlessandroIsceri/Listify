@@ -37,5 +37,18 @@ public class UserRepository extends Repository{
         	e.printStackTrace();
             return false; //otherwise return false
         }
+	}
+
+	public boolean deleteUser(String username) {
+		try {
+            openConnection();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("DELETE FROM user WHERE username = \"" + username + "\"");
+            closeConnection();
+            return true; //if the deletion was successful return true
+        } catch (Exception e) {
+        	e.printStackTrace();
+            return false; //otherwise return false
+        }
 	}	
 }

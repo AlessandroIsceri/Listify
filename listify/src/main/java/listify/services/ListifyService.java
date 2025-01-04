@@ -1,5 +1,6 @@
 package listify.services;
 
+import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -240,4 +241,15 @@ public class ListifyService {
 		return false;
 	}
 	
+	public boolean deleteUser(String username) {
+		for(User user : users) {
+			if(username.equals(user.getUsername())){
+				if(userRepository.deleteUser(username)) {
+					users.remove(user);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
