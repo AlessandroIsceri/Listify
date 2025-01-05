@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -14,6 +15,7 @@ import listify.domain.User;
 import listify.services.ListifyService;
 
 @Controller
+@EnableWebMvc
 public class HomeController {
 	private ListifyService listifyService; //business logic object
 	ObjectMapper objectMapper = new ObjectMapper();

@@ -5,12 +5,15 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -20,6 +23,7 @@ import listify.domain.Activity;
 import listify.services.ListifyService;
 
 @RestController
+@EnableWebMvc
 public class APIController {
 	private ListifyService listifyService; //business logic object
 	private ObjectMapper objectMapper = new ObjectMapper();
@@ -31,12 +35,26 @@ public class APIController {
 		objectMapper.findAndRegisterModules();
         System.out.println("APIController is loaded!");
 	}
+	
+	@GetMapping("/API/test")
+	public ResponseEntity<?> get(){
+		return ResponseEntity.ok().build();
 		
-	@PostMapping(value="/API/login", consumes = "application/json;charset=UTF-8")
+	}
+	
+	@GetMapping("/API/testSession")
+	public ResponseEntity<?> getSession(HttpSession session){
+		System.out.println("SESSION OK " + session.getAttribute("username"));
+		return ResponseEntity.ok().build();
+	}
+	
+	@PostMapping(value="/API/login", consumes = {"application/json"}, produces = {"application/json"})
 	public ResponseEntity<String> login(HttpSession session, 
 										@RequestBody Map<String, String> body){
-		System.out.println("CIAO");
+		System.out.println(body.get("email"));
+		System.out.println(body.get("password"));
 		String username = listifyService.login(body.get("email"), body.get("password"));
+		System.out.println(username);
 		if(username != null) {
 			//successful login
 			session.setAttribute("username", username); //set session attribute
