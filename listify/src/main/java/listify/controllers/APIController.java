@@ -1,10 +1,11 @@
 package listify.controllers;
 
+import java.nio.charset.Charset;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,13 +14,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import javax.servlet.http.HttpSession;
 import listify.domain.Activity;
 import listify.services.ListifyService;
 
-@Controller
+@RestController
 public class APIController {
 	private ListifyService listifyService; //business logic object
 	private ObjectMapper objectMapper = new ObjectMapper();
@@ -31,10 +36,11 @@ public class APIController {
 		objectMapper.findAndRegisterModules();
         System.out.println("APIController is loaded!");
 	}
-	
-	@PostMapping("/API/login")
-	public ResponseEntity<String> getPage(HttpSession session, 
-										  @RequestBody Map<String, String> body){
+		
+	@PostMapping(value="/API/login", consumes = "application/json;charset=UTF-8")
+	public ResponseEntity<String> login(HttpSession session, 
+										@RequestBody Map<String, String> body){
+		System.out.println("CIAO");
 		String username = listifyService.login(body.get("email"), body.get("password"));
 		if(username != null) {
 			//successful login
