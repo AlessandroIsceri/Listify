@@ -7,20 +7,36 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>listify Maven Webapp</name>
   <url>http://maven.apache.org</url>
+  
+  
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <type>pom</type>
+        <version>3.4.1</version>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
 	<dependency>
 	    <groupId>org.springframework</groupId>
 	    <artifactId>spring-webmvc</artifactId>
-	    <version>4.3.25.RELEASE</version>
 	</dependency>
-	<dependency>
-	<groupId>javax.servlet</groupId>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+	<!--<dependency>
+		<groupId>javax.servlet</groupId>
 		<artifactId>javax.servlet-api</artifactId>
 		<version>3.1.0</version>
 		<scope>provided</scope>
@@ -35,44 +51,63 @@
 		<groupId>javax.servlet</groupId>
 		<artifactId>jstl</artifactId>
 		<version>1.2</version>
-	</dependency>
+	</dependency>-->
+	
+	
 	<dependency>
-	    <groupId>javax.servlet</groupId>
-	    <artifactId>jstl</artifactId>
-	    <version>1.2</version>
+		<groupId>jakarta.servlet</groupId>
+		<artifactId>jakarta.servlet-api</artifactId>
+		<version>6.0.0</version>
+		<scope>provided</scope>
 	</dependency>
+	
+	<dependency>
+		<groupId>jakarta.servlet.jsp</groupId>
+		<artifactId>jakarta.servlet.jsp-api</artifactId>
+		<version>4.0.0</version>
+		<scope>provided</scope>
+	</dependency>
+	
+	<dependency>
+		<groupId>jakarta.servlet.jsp.jstl</groupId>
+		<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+		<version>3.0.2</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.glassfish.web</groupId>
+	    <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+	    <version>3.0.1</version>
+	</dependency>
+	
+	
 	<dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
-        <version>2.9.5</version>
     </dependency>
     <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>2.9.5</version>
     </dependency>
     <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
-        <version>2.9.5</version>
     </dependency>
     <dependency>
 	    <groupId>com.fasterxml.jackson.datatype</groupId>
 	    <artifactId>jackson-datatype-jsr310</artifactId>
-	    <version>2.9.5</version>
 	</dependency>
 	<dependency>
 	    <groupId>org.junit.jupiter</groupId>
 	    <artifactId>junit-jupiter-engine</artifactId>
-	    <version>5.4.0</version>
 	</dependency>
   </dependencies>
   <build>
     <finalName>listify</finalName>
   </build>
   <properties>
-    <maven.compiler.source>9</maven.compiler.source>
-    <maven.compiler.target>9</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
   </properties>
 
 </project>

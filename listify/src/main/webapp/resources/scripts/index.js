@@ -13,7 +13,7 @@ async function login(){
 	let password = document.getElementById("login-password").value;
 	
 	//send the login request to the controller
-	response = await fetch(URL_PREFIX + "/listify/API/login/", {
+	response = await fetch(URL_PREFIX + "/listify/API/login", {
 	    method: "POST",
 	    headers: {
 	        "Content-Type": "application/json",
@@ -41,7 +41,7 @@ async function newAccount(){
 	}
 	
 	//send the register request to the controller
-	const response = await fetch(URL_PREFIX + "/listify/API/register/", {
+	const response = await fetch(URL_PREFIX + "/listify/API/register", {
 	    method: "POST",
 	    headers: {
 	        "Content-Type": "application/json",
