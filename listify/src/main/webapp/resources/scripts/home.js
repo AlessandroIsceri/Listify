@@ -35,7 +35,7 @@ async function updateListName(){
 	}
 	
 	//send update request 
-	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateListName/" + listId,
+	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateToDoListName/" + listId,
 		{
 			method: "PUT",
 			headers: {
@@ -60,7 +60,7 @@ async function deleteToDoList(button){
 	td = button.parentElement
 	listId = td.children[0].value
 	//send delete request
-	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/deleteList/" + listId,
+	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/deleteToDoList/" + listId,
 		{
 			method: "DELETE",
 		}
@@ -89,7 +89,7 @@ async function addList(){
 	}
 	
 	//send request to create the new list /API/{username}/createList
-	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/createList", {
+	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/createToDoList", {
 		method: "POST", 	
 		headers: {
 	        "Content-Type": "application/json",
@@ -192,12 +192,25 @@ function createTableRow(listName, newId){
 
 async function logout(){
 	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/logout", {
-			method: "POST"
+		method: "POST"
 	});
 	if(response.status == 200){
 		//redirect to login page
 		window.location.href = URL_PREFIX + "/listify/";
 	}else{
 		printToast("ERROR", "An error occurred during the logout", "bg-danger")
+	}
+}
+
+//function to delete an account
+async function deleteUser(){
+	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/deleteUser", {
+		method: "DELETE"
+	});
+	if(response.status == 200){
+		//redirect to login page
+		window.location.href = URL_PREFIX + "/listify/";
+	}else{
+		printToast("ERROR", "An error occurred during the account deletion", "bg-danger")
 	}
 }

@@ -44,7 +44,7 @@ async function updateCategory(ulId, draggedElementId){
 	}
 			
 	//send update request to the controller
-	res = await fetch(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId + "/updateActivityCategory/" + draggedElementId, {
+	res = await fetch(URL_PREFIX + "/listify/API/" + username + "/updateToDoList/" + listId + "/updateActivityCategory/" + draggedElementId, {
 		method: "PUT",
 		headers: {
 	        "Content-Type": "application/json",
@@ -161,7 +161,7 @@ async function addActivity(){
 	}
 	
 	//request new id from application and set it (and create the activity on the DB)
-	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/toDoList/" + listId + "/createActivity", {
+	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/updateToDoList/" + listId + "/createActivity", {
 			method: "POST",
 			headers: {
 		        "Content-Type": "application/json",
@@ -302,7 +302,7 @@ async function updateActivity(){
 	}
 	
 	//send update request to the db
-	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId + "/updateActivity/" + id,
+	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateToDoList/" + listId + "/updateActivity/" + id,
 		{
 			method: "PUT",
 			headers: {
@@ -340,7 +340,7 @@ async function deleteActivity(){
 	id = document.getElementById("modifyModalActivityId").value
 	
 	//send request to the controller
-	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateList/" + listId + "/deleteActivity/" + id,
+	res = await fetch(new Request(URL_PREFIX + "/listify/API/" + username + "/updateToDoList/" + listId + "/deleteActivity/" + id,
 		{
 			method: "DELETE"
 		}
@@ -413,5 +413,18 @@ async function logout(){
 		window.location.href = URL_PREFIX + "/listify/";
 	}else{
 		printToast("ERROR", "An error occurred during the logout", "bg-danger")
+	}
+}
+
+//function to delete an account
+async function deleteUser(){
+	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/deleteUser", {
+		method: "DELETE"
+	});
+	if(response.status == 200){
+		//redirect to login page
+		window.location.href = URL_PREFIX + "/listify/";
+	}else{
+		printToast("ERROR", "An error occurred during the account deletion", "bg-danger")
 	}
 }
