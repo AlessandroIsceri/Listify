@@ -4,6 +4,8 @@ import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import listify.domain.Activity;
 import listify.domain.ToDoList;
 import listify.domain.User;
@@ -11,6 +13,7 @@ import listify.repository.ActivityRepository;
 import listify.repository.ToDoListRepository;
 import listify.repository.UserRepository;
 
+@Service
 public class ListifyService {
 	private List<User> users;
 	private static ListifyService instance;
