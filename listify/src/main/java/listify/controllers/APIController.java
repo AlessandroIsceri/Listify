@@ -5,13 +5,11 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -37,19 +35,7 @@ public class APIController {
         System.out.println("APIController is loaded!");
 	}
 	
-	@GetMapping("/API/test")
-	public ResponseEntity<?> get(){
-		return ResponseEntity.ok().build();
-		
-	}
-	
-	@GetMapping("/API/testSession")
-	public ResponseEntity<?> getSession(HttpSession session){
-		System.out.println("SESSION OK " + session.getAttribute("username"));
-		return ResponseEntity.ok().build();
-	}
-	
-	@PostMapping(value="/API/login", consumes = {"application/json"}, produces = {"application/json"})
+	@PostMapping("/API/login")
 	public ResponseEntity<String> login(HttpSession session, 
 										@RequestBody Map<String, String> body){
 		String username = listifyService.login(body.get("email"), body.get("password"));
@@ -70,13 +56,17 @@ public class APIController {
 			session.setAttribute("username", body.get("username")); //set session attribute
 			return ResponseEntity.status(HttpStatus.CREATED).build(); 
 		}else {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 	}
 	
 	@PostMapping("/API/{username}/logout")
-	public ResponseEntity<?> logout(HttpSession session){
+	public ResponseEntity<?> logout(HttpSession session, @PathVariable(value="username") String pathUsername){
 		String username = (String) session.getAttribute("username");
+		//check if a logged user is trying to access the data of another user
+		if(!(pathUsername.equals(username))) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
 		if(username != null) {
 			//successful logout
 			session.invalidate(); //destroy the session
@@ -86,21 +76,40 @@ public class APIController {
 		}
 	}
 	
-	@PostMapping("/API/{username}/createList")
-	@ResponseBody
-	public ResponseEntity<String> createList(HttpSession session,
-							 @PathVariable(value="username") String username, 
-							 @RequestBody String listName){
+	@DeleteMapping("/API/{username}/deleteUser")
+	public ResponseEntity<?> deleteUser(HttpSession session, @PathVariable(value="username") String username){
 		//check if a logged user is trying to access the data of another user
 		if(!(username.equals(session.getAttribute("username")))) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("-1");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		//return the id of the new list with .body()
-		return ResponseEntity.status(HttpStatus.CREATED).body(String.valueOf(listifyService.createToDoList(username, listName)));
+		if(listifyService.deleteUser(username)) {
+			//successful deletion
+			session.invalidate(); //destroy the session
+			return ResponseEntity.ok().build(); 
+		}else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
-	@PutMapping("/API/{username}/updateListName/{listId}")
-	public ResponseEntity<?> updateList(HttpSession session,
+	@PostMapping("/API/{username}/createToDoList")
+	@ResponseBody
+	public ResponseEntity<String> createToDoList(HttpSession session,
+												 @PathVariable(value="username") String username, 
+												 @RequestBody String listName){
+		//check if a logged user is trying to access the data of another user
+		if(!(username.equals(session.getAttribute("username")))) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		//return the id of the new list with .body()
+		int newId = listifyService.createToDoList(username, listName);
+		if(newId != -1) {
+			return ResponseEntity.status(HttpStatus.CREATED).body(String.valueOf(newId));
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@PutMapping("/API/{username}/updateToDoListName/{listId}")
+	public ResponseEntity<?> updateToDoList(HttpSession session,
 									 @PathVariable(value="username") String username, 
 									 @PathVariable(value="listId") int listId,
 									 @RequestBody String newListName) {
@@ -115,8 +124,8 @@ public class APIController {
 		}
 	}
 	
-	@DeleteMapping("/API/{username}/deleteList/{listId}")
-	public ResponseEntity<?> deleteList(HttpSession session,
+	@DeleteMapping("/API/{username}/deleteToDoList/{listId}")
+	public ResponseEntity<?> deleteToDoList(HttpSession session,
 									 @PathVariable(value="username") String username, 
 			 						 @PathVariable(value="listId") int listId){
 		if(!(username.equals(session.getAttribute("username")))) {
@@ -130,20 +139,25 @@ public class APIController {
 		}
 	}
 	
-	@PostMapping("/API/{username}/toDoList/{listId}/createActivity")
+	@PostMapping("/API/{username}/updateToDoList/{listId}/createActivity")
 	@ResponseBody
 	public ResponseEntity<String> createActivity(HttpSession session,
 								 @PathVariable(value="username") String username, 
 			 					 @PathVariable(value="listId") int listId,
 			 					 @RequestBody Activity activity) {
 		if(!(username.equals(session.getAttribute("username")))) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("-1");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		//return the id of the new activiy with .body()
-		return ResponseEntity.status(HttpStatus.CREATED).body(String.valueOf(listifyService.createActivity(username, listId, activity)));
+		int newId = listifyService.createActivity(username, listId, activity);
+		if(newId != -1) {
+			return ResponseEntity.status(HttpStatus.CREATED).body(String.valueOf(newId));
+
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
-	@PutMapping("/API/{username}/updateList/{listId}/updateActivity/{activityId}")
+	@PutMapping("/API/{username}/updateToDoList/{listId}/updateActivity/{activityId}")
 	public ResponseEntity<?> updateActivity(HttpSession session,
 										 @PathVariable(value="username") String username, 
 			 							 @PathVariable(value="listId") int listId,
@@ -160,8 +174,8 @@ public class APIController {
 		}
 	}
 	
-	@PutMapping("/API/{username}/updateList/{listId}/updateActivityCategory/{activityId}")
-	public ResponseEntity<?> updateActivity(HttpSession session,
+	@PutMapping("/API/{username}/updateToDoList/{listId}/updateActivityCategory/{activityId}")
+	public ResponseEntity<?> updateActivityCategory(HttpSession session,
 										 @PathVariable(value="username") String username, 
 			 							 @PathVariable(value="listId") int listId,
 			 							 @PathVariable(value="activityId") int activityId,
@@ -177,7 +191,7 @@ public class APIController {
 		}
 	}
 	
-	@DeleteMapping("/API/{username}/updateList/{listId}/deleteActivity/{activityId}")
+	@DeleteMapping("/API/{username}/updateToDoList/{listId}/deleteActivity/{activityId}")
 	public ResponseEntity<?> deleteActivity(HttpSession session,
 										 @PathVariable(value="username") String username, 
 			 							 @PathVariable(value="listId") int listId,

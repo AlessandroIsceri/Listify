@@ -1,13 +1,15 @@
 package listify.controllers;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,13 +25,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -99,7 +96,7 @@ class APIControllerTest {
 							  .contentType(APPLICATION_JSON_UTF8)
 							  .content(requestJson.getBytes())) 
 							  .andDo(print())
-							  .andExpect(status().isNotFound()) //the status should be 404 not found
+							  .andExpect(status().isConflict()) //the status should be 409 conflict (already existing user)
 							  .andReturn()
 							  .getRequest()
 				              .getSession();
@@ -185,7 +182,7 @@ class APIControllerTest {
 	
 	@Test
 	void createToDoListTest() throws Exception {
-		String url = "/API/test_user/createList";
+		String url = "/API/test_user/createToDoList";
 		//simulate successful list creation
 		when(listifyService.createToDoList(anyString(), anyString())).thenReturn(10);
 		
@@ -218,7 +215,7 @@ class APIControllerTest {
 	
 	@Test
 	void updateToDoListNameTest() throws Exception {
-		String url = "/API/test_user/updateListName/10";
+		String url = "/API/test_user/updateToDoListName/10";
 		//simulate successful list update
 		when(listifyService.updateToDoListName(anyString(), anyInt(), anyString())).thenReturn(true);
 	
@@ -247,7 +244,7 @@ class APIControllerTest {
 	
 	@Test 
 	void deleteToDoListTest() throws Exception {
-		String url = "/API/test_user/deleteList/10";
+		String url = "/API/test_user/deleteToDoList/10";
 		//simulate successful list deletion
 		when(listifyService.deleteToDoList(anyString(), anyInt())).thenReturn(true);
 	
@@ -269,7 +266,7 @@ class APIControllerTest {
 	
 	@Test 
 	void createActivityTest() throws Exception {
-		String url = "/API/test_user/toDoList/10/createActivity";
+		String url = "/API/test_user/updateToDoList/10/createActivity";
 		//simulate successful activity creation
 		when(listifyService.createActivity(anyString(), anyInt(), any(Activity.class))).thenReturn(15);
 		
@@ -308,7 +305,7 @@ class APIControllerTest {
 	
 	@Test
 	void updateActivityTest() throws Exception {
-		String url = "/API/test_user/updateList/10/updateActivity/15";
+		String url = "/API/test_user/updateToDoList/10/updateActivity/15";
 		//simulate successful activity update
 		when(listifyService.updateActivity(anyString(), anyInt(), anyInt(), any(Activity.class))).thenReturn(true);
 	
@@ -341,7 +338,7 @@ class APIControllerTest {
 	
 	@Test
 	void updateActivityCategoryTest() throws Exception {
-		String url = "/API/test_user/updateList/10/updateActivityCategory/15";
+		String url = "/API/test_user/updateToDoList/10/updateActivityCategory/15";
 		//simulate successful activity update
 		when(listifyService.updateActivityCategory(anyString(), anyInt(), anyInt(), anyString())).thenReturn(true);
 	
@@ -367,7 +364,7 @@ class APIControllerTest {
 	
 	@Test
 	void deleteActivityTest() throws Exception {
-		String url = "/API/test_user/updateList/10/deleteActivity/15";
+		String url = "/API/test_user/updateToDoList/10/deleteActivity/15";
 		//simulate successful activity deletion
 		when(listifyService.deleteActivity(anyString(), anyInt(), anyInt())).thenReturn(true);
 	
