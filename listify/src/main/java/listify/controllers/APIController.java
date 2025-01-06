@@ -25,6 +25,7 @@ import listify.services.ListifyService;
 @RestController
 @EnableWebMvc
 public class APIController {
+	
 	private ListifyService listifyService; //business logic object
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
@@ -51,10 +52,7 @@ public class APIController {
 	@PostMapping(value="/API/login", consumes = {"application/json"}, produces = {"application/json"})
 	public ResponseEntity<String> login(HttpSession session, 
 										@RequestBody Map<String, String> body){
-		System.out.println(body.get("email"));
-		System.out.println(body.get("password"));
 		String username = listifyService.login(body.get("email"), body.get("password"));
-		System.out.println(username);
 		if(username != null) {
 			//successful login
 			session.setAttribute("username", username); //set session attribute
