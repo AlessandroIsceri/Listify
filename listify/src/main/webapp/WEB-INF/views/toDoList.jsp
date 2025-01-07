@@ -12,6 +12,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="<c:url value="/resources/scripts/toDoList.js" />"></script>
 <link href="<c:url value="/resources/styles/toDoList.css" />" rel="stylesheet">
+<script src="<c:url value="/resources/scripts/utils.js" />"></script>
 </head>
 <body onload="init()">
 

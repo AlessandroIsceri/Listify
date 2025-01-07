@@ -16,14 +16,6 @@ function fillForm(button){
 	document.getElementById("modifyToDoListNameId").value = listId
 }
 
-//function to print a toast message to the user
-function printToast(headerMessage, boydMessage, bgClass){
-	document.getElementById("toast-header").innerHTML = headerMessage
-	document.getElementById("toast-body").innerHTML = boydMessage
-	document.getElementById("toast-img").classList.add(bgClass)
-	document.getElementById("toast-div").classList.add("show")	
-}
-
 //function to send the update name request to the controller
 async function updateListName(){
 	listId = document.getElementById("modifyToDoListNameId").value
@@ -188,29 +180,4 @@ function createTableRow(listName, newId){
 	tr.appendChild(tdOperations)
 	
 	tbody.appendChild(tr)
-}
-
-async function logout(){
-	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/logout", {
-		method: "POST"
-	});
-	if(response.status == 200){
-		//redirect to login page
-		window.location.href = URL_PREFIX + "/listify/";
-	}else{
-		printToast("ERROR", "An error occurred during the logout", "bg-danger")
-	}
-}
-
-//function to delete an account
-async function deleteUser(){
-	response = await fetch(URL_PREFIX + "/listify/API/" + username + "/deleteUser", {
-		method: "DELETE"
-	});
-	if(response.status == 200){
-		//redirect to login page
-		window.location.href = URL_PREFIX + "/listify/";
-	}else{
-		printToast("ERROR", "An error occurred during the account deletion", "bg-danger")
-	}
 }

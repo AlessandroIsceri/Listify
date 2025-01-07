@@ -11,6 +11,7 @@
 <script src="https://kit.fontawesome.com/8706b528d6.js" crossorigin="anonymous"></script>
 <link href="<c:url value="/resources/styles/home.css" />">
 <script src="<c:url value="/resources/scripts/home.js" />"></script>
+<script src="<c:url value="/resources/scripts/utils.js" />"></script>
 </head>
 <body onload="init()">
 
