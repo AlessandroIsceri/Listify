@@ -67,13 +67,10 @@ public class APIController {
 		if(!(pathUsername.equals(username))) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		if(username != null) {
-			//successful logout
-			session.invalidate(); //destroy the session
-			return ResponseEntity.ok().build(); 
-		}else {
-			return ResponseEntity.notFound().build();
-		}
+		//successful logout (username == pathUsername)
+		session.invalidate(); //destroy the session
+		return ResponseEntity.ok().build(); 
+		
 	}
 	
 	@DeleteMapping("/API/{username}/deleteUser")
