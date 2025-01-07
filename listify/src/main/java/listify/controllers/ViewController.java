@@ -16,16 +16,16 @@ import listify.services.ListifyService;
 
 @Controller
 @EnableWebMvc
-public class HomeController {
+public class ViewController {
 	private ListifyService listifyService; //business logic object
 	ObjectMapper objectMapper = new ObjectMapper();
 	
-	public HomeController() {
+	public ViewController() {
 		listifyService = ListifyService.getInstance();
 		// register module to handle dates
 		objectMapper.registerModule(new JavaTimeModule());
 		objectMapper.findAndRegisterModules();
-        System.out.println("HomeController is loaded!");
+        System.out.println("ViewController is loaded!");
 	}
 	
 	@GetMapping("{username}/home")
@@ -44,9 +44,9 @@ public class HomeController {
 	}
 	
 	@GetMapping("{username}/toDoList/{listId}")
-	public ModelAndView getListPage(HttpSession session,
-									@PathVariable(value="username") String username, 
-									@PathVariable(value="listId") int listId){
+	public ModelAndView getToDoListPage(HttpSession session,
+										@PathVariable(value="username") String username, 
+										@PathVariable(value="listId") int listId){
 		//check if a logged user is trying to access a webpage of another user
 		if(!(username.equals(session.getAttribute("username")))) {
 			return new ModelAndView("errorPage");
@@ -54,8 +54,8 @@ public class HomeController {
 		ModelAndView m = new ModelAndView();
 		m.setViewName("toDoList");
 		m.addObject("username", username);
-		ToDoList list = listifyService.getToDoList(username, listId);
-		m.addObject("list", list);
+		ToDoList toDoList = listifyService.getToDoList(username, listId);
+		m.addObject("toDoList", toDoList);
 		return m;
 	}
 }

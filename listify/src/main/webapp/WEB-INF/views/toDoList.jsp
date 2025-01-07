@@ -125,11 +125,11 @@
     <input type="hidden" value="${username}" id="username">
     <!-- html page -->
     <div class="container-fluid">
-    	<input type="hidden" id="list-id" value="${list.id}">
+    	<input type="hidden" id="list-id" value="${toDoList.id}">
     	<div class="row bg-light">
     		<div class="col-2">
 	    		<div class="input-group input-group-lg">
-					<input type="text" disabled class="form-control bg-light border-0" id="list-name" value="${list.name}" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+					<input type="text" disabled class="form-control bg-light border-0" id="list-name" value="${toDoList.name}" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
 				</div>
 			</div>
 			<div class="col-6">
@@ -149,7 +149,7 @@
             <div class="col-3" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <ul class="list-group p-3 bg-light gap-2" id="to-do-activities-ul">
                 	<h4>To-do Activities:</h4>
-                    <c:forEach items="${list.toDoList}" var="activity">
+                    <c:forEach items="${toDoList.toDoList}" var="activity">
                     	<c:if test="${activity.category == 'To Do'}">
 				    		<li class="list-group-item border-0 rounded-pill" draggable="true" ondrag="drag(event)" id="${activity.id}" data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
 								<input type="hidden" value="${activity.name}">
@@ -167,7 +167,7 @@
             <div class="col-3" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <ul class="list-group p-3 bg-light gap-2" id="in-progress-activities-ul"> 
                 	<h4>In-progress Activities:</h4>
-                	<c:forEach items="${list.toDoList}" var="activity">
+                	<c:forEach items="${toDoList.toDoList}" var="activity">
                     	<c:if test="${activity.category == 'In Progress'}">
 				    		<li class="list-group-item border-0 rounded-pill" draggable="true" ondrag="drag(event)" id="${activity.id}" data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
 								<input type="hidden" value="${activity.name}">
@@ -185,7 +185,7 @@
             <div class="col-3" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <ul class="list-group p-3 bg-light gap-2"  id="completed-activities-ul">
                 	<h4>Completed Activities:</h4>
-                	<c:forEach items="${list.toDoList}" var="activity">
+                	<c:forEach items="${toDoList.toDoList}" var="activity">
                     	<c:if test="${activity.category == 'Completed'}">
 				    		<li class="list-group-item border-0 rounded-pill" draggable="true" ondrag="drag(event)" id="${activity.id}" data-bs-toggle="modal" data-bs-target="#modifyActivityModal" onclick="fillForm(this)">
 								<input type="hidden" value="${activity.name}">
