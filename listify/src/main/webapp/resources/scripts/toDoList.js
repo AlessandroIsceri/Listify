@@ -6,7 +6,8 @@ pieChart = null
 
 //initialize useful variables and pie chart
 function init(){
-	document.getElementById("modalActivityExpDate").valueAsDate = new Date();
+	var today = new Date();
+	document.getElementById("modalActivityExpDate").valueAsDate = new Date(today.setMonth(today.getMonth() + 1));
 	username = document.getElementById("username").value
 	listId = document.getElementById("list-id").value
 	createPieChart()
@@ -220,13 +221,22 @@ function createLiElement(ul, newId, activityName, date, priority, category){
 	clockIcon.classList.add("fa-regular")
 	clockIcon.classList.add("fa-clock")
 	clockSpan = document.createElement("span")
-	clockSpan.innerHTML = " " + date
+	
+	if(date == ""){
+		clockSpan.innerHTML = " No expiration date"
+	}else{
+		clockSpan.innerHTML = " " + date
+	}
 	
 	priorityIcon = document.createElement("i")
 	priorityIcon.classList.add("fa-solid")
 	priorityIcon.classList.add("fa-exclamation")
 	prioritySpan = document.createElement("span")
-	prioritySpan.innerHTML = " Priority: " + priority
+	if(priority == -1){
+		prioritySpan.innerHTML = " No priority"
+	}else{
+		prioritySpan.innerHTML = " Priority: " + priority
+	}
 	
 	
 	//append the elements to the paragraph
@@ -317,8 +327,19 @@ async function updateActivity(){
 		
 		//update HTML page
 		li.children[4].innerHTML = "<b>"+name+"</b>";
-		li.children[5].children[4].innerHTML = " Priority: " + priority
-		li.children[5].children[1].innerHTML = " " + expDate
+		
+		if(expDate == ""){
+			li.children[5].children[1].innerHTML = " No expiration date"
+		}else{
+			li.children[5].children[1].innerHTML = " " + expDate
+		}
+			
+		if(priority == -1){
+			li.children[5].children[4].innerHTML = " No priority"
+		}else{
+			li.children[5].children[4].innerHTML = " Priority: " + priority
+		}
+		
 		hiddenInputs = li.querySelectorAll('input[type="hidden"]')
 		hiddenInputs[0].value = name
 		hiddenInputs[1].value = expDate

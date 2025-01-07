@@ -13,7 +13,7 @@
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top" id="navbar">
 	    <div class="container-fluid">
-	        <a class="navbar-brand" disabled>
+	        <a class="navbar-brand" href="/listify">
 	            <img src="<c:url value="/resources/listify_logo.png"/>" alt="Logo" width="50" height="50"  class="d-inline-block align-text-top">
 	        </a>
 	        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">

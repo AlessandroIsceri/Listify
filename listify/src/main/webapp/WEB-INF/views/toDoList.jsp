@@ -60,6 +60,7 @@
                 <label for="modalActivityName">Name: </label><input class="form-control" type="text" id="modalActivityName">
                 <label for="modalActivityPriority">Priority:</label>
                 <select class="form-control" name="categories" id="modalActivityPriority">
+                	<option value="-1">No priority</option>
                     <option value="1">1 (max priority)</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -99,6 +100,7 @@
                 <label for="modifyModalActivityName">Name: </label><input class="form-control" type="text" id="modifyModalActivityName">
                 <label for="modifyModalActivityPriority">Priority:</label>
                 <select class="form-control" name="categories" id="modifyModalActivityPriority">
+                	<option value="-1">No priority</option>
                     <option value="1">1 (max priority)</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -157,8 +159,30 @@
 								<input type="hidden" value="${activity.priority}">
 								<input type="hidden" value="To Do">
 								<span><b>${activity.name}</b></span>
-					  			<p><i class="fa-regular fa-clock"></i><span> ${activity.expirationDate}</span><br>
-								<i class="fa-solid fa-exclamation"></i><span> Priority: ${activity.priority}</span></p>
+					  			<p>
+					  				<i class="fa-regular fa-clock"></i>
+					  				<span> 
+					  				<c:choose>
+						  				<c:when test="${activity.expirationDate != null}">
+						  					${activity.expirationDate}
+						  				</c:when>    
+									    <c:otherwise>
+									        No expiration date
+									    </c:otherwise>
+									</c:choose>
+						  			</span>
+						  			<br>
+									<i class="fa-solid fa-exclamation"></i><span> 
+										<c:choose>
+							  				<c:when test="${activity.priority != -1}">
+							  					Priority: ${activity.priority}
+							  				</c:when>    
+											    <c:otherwise>
+											        No priority
+											    </c:otherwise>
+										</c:choose>
+									</span>
+								</p>
 				    		</li>
 						</c:if>
 					</c:forEach>
@@ -175,8 +199,29 @@
 								<input type="hidden" value="${activity.priority}">
 								<input type="hidden" value="In Progress">
 								<span><b>${activity.name}</b></span>
-					  			<p><i class="fa-regular fa-clock"></i><span> ${activity.expirationDate}</span><br>
-								<i class="fa-solid fa-exclamation"></i><span> Priority: ${activity.priority}</span></p>
+					  			<p>
+					  				<i class="fa-regular fa-clock"></i>
+					  				<span> 
+					  				<c:choose>
+						  				<c:when test="${activity.expirationDate != null}">
+						  					${activity.expirationDate}
+						  				</c:when>    
+									    <c:otherwise>
+									        No expiration date
+									    </c:otherwise>
+									</c:choose>
+						  			</span><br>
+									<i class="fa-solid fa-exclamation"></i><span> 
+										<c:choose>
+							  				<c:when test="${activity.priority != -1}">
+							  					Priority: ${activity.priority}
+							  				</c:when>    
+											    <c:otherwise>
+											        No priority
+											    </c:otherwise>
+										</c:choose>
+									</span>
+								</p>
 				    		</li>			
 				    	</c:if>
 					</c:forEach>   
@@ -193,8 +238,30 @@
 								<input type="hidden" value="${activity.priority}">
 								<input type="hidden" value="Completed">
 								<span><b>${activity.name}</b></span>
-					  			<p><i class="fa-regular fa-clock"></i><span> ${activity.expirationDate}</span><br>
-								<i class="fa-solid fa-exclamation"></i><span> Priority: ${activity.priority}</span></p>
+					  			<p>
+					  				<i class="fa-regular fa-clock"></i>
+					  				<span> 
+					  				<c:choose>
+						  				<c:when test="${activity.expirationDate != null}">
+						  					${activity.expirationDate}
+						  				</c:when>    
+									    <c:otherwise>
+									        No expiration date
+									    </c:otherwise>
+									</c:choose>
+						  			</span>
+						  			<br>
+									<i class="fa-solid fa-exclamation"></i><span> 
+										<c:choose>
+							  				<c:when test="${activity.priority != -1}">
+							  					Priority: ${activity.priority}
+							  				</c:when>    
+											    <c:otherwise>
+											        No priority
+											    </c:otherwise>
+										</c:choose>
+									</span>
+								</p>
 				    		</li>
 						</c:if>
 					</c:forEach> 
