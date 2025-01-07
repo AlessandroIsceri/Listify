@@ -80,7 +80,7 @@ class ViewControllerTest {
 	}
 	
 	@BeforeEach
-    public void setup() {
+    void setup() {
 		//setup the environment to send mock http requests
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
         viewResolver.setPrefix("/WEB-INF/views/");

@@ -98,7 +98,7 @@ public class ListifyService {
 	
 	//functions to handle to do lists
 	public int createToDoList(String username, String listName) {
-		int newId = toDoListRepository.createList(username, listName);
+		int newId = toDoListRepository.createToDoList(username, listName);
 		if(newId != -1) { //-1 -> error in the DB
 			User user = getUser(username);
 			if(user != null) {
@@ -131,7 +131,7 @@ public class ListifyService {
 		User user = getUser(username);
 		if(user != null) {
 			ToDoList list = user.getToDoList(listId);
-			if(list != null && toDoListRepository.deleteList(listId)) { //if the list exists and the deletion was successful on DB
+			if(list != null && toDoListRepository.deleteToDoList(listId)) { //if the list exists and the deletion was successful on DB
 				user.removeToDoList(list); //delete list at runtime
 				return true;
 			}

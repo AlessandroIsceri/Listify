@@ -57,7 +57,7 @@ class APIControllerTest {
 	public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 	
 	@BeforeEach
-    public void setup() {
+    void setup() {
 		mvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 	
@@ -75,13 +75,12 @@ class APIControllerTest {
 		String requestJson = requestObject.toPrettyString();
 		
 		HttpSession session = mvc.perform(post(url)
-								 .contentType(APPLICATION_JSON_UTF8)
-								 .content(requestJson.getBytes())) 
-								 .andDo(print())
-								 .andExpect(status().isCreated()) //the status should be 201 created
-								 .andReturn()
-								 .getRequest()
-					             .getSession();
+										  .contentType(APPLICATION_JSON_UTF8).content(requestJson.getBytes())) 
+										  .andDo(print())
+										  .andExpect(status().isCreated()) //the status should be 201 created
+										  .andReturn()
+										  .getRequest()
+							              .getSession();
 		
 		//the session attribute username should not be null
 		assertNotNull(session.getAttribute("username")); 
@@ -92,20 +91,19 @@ class APIControllerTest {
 		//simulate an unsuccessful registration
 		when(listifyService.createUser(anyString(), anyString(), anyString())).thenReturn(false);
 		session = mvc.perform(post(url)
-							  .contentType(APPLICATION_JSON_UTF8)
-							  .content(requestJson.getBytes())) 
-							  .andDo(print())
-							  .andExpect(status().isConflict()) //the status should be 409 conflict (already existing user)
-							  .andReturn()
-							  .getRequest()
-				              .getSession();
+							 .contentType(APPLICATION_JSON_UTF8)
+							 .content(requestJson.getBytes())) 
+							 .andDo(print())
+							 .andExpect(status().isConflict()) //the status should be 409 conflict (already existing user)
+							 .andReturn()
+							 .getRequest()
+				             .getSession();
 
 		//the session attribute username should be null
 		assertNull(session.getAttribute("username")); 
 	}
 	
 	@Test
-	//TODO MANCA CONTROLLARE IL BODY RITORNATO CON LOGIN SUCCESSFUL
 	void loginTest() throws Exception {
 		String url = "/API/login";
 		
@@ -117,34 +115,38 @@ class APIControllerTest {
 		requestObject.put("password", "pw");
 		String requestJson = requestObject.toPrettyString();
 		
-		HttpSession session = mvc.perform(post(url)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .accept(APPLICATION_JSON_UTF8)
-				 .content(requestJson.getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isOk()) //the status should be 200 ok
-				 .andReturn()
-				 .getRequest()
-	             .getSession();
+		MvcResult result = mvc.perform(post(url)
+									   .contentType(APPLICATION_JSON_UTF8)
+									   .accept(APPLICATION_JSON_UTF8)
+									   .content(requestJson.getBytes())) 
+									   .andDo(print())
+									   .andExpect(status().isOk()) //the status should be 200 ok
+									   .andReturn();
+		
+		HttpSession session = result.getRequest().getSession();
+		String body = result.getResponse().getContentAsString();
 
 		//the session attribute username should not be null
 		assertNotNull(session.getAttribute("username")); 
 		
 		//the session attribute username should be "test_user"
 		assertEquals("test_user", session.getAttribute("username"));
+		
+		//the session username and the value returned from the request should be the same
+		assertEquals(session.getAttribute("username"), body);
 
 		//simulate an unsuccessful login
 		when(listifyService.login(anyString(), anyString())).thenReturn(null);
 		
 		session = mvc.perform(post(url)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .accept(APPLICATION_JSON_UTF8)
-				 .content(requestJson.getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isNotFound()) //the status should be 404 not found
-				 .andReturn()
-				 .getRequest()
-	             .getSession();
+							  .contentType(APPLICATION_JSON_UTF8)
+							  .accept(APPLICATION_JSON_UTF8)
+							  .content(requestJson.getBytes())) 
+							  .andDo(print())
+							  .andExpect(status().isNotFound()) //the status should be 404 not found
+							  .andReturn()
+							  .getRequest()
+				              .getSession();
 		
 		//the session attribute username should be null
 		assertNull(session.getAttribute("username")); 
@@ -159,23 +161,57 @@ class APIControllerTest {
 		
 		//successful logout (the user was logged in -> the session attribute was set)
 		HttpSession session = mvc.perform(post(url)
-								 .sessionAttrs(sessionAttrs)) 
-								 .andDo(print())
-								 .andExpect(status().isOk()) //the status should be 200 ok
-								 .andReturn()
-								 .getRequest()
-					             .getSession();
+										  .sessionAttrs(sessionAttrs)) 
+										  .andDo(print())
+										  .andExpect(status().isOk()) //the status should be 200 ok
+										  .andReturn()
+										  .getRequest()
+							              .getSession();
 		
 		//the username session attribute should be removed
 		assertNull(session.getAttribute("username"));
 		
 		//unsuccessful logout (the user was not logged in -> the session attribute was not set)
 		session = mvc.perform(post(url)) 
-								 .andDo(print())
-								 .andExpect(status().isUnauthorized()) //the status should be unathorized
-								 .andReturn()
-								 .getRequest()
-					             .getSession();
+							  .andDo(print())
+							  .andExpect(status().isUnauthorized()) //the status should be unathorized
+							  .andReturn()
+							  .getRequest()
+				              .getSession();
+		
+	}
+	
+	@Test
+	void deleteUserTest() throws Exception {
+		String url = "/API/test_user/deleteUser";
+		
+		Map<String, Object> sessionAttrs = new HashMap<>();
+		sessionAttrs.put("username", "test_user");
+		
+		//successful deletion (the user was logged in -> the session attribute was set)
+		when(listifyService.deleteUser(anyString())).thenReturn(true);
+		
+		HttpSession session = mvc.perform(delete(url)
+										  .sessionAttrs(sessionAttrs)) 
+										  .andDo(print())
+										  .andExpect(status().isOk()) //the status should be 200 ok
+										  .andReturn()
+										  .getRequest()
+							              .getSession();
+		
+		//the username session attribute should be removed
+		assertNull(session.getAttribute("username"));
+		
+		//unsuccessful deletion
+		when(listifyService.deleteUser(anyString())).thenReturn(false);
+		
+		mvc.perform(delete(url)
+					.sessionAttrs(sessionAttrs)) 
+					.andDo(print())
+					.andExpect(status().isNotFound()) //the status should be 404 not found
+					.andReturn()
+					.getRequest()
+		            .getSession();
 		
 	}
 	
@@ -188,13 +224,14 @@ class APIControllerTest {
 		Map<String, Object> sessionAttrs = new HashMap<>();
 		sessionAttrs.put("username", "test_user");
 		
-		MvcResult result = mvc.perform(post(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .accept(APPLICATION_JSON_UTF8)
-				 .content("first_list".getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isCreated()) //the status should be 201 created
-				 .andReturn();
+		MvcResult result = mvc.perform(post(url)
+									   .sessionAttrs(sessionAttrs)
+									   .contentType(APPLICATION_JSON_UTF8)
+									   .accept(APPLICATION_JSON_UTF8)
+									   .content("first_list".getBytes())) 
+									 	.andDo(print())
+									 	.andExpect(status().isCreated()) //the status should be 201 created
+									 	.andReturn();
 		
 		//and the body should contain the new id (10)
 		assertEquals("10", result.getResponse().getContentAsString());
@@ -202,13 +239,14 @@ class APIControllerTest {
 		//simulate unsuccessful list creation
 		when(listifyService.createToDoList(anyString(), anyString())).thenReturn(-1);
 
-		mvc.perform(post(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .accept(APPLICATION_JSON_UTF8)
-				 .content("first_list".getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isInternalServerError()) //the status should be 500 internal server error
-				 .andReturn();
+		mvc.perform(post(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.accept(APPLICATION_JSON_UTF8)
+					.content("first_list".getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isInternalServerError()) //the status should be 500 internal server error
+				 	.andReturn();
 		
 	}
 	
@@ -221,23 +259,25 @@ class APIControllerTest {
 		Map<String, Object> sessionAttrs = new HashMap<>();
 		sessionAttrs.put("username", "test_user");
 	
-		mvc.perform(put(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .accept(APPLICATION_JSON_UTF8)
-				 .content("second_list".getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isOk()) //the status should be 200 ok
-				 .andReturn();
+		mvc.perform(put(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.accept(APPLICATION_JSON_UTF8)
+					.content("second_list".getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isOk()) //the status should be 200 ok
+				 	.andReturn();
 		
 		//simulate unsuccessful list update
 		when(listifyService.updateToDoListName(anyString(), anyInt(), anyString())).thenReturn(false);
-		mvc.perform(put(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .accept(APPLICATION_JSON_UTF8)
-				 .content("second_list".getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isNotFound()) //the status should be 404 not found
-				 .andReturn();
+		mvc.perform(put(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.accept(APPLICATION_JSON_UTF8)
+					.content("second_list".getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isNotFound()) //the status should be 404 not found
+				 	.andReturn();
 		
 	}
 	
@@ -250,17 +290,19 @@ class APIControllerTest {
 		Map<String, Object> sessionAttrs = new HashMap<>();
 		sessionAttrs.put("username", "test_user");
 	
-		mvc.perform(delete(url).sessionAttrs(sessionAttrs)) 
-				 .andDo(print())
-				 .andExpect(status().isOk()) //the status should be 200 ok
-				 .andReturn();
+		mvc.perform(delete(url)
+					.sessionAttrs(sessionAttrs)) 
+				 	.andDo(print())
+				 	.andExpect(status().isOk()) //the status should be 200 ok
+				 	.andReturn();
 		
 		//simulate unsuccessful list deletion
 		when(listifyService.deleteToDoList(anyString(), anyInt())).thenReturn(false);
-		mvc.perform(delete(url).sessionAttrs(sessionAttrs))
-				 .andDo(print())
-				 .andExpect(status().isNotFound()) //the status should be 404 not found
-				 .andReturn();
+		mvc.perform(delete(url)
+					.sessionAttrs(sessionAttrs))
+				 	.andDo(print())
+				 	.andExpect(status().isNotFound()) //the status should be 404 not found
+				 	.andReturn();
 	}
 	
 	@Test 
@@ -279,13 +321,14 @@ class APIControllerTest {
 		requestObject.put("category", "To Do");
 		String requestJson = requestObject.toPrettyString();
 		
-		MvcResult result = mvc.perform(post(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .accept(APPLICATION_JSON_UTF8)
-				 .content(requestJson.getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isCreated()) //the status should be 201 created
-				 .andReturn();
+		MvcResult result = mvc.perform(post(url)
+									   .sessionAttrs(sessionAttrs)
+									   .contentType(APPLICATION_JSON_UTF8)
+									   .accept(APPLICATION_JSON_UTF8)
+									   .content(requestJson.getBytes())) 
+				 					   .andDo(print())
+				 					   .andExpect(status().isCreated()) //the status should be 201 created
+				 					   .andReturn();
 		
 		//and the body should contain the new activity id (15)
 		assertEquals("15", result.getResponse().getContentAsString());
@@ -293,13 +336,14 @@ class APIControllerTest {
 		//simulate unsuccessful activity creation
 		when(listifyService.createActivity(anyString(), anyInt(), any(Activity.class))).thenReturn(-1);
 		
-		mvc.perform(post(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .accept(APPLICATION_JSON_UTF8)
-				 .content(requestJson.getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isInternalServerError()) //the status should be 500 internal server error
-				 .andReturn();
+		mvc.perform(post(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.accept(APPLICATION_JSON_UTF8)
+					.content(requestJson.getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isInternalServerError()) //the status should be 500 internal server error
+				 	.andReturn();
 	}
 	
 	@Test
@@ -318,21 +362,23 @@ class APIControllerTest {
 		requestObject.put("category", "To Do");
 		String requestJson = requestObject.toPrettyString();
 		
-		mvc.perform(put(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .content(requestJson.getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isOk()) //the status should be 200 ok
-				 .andReturn();
+		mvc.perform(put(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.content(requestJson.getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isOk()) //the status should be 200 ok
+				 	.andReturn();
 		
 		//simulate unsuccessful activity update
 		when(listifyService.updateActivity(anyString(), anyInt(), anyInt(), any(Activity.class))).thenReturn(false);
-		mvc.perform(put(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .content(requestJson.getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isNotFound()) //the status should be 404 not found
-				 .andReturn();
+		mvc.perform(put(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.content(requestJson.getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isNotFound()) //the status should be 404 not found
+				 	.andReturn();
 	}
 	
 	@Test
@@ -344,21 +390,23 @@ class APIControllerTest {
 		Map<String, Object> sessionAttrs = new HashMap<>();
 		sessionAttrs.put("username", "test_user");
 		
-		mvc.perform(put(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .content("Completed".getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isOk()) //the status should be 200 ok
-				 .andReturn();
+		mvc.perform(put(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.content("Completed".getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isOk()) //the status should be 200 ok
+				 	.andReturn();
 		
 		//simulate unsuccessful activity update
 		when(listifyService.updateActivityCategory(anyString(), anyInt(), anyInt(), anyString())).thenReturn(false);
-		mvc.perform(put(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .content("To Do".getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isNotFound()) //the status should be 404 not found
-				 .andReturn();
+		mvc.perform(put(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.content("To Do".getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isNotFound()) //the status should be 404 not found
+				 	.andReturn();
 	}
 	
 	@Test
@@ -370,19 +418,53 @@ class APIControllerTest {
 		Map<String, Object> sessionAttrs = new HashMap<>();
 		sessionAttrs.put("username", "test_user");
 		
-		mvc.perform(delete(url).sessionAttrs(sessionAttrs)) 
-				 .andDo(print())
-				 .andExpect(status().isOk()) //the status should be 200 ok
-				 .andReturn();
+		mvc.perform(delete(url)
+					.sessionAttrs(sessionAttrs)) 
+				 	.andDo(print())
+				 	.andExpect(status().isOk()) //the status should be 200 ok
+				 .	andReturn();
 		
 		//simulate unsuccessful activity deletion
 		when(listifyService.deleteActivity(anyString(), anyInt(), anyInt())).thenReturn(false);
-		mvc.perform(delete(url).sessionAttrs(sessionAttrs))
-			 .andDo(print())
-			 .andExpect(status().isNotFound()) //the status should be 404 not found
-			 .andReturn();
+		mvc.perform(delete(url)
+				.sessionAttrs(sessionAttrs))
+			 	.andDo(print())
+			 	.andExpect(status().isNotFound()) //the status should be 404 not found
+			 	.andReturn();
 	}
 	
-	//TODO MANCANO TEST NON AUTORIZZATI
-	//TODO MANCANO TEST ELIMINAZIONE UTENTE
+	@Test
+	void unauthorizedTest() throws Exception{
+		//two random api calls that should return unauthorized
+		String url = "/API/test_user/updateToDoListName/10";
+	
+		Map<String, Object> sessionAttrs = new HashMap<>();
+		sessionAttrs.put("username", "test_user_1");
+	
+		mvc.perform(put(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.accept(APPLICATION_JSON_UTF8)
+					.content("second_list".getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isUnauthorized()) //the status should be unauthorized
+				 	.andReturn();
+		
+		url = "/API/test_user/updateToDoList/10/updateActivity/15";
+	
+		ObjectNode requestObject = objectMapper.createObjectNode();
+		requestObject.put("name", "first activity");
+		requestObject.put("priority", 4);
+		requestObject.put("expirationDate", LocalDate.now().toString());
+		requestObject.put("category", "To Do");
+		String requestJson = requestObject.toPrettyString();
+		
+		mvc.perform(put(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.content(requestJson.getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isUnauthorized()) //the status should be unauthorized
+				 	.andReturn();
+	}
 }

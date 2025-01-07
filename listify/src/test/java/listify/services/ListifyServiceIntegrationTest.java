@@ -15,7 +15,7 @@ import listify.domain.User;
 import listify.domain.Activity;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ListifyServiceTest {
+public class ListifyServiceIntegrationTest {
 	
 	private Activity createActivity(String name, String category, LocalDate date, int priority) {
 		Activity activity = new Activity();
@@ -28,7 +28,7 @@ public class ListifyServiceTest {
 	
 	@Test
 	@Order(1)
-    public void testGetInstance() {
+    void getInstanceTest() {
 		ListifyService instance1 = ListifyService.getInstance();
         ListifyService instance2 = ListifyService.getInstance();
 
@@ -38,7 +38,7 @@ public class ListifyServiceTest {
 
 	@Test 
 	@Order(2)
-	public void testCreateUser() {
+	void createUserTest() {
 		ListifyService listifyService = ListifyService.getInstance();
 		
 		//the service should permit to create a new user
@@ -56,7 +56,7 @@ public class ListifyServiceTest {
 	
 	@Test 
 	@Order(3)
-	public void testLogin() {
+	void loginTest() {
 		ListifyService listifyService = ListifyService.getInstance();
 		
 		//try to login with previously created users
@@ -73,7 +73,7 @@ public class ListifyServiceTest {
 	
 	@Test
 	@Order(4)
-	public void testGetUser() {
+	void getUserTest() {
 		ListifyService listifyService = ListifyService.getInstance();
 		
 		User user = new User();
@@ -94,7 +94,7 @@ public class ListifyServiceTest {
 	
 	@Test
 	@Order(5)
-	public void testListManipulation() {
+	void listManipulationTest() {
 		ListifyService listifyService = ListifyService.getInstance();
 		//try to create a list
 		int listId = listifyService.createToDoList("test_user", "first_list");
@@ -107,7 +107,7 @@ public class ListifyServiceTest {
 		//the name should be updated correctly
 		assertSame("first_list_1", listifyService.getToDoList("test_user", listId).getName());
 		
-		//you cannot update the name of a non existing list
+		//you cannot update the name of a not existing list
 		assertFalse(listifyService.updateToDoListName("test_user", listId + 1, "first_list_1"));
 
 	
@@ -164,7 +164,7 @@ public class ListifyServiceTest {
 
 	@Test
 	@Order(6)
-	public void testListManipulation1() {
+	void listManipulation1Test() {
 		ListifyService listifyService = ListifyService.getInstance();
 		//try to create a list
 		int listId = listifyService.createToDoList("test_user", "second_list");
@@ -193,7 +193,7 @@ public class ListifyServiceTest {
 	
 	@Test
 	@Order(7)
-	public void testUserDelete() {
+	void userDeleteTest() {
 		ListifyService listifyService = ListifyService.getInstance();
 		//remove previously created users
 		assertTrue(listifyService.deleteUser("test_user"));

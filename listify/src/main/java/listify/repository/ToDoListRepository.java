@@ -42,7 +42,7 @@ public class ToDoListRepository extends Repository{
 	}
 
 	//delete an existing list
-	public boolean deleteList(int listId) {
+	public boolean deleteToDoList(int listId) {
 		try {
             openConnection();
             Statement statement = connection.createStatement();
@@ -57,7 +57,7 @@ public class ToDoListRepository extends Repository{
 	}
 
 	//create a new list and return its id
-	public int createList(String username, String listName) {
+	public int createToDoList(String username, String listName) {
 		try {
             openConnection();
             String query = "INSERT INTO todolist (name, username) VALUES (\"" + listName + "\", \"" + username + "\")";

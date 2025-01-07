@@ -74,14 +74,14 @@ class APIControllerIntegrationTest {
 		String requestJson = requestObject.toPrettyString();
 		
 		HttpSession session = mvc.perform(post(url)
-								 .contentType(APPLICATION_JSON_UTF8)
-								 .accept(APPLICATION_JSON_UTF8)
-								 .content(requestJson.getBytes())) 
-								 .andDo(print())
-								 .andExpect(status().isCreated()) //the status should be 201 created
-								 .andReturn()
-								 .getRequest()
-					             .getSession();
+										  .contentType(APPLICATION_JSON_UTF8)
+										  .accept(APPLICATION_JSON_UTF8)
+										  .content(requestJson.getBytes())) 
+										  .andDo(print())
+										  .andExpect(status().isCreated()) //the status should be 201 created
+										  .andReturn()
+										  .getRequest()
+							              .getSession();
 		
 		//the session attribute username should not be null
 		assertNotNull(session.getAttribute("username")); 
@@ -152,23 +152,23 @@ class APIControllerIntegrationTest {
 		
 		//successful logout (the user was logged in -> the session attribute was set)
 		HttpSession session = mvc.perform(post(url)
-								 .sessionAttrs(sessionAttrs)) 
-								 .andDo(print())
-								 .andExpect(status().isOk()) //the status should be 200 ok
-								 .andReturn()
-								 .getRequest()
-					             .getSession();
+										  .sessionAttrs(sessionAttrs)) 
+										  .andDo(print())
+										  .andExpect(status().isOk()) //the status should be 200 ok
+										  .andReturn()
+										  .getRequest()
+							              .getSession();
 		
 		//the username session attribute should be removed
 		assertNull(session.getAttribute("username"));
 		
 		//unsuccessful logout (the user was not logged in -> the session attribute was not set)
 		session = mvc.perform(post(url)) 
-								 .andDo(print())
-								 .andExpect(status().isUnauthorized()) //the status should be unathorized
-								 .andReturn()
-								 .getRequest()
-					             .getSession();
+							  .andDo(print())
+							  .andExpect(status().isUnauthorized()) //the status should be unathorized
+							  .andReturn()
+							  .getRequest()
+					          .getSession();
 	}
 	
 	@Test
@@ -180,13 +180,14 @@ class APIControllerIntegrationTest {
 		Map<String, Object> sessionAttrs = new HashMap<>();
 		sessionAttrs.put("username", "test_user");
 		
-		MvcResult result = mvc.perform(post(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .accept(APPLICATION_JSON_UTF8)
-				 .content("first_list".getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isCreated()) //the status should be 201 created
-				 .andReturn();
+		MvcResult result = mvc.perform(post(url)
+									   .sessionAttrs(sessionAttrs)
+									   .contentType(APPLICATION_JSON_UTF8)
+									   .accept(APPLICATION_JSON_UTF8)
+									   .content("first_list".getBytes())) 
+							 		   .andDo(print())
+							 		   .andExpect(status().isCreated()) //the status should be 201 created
+							 		   .andReturn();
 		
 		//and the body should contain the new id 
 		String newListId = result.getResponse().getContentAsString();
@@ -198,23 +199,25 @@ class APIControllerIntegrationTest {
 		//Map<String, Object> sessionAttrs = new HashMap<>();
 		//sessionAttrs.put("username", "test_user");
 	
-		mvc.perform(put(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .accept(APPLICATION_JSON_UTF8)
-				 .content("second_list".getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isOk()) //the status should be 200 ok
-				 .andReturn();
+		mvc.perform(put(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.accept(APPLICATION_JSON_UTF8)
+					.content("second_list".getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isOk()) //the status should be 200 ok
+				 	.andReturn();
 		
 		//cannot update a not existing list
 		url = "/API/test_user/updateToDoListName/" + newListId + "1";
-		mvc.perform(put(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .accept(APPLICATION_JSON_UTF8)
-				 .content("second_list".getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isNotFound()) //the status should be 404 not found
-				 .andReturn();
+		mvc.perform(put(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.accept(APPLICATION_JSON_UTF8)
+					.content("second_list".getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isNotFound()) //the status should be 404 not found
+				 	.andReturn();
 		
 		
 		
@@ -233,13 +236,14 @@ class APIControllerIntegrationTest {
 		requestObject.put("category", "To Do");
 		String requestJson = requestObject.toPrettyString();
 		
-		result = mvc.perform(post(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .accept(APPLICATION_JSON_UTF8)
-				 .content(requestJson.getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isCreated()) //the status should be 201 created
-				 .andReturn();
+		result = mvc.perform(post(url)
+							 .sessionAttrs(sessionAttrs)
+							 .contentType(APPLICATION_JSON_UTF8)
+							 .accept(APPLICATION_JSON_UTF8)
+							 .content(requestJson.getBytes())) 
+				 			 .andDo(print())
+				 			 .andExpect(status().isCreated()) //the status should be 201 created
+				 			 .andReturn();
 		
 		String newActivityId = result.getResponse().getContentAsString();
 		assertNotNull(newActivityId);
@@ -259,12 +263,13 @@ class APIControllerIntegrationTest {
 		requestObject.put("category", "Completed");
 		requestJson = requestObject.toPrettyString();
 		
-		mvc.perform(put(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .content(requestJson.getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isOk()) //the status should be 200 ok
-				 .andReturn();
+		mvc.perform(put(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.content(requestJson.getBytes())) 
+				    .andDo(print())
+				    .andExpect(status().isOk()) //the status should be 200 ok
+				    .andReturn();
 		
 		//try to update activity category
 		url = "/API/test_user/updateToDoList/" + newListId + "/updateActivityCategory/" + newActivityId;
@@ -273,12 +278,13 @@ class APIControllerIntegrationTest {
 		//Map<String, Object> sessionAttrs = new HashMap<>();
 		//sessionAttrs.put("username", "test_user");
 		
-		mvc.perform(put(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .content("In Progress".getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isOk()) //the status should be 200 ok
-				 .andReturn();
+		mvc.perform(put(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.content("In Progress".getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isOk()) //the status should be 200 ok
+				 	.andReturn();
 		
 		//cannot update a not existing activity
 		
@@ -286,23 +292,25 @@ class APIControllerIntegrationTest {
 
 		System.out.println(url);
 		
-		mvc.perform(put(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .content(requestJson.getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isNotFound()) //the status should be 404 not found
-				 .andReturn();
+		mvc.perform(put(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.content(requestJson.getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isNotFound()) //the status should be 404 not found
+				 	.andReturn();
 		
 		//cannot update the category of a not existing activity
 		
 		url = "/API/test_user/updateToDoList/" + newListId + "/updateActivityCategory/" + newActivityId + "2";
 		
-		mvc.perform(put(url).sessionAttrs(sessionAttrs)
-				 .contentType(APPLICATION_JSON_UTF8)
-				 .content("To Do".getBytes())) 
-				 .andDo(print())
-				 .andExpect(status().isNotFound()) //the status should be 404 not found
-				 .andReturn();
+		mvc.perform(put(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.content("To Do".getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isNotFound()) //the status should be 404 not found
+				 	.andReturn();
 		
 		//try to delete an activity
 		url = "/API/test_user/updateToDoList/" + newListId + "/deleteActivity/" + newActivityId;
@@ -311,16 +319,18 @@ class APIControllerIntegrationTest {
 		//Map<String, Object> sessionAttrs = new HashMap<>();
 		//sessionAttrs.put("username", "test_user");
 		
-		mvc.perform(delete(url).sessionAttrs(sessionAttrs)) 
-				 .andDo(print())
-				 .andExpect(status().isOk()) //the status should be 200 ok
-				 .andReturn();
+		mvc.perform(delete(url)
+					.sessionAttrs(sessionAttrs)) 
+				 	.andDo(print())
+				 	.andExpect(status().isOk()) //the status should be 200 ok
+				 	.andReturn();
 		
 		//cannot delete the same activity two times
-		mvc.perform(delete(url).sessionAttrs(sessionAttrs))
-			 .andDo(print())
-			 .andExpect(status().isNotFound()) //the status should be 404 not found
-			 .andReturn();
+		mvc.perform(delete(url)
+					.sessionAttrs(sessionAttrs))
+			 		.andDo(print())
+			 		.andExpect(status().isNotFound()) //the status should be 404 not found
+			 		.andReturn();
 		
 		//try to delete a toDoList
 		url = "/API/test_user/deleteToDoList/" + newListId;
@@ -329,16 +339,18 @@ class APIControllerIntegrationTest {
 		//Map<String, Object> sessionAttrs = new HashMap<>();
 		//sessionAttrs.put("username", "test_user");
 	
-		mvc.perform(delete(url).sessionAttrs(sessionAttrs)) 
-				 .andDo(print())
-				 .andExpect(status().isOk()) //the status should be 200 ok
-				 .andReturn();
+		mvc.perform(delete(url)
+					.sessionAttrs(sessionAttrs)) 
+				 	.andDo(print())
+				 	.andExpect(status().isOk()) //the status should be 200 ok
+				 	.andReturn();
 		
 		//cannot delete the same toDoList two times
-		mvc.perform(delete(url).sessionAttrs(sessionAttrs))
-				 .andDo(print())
-				 .andExpect(status().isNotFound()) //the status should be 404 not found
-				 .andReturn();
+		mvc.perform(delete(url)
+					.sessionAttrs(sessionAttrs))
+				 	.andDo(print())
+				 	.andExpect(status().isNotFound()) //the status should be 404 not found
+				 	.andReturn();
 	}
 	
 	
