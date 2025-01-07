@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,11 @@ import listify.domain.Activity;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ListifyServiceIntegrationTest {
 	
+	static int listId;
+	static int activityId;
+	static ListifyService listifyService;
+	static Activity activity;
+	
 	private Activity createActivity(String name, String category, LocalDate date, int priority) {
 		Activity activity = new Activity();
 		activity.setName(name);
@@ -24,6 +30,12 @@ public class ListifyServiceIntegrationTest {
 		activity.setExpirationDate(date);
 		activity.setPriority(priority);
 		return activity;
+	}
+	
+	@BeforeEach
+	//TODO non dovrebbe essere eseguito before getIntsanceTest
+	void getListifyService() {
+		listifyService = ListifyService.getInstance();
 	}
 	
 	@Test
@@ -39,8 +51,6 @@ public class ListifyServiceIntegrationTest {
 	@Test 
 	@Order(2)
 	void createUserTest() {
-		ListifyService listifyService = ListifyService.getInstance();
-		
 		//the service should permit to create a new user
 		assertTrue(listifyService.createUser("test@gmail.com", "test_user", "password"));
 		
@@ -57,8 +67,6 @@ public class ListifyServiceIntegrationTest {
 	@Test 
 	@Order(3)
 	void loginTest() {
-		ListifyService listifyService = ListifyService.getInstance();
-		
 		//try to login with previously created users
 		assertSame("test_user", listifyService.login("test@gmail.com", "password"));
 		assertSame("test_user1", listifyService.login("test1@gmail.com", "password"));
@@ -74,8 +82,6 @@ public class ListifyServiceIntegrationTest {
 	@Test
 	@Order(4)
 	void getUserTest() {
-		ListifyService listifyService = ListifyService.getInstance();
-		
 		User user = new User();
 		user.setEmail("test@gmail.com");
 		user.setPassword("password");
@@ -94,14 +100,18 @@ public class ListifyServiceIntegrationTest {
 	
 	@Test
 	@Order(5)
-	void listManipulationTest() {
+	void createToDoListTest() {
 		ListifyService listifyService = ListifyService.getInstance();
 		//try to create a list
-		int listId = listifyService.createToDoList("test_user", "first_list");
+		listId = listifyService.createToDoList("test_user", "first_list");
 		assertNotSame(-1, listId); //id should not be -1, unless the DB is not working correctly
 		assertNotNull(listifyService.getToDoList("test_user", listId)); //the list should be created and accessible
-		assertNull(listifyService.getToDoList("test_user", listId + 1)); //this list should not exist
-		
+		assertNull(listifyService.getToDoList("test_user", listId + 1)); //this list should not exist		
+	}
+
+	@Test
+	@Order(6)
+	void updateToDoListNameTest() {
 		//try to update list name
 		assertTrue(listifyService.updateToDoListName("test_user", listId, "first_list_1"));
 		//the name should be updated correctly
@@ -109,38 +119,58 @@ public class ListifyServiceIntegrationTest {
 		
 		//you cannot update the name of a not existing list
 		assertFalse(listifyService.updateToDoListName("test_user", listId + 1, "first_list_1"));
-
+	}
 	
-		//try to create an activity and add it to the previosly created list
-		Activity activity = createActivity("first_activity", "To Do", LocalDate.now(), 3);
+	@Test
+	@Order(7)
+	void createActivityTest() {
+		//try to create an activity and add it to the previously created list
+		activity = createActivity("first_activity", "To Do", LocalDate.now(), 3);
 		
-		int activityId = listifyService.createActivity("test_user", listId, activity);
+		activityId = listifyService.createActivity("test_user", listId, activity);
 		assertNotSame(-1, activityId); //the activity should have an id different from -1, unless there was an error in the DB
 		
 		//check if the activity was correctly inserted into the "first_list_1" to-do list
 		assertSame("first_list_1", listifyService.getToDoList("test_user", listId).getName());
 		Activity returnedActivity = listifyService.getToDoList("test_user", listId).getActivity(activityId);
 		assertEquals(activity, returnedActivity);
-		
+	}
+	
+	@Test
+	@Order(8)
+	void updateActivityTest() {
 		//try to update an activity
 		activity.setPriority(6);
 		activity.setExpirationDate(null);
 		listifyService.updateActivity("test_user", listId, activityId, activity);
 
 		//check if the activity was updated correctly
-		returnedActivity = listifyService.getToDoList("test_user", listId).getActivity(activityId);
+		Activity returnedActivity = listifyService.getActivity("test_user", listId, activityId);
 		assertEquals(activity, returnedActivity);
 		
+		//you cannot update a not existing activity
+		assertFalse(listifyService.updateActivity("test_user", listId, activityId + 1, activity));
+		assertFalse(listifyService.updateActivity("test_user", listId + 1, activityId, activity));
+		assertFalse(listifyService.updateActivity("test_user2", listId, activityId, activity));
+	}
+	
+	@Test
+	@Order(9)
+	void updateActivityCategoryTest() {
 		//try to update the activity category
 		listifyService.updateActivityCategory("test_user", listId, activityId, "Completed");
-		returnedActivity = listifyService.getToDoList("test_user", listId).getActivity(activityId);
+		Activity returnedActivity = listifyService.getActivity("test_user", listId, activityId);
 		assertEquals("Completed", returnedActivity.getCategory());
 		
 		//you cannot update a not existing activity
 		assertFalse(listifyService.updateActivityCategory("test_user", listId, activityId + 1, "Completed"));
 		assertFalse(listifyService.updateActivityCategory("test_user", listId + 1, activityId, "Completed"));
 		assertFalse(listifyService.updateActivityCategory("test_user2", listId, activityId, "Completed"));
-		
+	}
+	
+	@Test
+	@Order(10)
+	void deleteActivityTest() {
 		//try to delete an activity
 		assertTrue(listifyService.deleteActivity("test_user", listId, activityId));
 		
@@ -150,7 +180,11 @@ public class ListifyServiceIntegrationTest {
 		//the todolist now should be empty
 		List<Activity> toDoList = listifyService.getToDoList("test_user", listId).getToDoList();
 		assertEquals(0, toDoList.size());
-		
+	}
+	
+	@Test
+	@Order(11)
+	void deleteToDoListTest() {
 		//try to delete the todolist
 		assertTrue(listifyService.deleteToDoList("test_user", listId));
 		assertEquals(0, listifyService.getUser("test_user").getToDoLists().size());
@@ -161,11 +195,10 @@ public class ListifyServiceIntegrationTest {
 		//now the user should not have any todolist
 		assertEquals(0, listifyService.getUser("test_user").getToDoLists().size());
 	}
-
+	
 	@Test
-	@Order(6)
-	void listManipulation1Test() {
-		ListifyService listifyService = ListifyService.getInstance();
+	@Order(12)
+	void listManipulationTest() {
 		//try to create a list
 		int listId = listifyService.createToDoList("test_user", "second_list");
 		
@@ -188,11 +221,10 @@ public class ListifyServiceIntegrationTest {
 		//now the activities should not be accessible now
 		assertNull(listifyService.getActivity("test_user", listId, firstId));
 		assertNull(listifyService.getActivity("test_user", listId, secondId));
-		
 	}
 	
 	@Test
-	@Order(7)
+	@Order(13)
 	void userDeleteTest() {
 		ListifyService listifyService = ListifyService.getInstance();
 		//remove previously created users
