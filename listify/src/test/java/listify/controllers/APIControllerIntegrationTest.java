@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -61,6 +62,16 @@ class APIControllerIntegrationTest {
 	
 	public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
+	static String newListId;
+	static String newActivityId;
+	static Map<String, Object> sessionAttrs;
+	
+	@BeforeEach
+	void setSessionAttributes() {
+		sessionAttrs = new HashMap<>();
+		sessionAttrs.put("username", "test_user");
+	}
+	
 	@Test
 	@Order(1)
 	void registerTest() throws Exception {
@@ -127,7 +138,6 @@ class APIControllerIntegrationTest {
 		
 		
 		//login with a not existing user (should fail)	
-		
 		requestObject = objectMapper.createObjectNode();
 		requestObject.put("email", "test2@gmail.com");
 		requestObject.put("password", "pw");
@@ -146,9 +156,6 @@ class APIControllerIntegrationTest {
 	@Order(3)
 	void logoutTest() throws Exception{
 		String url = "/API/test_user/logout";
-		
-		Map<String, Object> sessionAttrs = new HashMap<>();
-		sessionAttrs.put("username", "test_user");
 		
 		//successful logout (the user was logged in -> the session attribute was set)
 		HttpSession session = mvc.perform(post(url)
@@ -177,9 +184,6 @@ class APIControllerIntegrationTest {
 		String url = "/API/test_user/createToDoList";
 		//successful list creation
 		
-		Map<String, Object> sessionAttrs = new HashMap<>();
-		sessionAttrs.put("username", "test_user");
-		
 		MvcResult result = mvc.perform(post(url)
 									   .sessionAttrs(sessionAttrs)
 									   .contentType(APPLICATION_JSON_UTF8)
@@ -190,15 +194,16 @@ class APIControllerIntegrationTest {
 							 		   .andReturn();
 		
 		//and the body should contain the new id 
-		String newListId = result.getResponse().getContentAsString();
-		assertNotNull(newListId);
+		newListId = result.getResponse().getContentAsString();
+		assertNotNull(newListId);		
+	}
+	
+	@Test
+	@Order(7)
+	void updateListNameTest() throws Exception {
+		String url = "/API/test_user/updateToDoListName/" + newListId;
 		
-		url = "/API/test_user/updateToDoListName/" + newListId;
 		//successful list update
-	
-		//Map<String, Object> sessionAttrs = new HashMap<>();
-		//sessionAttrs.put("username", "test_user");
-	
 		mvc.perform(put(url)
 					.sessionAttrs(sessionAttrs)
 					.contentType(APPLICATION_JSON_UTF8)
@@ -218,16 +223,14 @@ class APIControllerIntegrationTest {
 				 	.andDo(print())
 				 	.andExpect(status().isNotFound()) //the status should be 404 not found
 				 	.andReturn();
-		
-		
-		
+	}
+	
+	@Test
+	@Order(8)
+	void createActivityTest() throws Exception{
 		//try to create an activity
-		
-		url = "/API/test_user/updateToDoList/" + newListId + "/createActivity";
+		String url = "/API/test_user/updateToDoList/" + newListId + "/createActivity";
 		//successful activity creation
-		
-		//Map<String, Object> sessionAttrs = new HashMap<>();
-		//sessionAttrs.put("username", "test_user");
 		
 		ObjectNode requestObject = objectMapper.createObjectNode();
 		requestObject.put("name", "first activity");
@@ -236,7 +239,7 @@ class APIControllerIntegrationTest {
 		requestObject.put("category", "To Do");
 		String requestJson = requestObject.toPrettyString();
 		
-		result = mvc.perform(post(url)
+		MvcResult result = mvc.perform(post(url)
 							 .sessionAttrs(sessionAttrs)
 							 .contentType(APPLICATION_JSON_UTF8)
 							 .accept(APPLICATION_JSON_UTF8)
@@ -245,23 +248,23 @@ class APIControllerIntegrationTest {
 				 			 .andExpect(status().isCreated()) //the status should be 201 created
 				 			 .andReturn();
 		
-		String newActivityId = result.getResponse().getContentAsString();
+		newActivityId = result.getResponse().getContentAsString();
 		assertNotNull(newActivityId);
-		
-		
+	}
+	
+	@Test
+	@Order(9)
+	void updateActivityTest() throws Exception{
 		//try to update the activity 
-		url = "/API/test_user/updateToDoList/" + newListId + "/updateActivity/" + newActivityId;
+		String url = "/API/test_user/updateToDoList/" + newListId + "/updateActivity/" + newActivityId;
 		//successful activity update
 	
-		//Map<String, Object> sessionAttrs = new HashMap<>();
-		//sessionAttrs.put("username", "test_user");
-	
-		requestObject = objectMapper.createObjectNode();
+		ObjectNode requestObject = objectMapper.createObjectNode();
 		requestObject.put("name", "first activity 1");
 		requestObject.put("priority", 5);
 		requestObject.put("expirationDate", LocalDate.now().toString());
 		requestObject.put("category", "Completed");
-		requestJson = requestObject.toPrettyString();
+		String requestJson = requestObject.toPrettyString();
 		
 		mvc.perform(put(url)
 					.sessionAttrs(sessionAttrs)
@@ -271,23 +274,7 @@ class APIControllerIntegrationTest {
 				    .andExpect(status().isOk()) //the status should be 200 ok
 				    .andReturn();
 		
-		//try to update activity category
-		url = "/API/test_user/updateToDoList/" + newListId + "/updateActivityCategory/" + newActivityId;
-		//successful activity update
-	
-		//Map<String, Object> sessionAttrs = new HashMap<>();
-		//sessionAttrs.put("username", "test_user");
-		
-		mvc.perform(put(url)
-					.sessionAttrs(sessionAttrs)
-					.contentType(APPLICATION_JSON_UTF8)
-					.content("In Progress".getBytes())) 
-				 	.andDo(print())
-				 	.andExpect(status().isOk()) //the status should be 200 ok
-				 	.andReturn();
-		
 		//cannot update a not existing activity
-		
 		url = "/API/test_user/updateToDoList/" + newListId + "/updateActivity/" + newActivityId + "2";
 
 		System.out.println(url);
@@ -299,6 +286,24 @@ class APIControllerIntegrationTest {
 				 	.andDo(print())
 				 	.andExpect(status().isNotFound()) //the status should be 404 not found
 				 	.andReturn();
+	}
+	
+	@Test 
+	@Order(10)
+	void updateActivityCategory() throws Exception{
+		//try to update activity category
+		String url = "/API/test_user/updateToDoList/" + newListId + "/updateActivityCategory/" + newActivityId;
+		//successful activity update
+		
+		mvc.perform(put(url)
+					.sessionAttrs(sessionAttrs)
+					.contentType(APPLICATION_JSON_UTF8)
+					.content("In Progress".getBytes())) 
+				 	.andDo(print())
+				 	.andExpect(status().isOk()) //the status should be 200 ok
+				 	.andReturn();
+		
+		
 		
 		//cannot update the category of a not existing activity
 		
@@ -311,13 +316,14 @@ class APIControllerIntegrationTest {
 				 	.andDo(print())
 				 	.andExpect(status().isNotFound()) //the status should be 404 not found
 				 	.andReturn();
-		
+	}
+	
+	@Test
+	@Order(11)
+	void deleteActivityTest() throws Exception{
 		//try to delete an activity
-		url = "/API/test_user/updateToDoList/" + newListId + "/deleteActivity/" + newActivityId;
+		String url = "/API/test_user/updateToDoList/" + newListId + "/deleteActivity/" + newActivityId;
 		//successful activity deletion
-		
-		//Map<String, Object> sessionAttrs = new HashMap<>();
-		//sessionAttrs.put("username", "test_user");
 		
 		mvc.perform(delete(url)
 					.sessionAttrs(sessionAttrs)) 
@@ -331,13 +337,14 @@ class APIControllerIntegrationTest {
 			 		.andDo(print())
 			 		.andExpect(status().isNotFound()) //the status should be 404 not found
 			 		.andReturn();
-		
-		//try to delete a toDoList
-		url = "/API/test_user/deleteToDoList/" + newListId;
-		//successful list deletion
+	}
 	
-		//Map<String, Object> sessionAttrs = new HashMap<>();
-		//sessionAttrs.put("username", "test_user");
+	@Test
+	@Order(12)
+	void deleteToDoListTest() throws Exception{
+		//try to delete a toDoList
+		String url = "/API/test_user/deleteToDoList/" + newListId;
+		//successful list deletion
 	
 		mvc.perform(delete(url)
 					.sessionAttrs(sessionAttrs)) 
@@ -353,16 +360,11 @@ class APIControllerIntegrationTest {
 				 	.andReturn();
 	}
 	
-	
-	
 	@Test
-	@Order(7)
+	@Order(13)
 	void deleteUserTest() throws Exception {
 		//delete an existing user (should be successful)
 		String url = "/API/test_user/deleteUser";
-		
-		Map<String, Object> sessionAttrs = new HashMap<>();
-		sessionAttrs.put("username", "test_user");
 		
 		mvc.perform(delete(url)
 					.sessionAttrs(sessionAttrs)) 
