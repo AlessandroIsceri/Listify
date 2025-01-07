@@ -19,9 +19,9 @@ import listify.controllers.APIController;
 import listify.domain.Activity;
 import listify.domain.ToDoList;
 import listify.domain.User;
-import listify.repository.ActivityRepository;
-import listify.repository.ToDoListRepository;
-import listify.repository.UserRepository;
+import listify.repositories.ActivityRepository;
+import listify.repositories.ToDoListRepository;
+import listify.repositories.UserRepository;
 
 @ExtendWith(MockitoExtension.class) 
 class ListifyServiceTest {

@@ -1,4 +1,4 @@
-package listify.repository;
+package listify.repositories;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

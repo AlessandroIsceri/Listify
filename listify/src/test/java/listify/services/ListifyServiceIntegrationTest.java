@@ -33,7 +33,6 @@ public class ListifyServiceIntegrationTest {
 	}
 	
 	@BeforeEach
-	//TODO non dovrebbe essere eseguito before getIntsanceTest
 	void getListifyService() {
 		listifyService = ListifyService.getInstance();
 	}
