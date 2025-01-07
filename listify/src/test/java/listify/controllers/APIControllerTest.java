@@ -40,7 +40,6 @@ import listify.domain.Activity;
 import listify.services.ListifyService;
 
 @ContextConfiguration(classes = WebConfig.class)
-//@WebMvcTest(APIController.class)
 @ExtendWith(MockitoExtension.class) 
 class APIControllerTest {
 
@@ -385,4 +384,5 @@ class APIControllerTest {
 	}
 	
 	//TODO MANCANO TEST NON AUTORIZZATI
+	//TODO MANCANO TEST ELIMINAZIONE UTENTE
 }
