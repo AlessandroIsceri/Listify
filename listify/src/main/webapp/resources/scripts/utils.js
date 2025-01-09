@@ -5,7 +5,7 @@ async function logout(){
 	});
 	if(response.status == 200){
 		//redirect to login page
-		window.location.href = URL_PREFIX + "/listify/";
+		location.href = URL_PREFIX + "/listify/";
 	}else{
 		printToast("ERROR", "An error occurred during the logout", "bg-danger")
 	}
@@ -18,7 +18,7 @@ async function deleteUser(){
 	});
 	if(response.status == 200){
 		//redirect to login page
-		window.location.href = URL_PREFIX + "/listify/";
+		location.href = URL_PREFIX + "/listify/";
 	}else{
 		printToast("ERROR", "An error occurred during the account deletion", "bg-danger")
 	}
