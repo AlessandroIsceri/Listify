@@ -38,13 +38,19 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                    <div class="nav-link active"><i class="fa-solid fa-user"></i> Hi, ${username}</div>
-                    <a class="nav-link" aria-current="page" href="/listify/${username}/home"><i class="fa-solid fa-house"></i> Home</a>
-                	<button class="nav-link" aria-current="page" onclick="logout()" id="logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</button>
-                	<button class="nav-link" aria-current="page" onclick="deleteUser()" id="deleteUser"><i class="fa-solid fa-user-slash"></i>Delete Account</button>
-                </div>
-            </div>
+	            <div class="navbar-nav">
+	            	<li class="nav-item dropdown">
+		            	<a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+				            <i class="fa-solid fa-user"></i> Hi, ${username}
+			          	</a>
+			          	<ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarDarkDropdownMenuLink">
+			            	<li><button class="nav-link" aria-current="page" onclick="logout()" id="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</button></li>
+			            	<li><button class="nav-link" aria-current="page" onclick="deleteUser()" id="deleteUser"><i class="fa-solid fa-user-slash"></i> Delete Account</button></li>
+			          	</ul>
+			         </li>
+	                <a class="nav-link" aria-current="page" href="/listify/${username}/home"><i class="fa-solid fa-house"></i> Home</a>
+	            </div>
+	        </div>
         </div>
     </nav>
 

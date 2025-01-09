@@ -21,10 +21,7 @@
 	        </button>
 	        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 	            <div class="navbar-nav">
-	                <div class="nav-link active"><i class="fa-solid fa-user"></i> Hi, <%=session.getAttribute("username")%></div>
-	                <a class="nav-link" aria-current="page" href="/listify"><i class="fa-solid fa-house"></i> Home</a>
-	            	<a class="nav-link" aria-current="page" href="/listify" id="logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
-     		        <a class="nav-link" aria-current="page" href="/listify" id="deleteUser"><i class="fa-solid fa-user-slash"></i>Delete Account</a>    	
+	                <a class="nav-link" aria-current="page" href="/listify"><i class="fa-solid fa-right-from-bracket"></i> Login Page</a> 	
 	            </div>
 	        </div>
 	    </div>
