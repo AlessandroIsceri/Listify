@@ -52,3 +52,7 @@ Il progetto è stato sviluppato utilizzando il framework **Spring MVC**, con l'o
 
 7. **Accesso all'applicazione**:
     - Una volta avviato il server, accedere all'applicazione tramite il browser all'indirizzo: [http://localhost:8080/listify/](http://localhost:8080/listify/).
+
+# Maggiori informazioni
+Per informazioni più dettagliate, consultare la relazione, ovvero il file [`Relazione_Progetto_PSS___Alessandro_Isceri.pdf
+`](https://gitlab.com/Alessandro-Isceri/listify/-/blob/main/Relazione_Progetto_PSS___Alessandro_Isceri.pdf?ref_type=heads).
