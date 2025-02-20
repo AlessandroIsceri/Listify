@@ -18,7 +18,7 @@ Il progetto è stato sviluppato utilizzando il framework **Spring MVC**, con l'o
 1. **Installazione di XAMPP**:
     - Scaricare [XAMPP](https://www.apachefriends.org/it/download.html) per eseguire il database in locale.
     - Una volta installato, avviare i servizi `Apache` e `MySQL`.
-    - Importare il database tramite [questo script](https://gitlab.com/Alessandro-Isceri/listify/-/blob/main/listify.sql).
+    - Importare il database tramite [questo script](https://github.com/AlessandroIsceri/Listify/blob/main/listify.sql).
 
 2. **Installazione di Spring Tools Suite**:
     - Scaricare e installare [Spring Tools Suite per Eclipse](https://spring.io/tools).
@@ -55,4 +55,4 @@ Il progetto è stato sviluppato utilizzando il framework **Spring MVC**, con l'o
 
 # Maggiori informazioni
 Per informazioni più dettagliate, consultare la relazione, ovvero il file [`Relazione_Progetto_PSS___Alessandro_Isceri.pdf
-`](https://gitlab.com/Alessandro-Isceri/listify/-/blob/main/Relazione_Progetto_PSS___Alessandro_Isceri.pdf?ref_type=heads).
+`](https://github.com/AlessandroIsceri/Listify/blob/main/Relazione_Progetto_PSS___Alessandro_Isceri.pdf).
